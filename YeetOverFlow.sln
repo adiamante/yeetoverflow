@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Docs", "YeetOverFlow.Docs\YeetOverFlow.Docs.csproj", "{8AF24B0D-B10D-4944-87F0-9D0AA5222A6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Docs", "0. Docs", "{464CC77B-8BE4-456A-AC9F-E1A63B748B5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6. Common", "6. Common", "{2BC1ACC4-79A0-4563-8B5F-A5AFD0D06677}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Reflection", "YeetOverFlow.Reflection\YeetOverFlow.Reflection.csproj", "{6ED6962A-21B4-45AA-858F-FF35C1F533B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Strings", "YeetOverFlow.Strings\YeetOverFlow.Strings.csproj", "{F078FE26-4EE3-49BE-879A-D26284281231}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Logging", "YeetOverFlow.Logging\YeetOverFlow.Logging.csproj", "{37AC2120-E6BA-480F-BD96-42D663A6883B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8AF24B0D-B10D-4944-87F0-9D0AA5222A6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AF24B0D-B10D-4944-87F0-9D0AA5222A6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AF24B0D-B10D-4944-87F0-9D0AA5222A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AF24B0D-B10D-4944-87F0-9D0AA5222A6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ED6962A-21B4-45AA-858F-FF35C1F533B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ED6962A-21B4-45AA-858F-FF35C1F533B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ED6962A-21B4-45AA-858F-FF35C1F533B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ED6962A-21B4-45AA-858F-FF35C1F533B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F078FE26-4EE3-49BE-879A-D26284281231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F078FE26-4EE3-49BE-879A-D26284281231}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F078FE26-4EE3-49BE-879A-D26284281231}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F078FE26-4EE3-49BE-879A-D26284281231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37AC2120-E6BA-480F-BD96-42D663A6883B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37AC2120-E6BA-480F-BD96-42D663A6883B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37AC2120-E6BA-480F-BD96-42D663A6883B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37AC2120-E6BA-480F-BD96-42D663A6883B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8AF24B0D-B10D-4944-87F0-9D0AA5222A6E} = {464CC77B-8BE4-456A-AC9F-E1A63B748B5C}
+		{6ED6962A-21B4-45AA-858F-FF35C1F533B3} = {2BC1ACC4-79A0-4563-8B5F-A5AFD0D06677}
+		{F078FE26-4EE3-49BE-879A-D26284281231} = {2BC1ACC4-79A0-4563-8B5F-A5AFD0D06677}
+		{37AC2120-E6BA-480F-BD96-42D663A6883B} = {2BC1ACC4-79A0-4563-8B5F-A5AFD0D06677}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F96CC3E8-1159-4878-A367-7758DD2843A5}
+	EndGlobalSection
+EndGlobal
