@@ -11,9 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6. Common", "6. Common", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Reflection", "YeetOverFlow.Reflection\YeetOverFlow.Reflection.csproj", "{6ED6962A-21B4-45AA-858F-FF35C1F533B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Strings", "YeetOverFlow.Strings\YeetOverFlow.Strings.csproj", "{F078FE26-4EE3-49BE-879A-D26284281231}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Strings", "YeetOverFlow.Strings\YeetOverFlow.Strings.csproj", "{F078FE26-4EE3-49BE-879A-D26284281231}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Logging", "YeetOverFlow.Logging\YeetOverFlow.Logging.csproj", "{37AC2120-E6BA-480F-BD96-42D663A6883B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Logging", "YeetOverFlow.Logging\YeetOverFlow.Logging.csproj", "{37AC2120-E6BA-480F-BD96-42D663A6883B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Domain", "5. Domain", "{C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Core", "YeetOverFlow.Core\YeetOverFlow.Core.csproj", "{2A0B0189-D3B4-4208-8542-D02A83DAC908}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,10 @@ Global
 		{37AC2120-E6BA-480F-BD96-42D663A6883B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37AC2120-E6BA-480F-BD96-42D663A6883B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37AC2120-E6BA-480F-BD96-42D663A6883B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A0B0189-D3B4-4208-8542-D02A83DAC908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A0B0189-D3B4-4208-8542-D02A83DAC908}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A0B0189-D3B4-4208-8542-D02A83DAC908}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A0B0189-D3B4-4208-8542-D02A83DAC908}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +54,7 @@ Global
 		{6ED6962A-21B4-45AA-858F-FF35C1F533B3} = {2BC1ACC4-79A0-4563-8B5F-A5AFD0D06677}
 		{F078FE26-4EE3-49BE-879A-D26284281231} = {2BC1ACC4-79A0-4563-8B5F-A5AFD0D06677}
 		{37AC2120-E6BA-480F-BD96-42D663A6883B} = {2BC1ACC4-79A0-4563-8B5F-A5AFD0D06677}
+		{2A0B0189-D3B4-4208-8542-D02A83DAC908} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F96CC3E8-1159-4878-A367-7758DD2843A5}

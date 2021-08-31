@@ -81,7 +81,7 @@ namespace YeetOverFlow.Logging
         }
     }
 
-    public static class SwagSinkExtensions
+    public static class YeetSinkExtensions
     {
         public static LoggerConfiguration YeetSink(
                   this LoggerSinkConfiguration loggerConfiguration, 
