@@ -3,7 +3,7 @@ using NUnit.Framework;
 using FluentAssertions;
 using YeetOverFlow.Core;
 
-namespace YeetHub.Core.Tests
+namespace YeetOverFlow.Core.Tests
 {
     //https://enterprisecraftsmanship.com/posts/you-naming-tests-wrong/
     //[MethodUnderTest]_With/Of_[Scenario]_Should_[ExpectedResult]

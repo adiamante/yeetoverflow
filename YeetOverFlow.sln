@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Core", "YeetOv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Core.Tests", "YeetOverFlow.Core.Tests\YeetOverFlow.Core.Tests.csproj", "{47ABDC5B-FA86-4B6E-852C-CFC4B79CEB33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Settings", "YeetOverFlow.Settings\YeetOverFlow.Settings.csproj", "{0B755658-AD16-46DF-ACC9-F472CB2D5607}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{47ABDC5B-FA86-4B6E-852C-CFC4B79CEB33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47ABDC5B-FA86-4B6E-852C-CFC4B79CEB33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47ABDC5B-FA86-4B6E-852C-CFC4B79CEB33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B755658-AD16-46DF-ACC9-F472CB2D5607}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B755658-AD16-46DF-ACC9-F472CB2D5607}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B755658-AD16-46DF-ACC9-F472CB2D5607}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B755658-AD16-46DF-ACC9-F472CB2D5607}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{37AC2120-E6BA-480F-BD96-42D663A6883B} = {2BC1ACC4-79A0-4563-8B5F-A5AFD0D06677}
 		{2A0B0189-D3B4-4208-8542-D02A83DAC908} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
 		{47ABDC5B-FA86-4B6E-852C-CFC4B79CEB33} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
+		{0B755658-AD16-46DF-ACC9-F472CB2D5607} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F96CC3E8-1159-4878-A367-7758DD2843A5}
