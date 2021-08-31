@@ -17,13 +17,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Logging", "Yee
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Domain", "5. Domain", "{C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Core", "YeetOverFlow.Core\YeetOverFlow.Core.csproj", "{2A0B0189-D3B4-4208-8542-D02A83DAC908}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Core", "YeetOverFlow.Core\YeetOverFlow.Core.csproj", "{2A0B0189-D3B4-4208-8542-D02A83DAC908}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Core.Tests", "YeetOverFlow.Core.Tests\YeetOverFlow.Core.Tests.csproj", "{47ABDC5B-FA86-4B6E-852C-CFC4B79CEB33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Core.Tests", "YeetOverFlow.Core.Tests\YeetOverFlow.Core.Tests.csproj", "{47ABDC5B-FA86-4B6E-852C-CFC4B79CEB33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Settings", "YeetOverFlow.Settings\YeetOverFlow.Settings.csproj", "{0B755658-AD16-46DF-ACC9-F472CB2D5607}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Settings", "YeetOverFlow.Settings\YeetOverFlow.Settings.csproj", "{0B755658-AD16-46DF-ACC9-F472CB2D5607}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Settings.Tests", "YeetOverFlow.Settings.Tests\YeetOverFlow.Settings.Tests.csproj", "{CD6B578F-40D3-40DF-9F3F-F1548C44819A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Settings.Tests", "YeetOverFlow.Settings.Tests\YeetOverFlow.Settings.Tests.csproj", "{CD6B578F-40D3-40DF-9F3F-F1548C44819A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Application", "4. Application", "{EB60D920-8165-4033-9D20-5BB2CD4F4B90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Core.Application", "YeetOverFlow.Core.Application\YeetOverFlow.Core.Application.csproj", "{A6DE9A5B-FBE1-46E2-B141-11BA3DE07F9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,10 @@ Global
 		{CD6B578F-40D3-40DF-9F3F-F1548C44819A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD6B578F-40D3-40DF-9F3F-F1548C44819A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD6B578F-40D3-40DF-9F3F-F1548C44819A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6DE9A5B-FBE1-46E2-B141-11BA3DE07F9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6DE9A5B-FBE1-46E2-B141-11BA3DE07F9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6DE9A5B-FBE1-46E2-B141-11BA3DE07F9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6DE9A5B-FBE1-46E2-B141-11BA3DE07F9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +84,7 @@ Global
 		{47ABDC5B-FA86-4B6E-852C-CFC4B79CEB33} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
 		{0B755658-AD16-46DF-ACC9-F472CB2D5607} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
 		{CD6B578F-40D3-40DF-9F3F-F1548C44819A} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
+		{A6DE9A5B-FBE1-46E2-B141-11BA3DE07F9C} = {EB60D920-8165-4033-9D20-5BB2CD4F4B90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F96CC3E8-1159-4878-A367-7758DD2843A5}

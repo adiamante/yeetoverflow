@@ -18,3 +18,15 @@ SubDomains
   - Tests (NUnit)
 - Media
   - Tests (NUnit)
+ 
+### Application
+
+Core
+- CQRS (Command Query Responsibility Segregation)
+  - Commands
+  - CommandHanders
+  - CommandDispatcher
+  - Events
+  - Queries
+  - QueryHandlers
+  - QueryDispatcher
