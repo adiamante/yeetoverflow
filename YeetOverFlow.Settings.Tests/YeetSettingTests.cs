@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System;
 using YeetOverFlow.Settings;
 
-namespace YeetHub.Settings.Test
+namespace YeetOverFlow.Settings.Test
 {
     //[MethodUnderTest]_With/Of_[Scenario]_Should_[ExpectedResult]
     public class YeetSettingListTests

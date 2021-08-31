@@ -8,4 +8,9 @@
     <ProjectReference Include="..\YeetOverFlow.Core\YeetOverFlow.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	  <None Update="TestOutput\Text\*">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+  </ItemGroup>
 </Project>

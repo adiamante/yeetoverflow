@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace YeetOverFlow.Common
+namespace YeetOverFlow.Reflection
 {
     public static class ReflectionHelper
     {

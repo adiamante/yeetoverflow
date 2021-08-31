@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\YeetOverFlow.Core\YeetOverFlow.Core.csproj" />
+    <ProjectReference Include="..\YeetOverFlow.Reflection\YeetOverFlow.Reflection.csproj" />
   </ItemGroup>
 
 </Project>
