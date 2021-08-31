@@ -1,6 +1,6 @@
 ﻿# Overview
 
-YeetOverFlow is a project that explores Architecture, Patterns, Frameworks and Practices.
+YeetOverFlow is a project that explores Architecture, Patterns, Frameworks, Practices and Tools.
 
 ## Layers
 

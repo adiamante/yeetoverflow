@@ -59,11 +59,11 @@ namespace YeetOverFlow.Logging
     }
 
     //https://github.com/serilog/serilog/wiki/Developing-a-sink
-    public class YeetSinkEvent : ILogEventSink
+    public class YeetLogEventSink : ILogEventSink
     {
         private readonly IFormatProvider _formatProvider;
         YeetSinkActionProvider _actionProvider;
-        public YeetSinkEvent(IFormatProvider formatProvider, YeetSinkActionProvider actionProvider)
+        public YeetLogEventSink(IFormatProvider formatProvider, YeetSinkActionProvider actionProvider)
         {
             _formatProvider = formatProvider;
             _actionProvider = actionProvider;
@@ -88,7 +88,7 @@ namespace YeetOverFlow.Logging
                   YeetSinkActionProvider actionProvider = null,
                   IFormatProvider formatProvider = null)
         {
-            return loggerConfiguration.Sink(new YeetSinkEvent(formatProvider, actionProvider));
+            return loggerConfiguration.Sink(new YeetLogEventSink(formatProvider, actionProvider));
         }
     }
 }
