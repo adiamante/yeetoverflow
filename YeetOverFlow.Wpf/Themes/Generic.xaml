@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:controls="clr-namespace:YeetOverFlow.Wpf.Controls"
+    xmlns:local="clr-namespace:YeetOverFlow.Wpf"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:ui="clr-namespace:YeetOverFlow.Wpf.Ui">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/YeetOverFlow.Wpf;component/Controls/YeetWindow.xaml"/>
+        <!--<ResourceDictionary Source="/YeetOverFlow.Wpf;component/Controls/SearchTextBox.xaml"/>-->
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

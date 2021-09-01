@@ -1,0 +1,95 @@
+﻿<swcntl:YeetControlBase x:Class="YeetOverFlow.Wpf.Controls.SettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:swcntl="clr-namespace:YeetOverFlow.Wpf.Controls"
+             xmlns:swui="clr-namespace:YeetOverFlow.Wpf.Ui"
+             xmlns:swvm="clr-namespace:YeetOverFlow.Wpf.ViewModels"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"          
+             xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+             x:Name="ThisControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <swcntl:YeetControlBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/YeetOverFlow.Wpf;component/Themes/Common.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <ControlTemplate x:Key="SettingControlTemplate" TargetType="ContentControl">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="Icon" Width="Auto" />
+                        <ColumnDefinition SharedSizeGroup="Name" Width="Auto" />
+                        <ColumnDefinition SharedSizeGroup="Value" Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <swcntl:YeetLabel Foreground="{DynamicResource MahApps.Brushes.AccentBase}" HorizontalAlignment="Left" Margin="0,0,10,0" Grid.Column="0" Height="20" Width="20" Kind="{Binding Icon}" Kind2="{Binding Icon2}" />
+                    <ContentControl HorizontalAlignment="Left" Margin="0,0,10,0" Grid.Column="0" Height="20" Width="20" ContentTemplate="{Binding Path=Icon, Converter={swui:PackIconKindToDataTemplateConverter}}" />
+                    <TextBlock HorizontalAlignment="Left" Margin="0,0,10,0" Grid.Column="1" Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource MahApps.Brushes.AccentBase}" VerticalAlignment="Center" />
+                    <ContentPresenter HorizontalAlignment="Left" Grid.Column="2"/>
+                </Grid>
+            </ControlTemplate>
+            <DataTemplate DataType="{x:Type swvm:YeetSettingListViewModel}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel Grid.Row="0">
+                        <ToggleButton IsChecked="{Binding IsExpanded}" VerticalAlignment="Center">
+                            <ContentControl DockPanel.Dock="Left" Template="{StaticResource SettingControlTemplate}">
+                            </ContentControl>
+                        </ToggleButton>
+                    </DockPanel>
+                    <ListView Grid.Row="1" ItemsSource="{Binding Children}" Grid.IsSharedSizeScope="True" Focusable="False"
+                              Visibility="{Binding IsExpanded, Converter={swui:BoolToVisibilityConverter}}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="HorizontalAlignment" Value="Left" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type swvm:YeetSettingBooleanViewModel}">
+                <ContentControl Template="{StaticResource SettingControlTemplate}">
+                    <metro:ToggleSwitch IsOn="{Binding Value}" VerticalAlignment="Center" />
+                </ContentControl>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type swvm:YeetSettingStringViewModel}">
+                <ContentControl Template="{StaticResource SettingControlTemplate}">
+                    <TextBox Text="{Binding Value, Delay=250, UpdateSourceTrigger=PropertyChanged}" MinWidth="100" />
+                </ContentControl>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type swvm:YeetSettingStringOptionViewModel}">
+                <ContentControl Template="{StaticResource SettingControlTemplate}">
+                    <ComboBox ItemsSource="{Binding Options}" SelectedValue="{Binding Value}" />
+                </ContentControl>
+            </DataTemplate>
+        </ResourceDictionary>
+    </swcntl:YeetControlBase.Resources>
+    <Grid>
+        <ListView Grid.Row="1" ItemsSource="{Binding Settings.Root.Children, RelativeSource={RelativeSource AncestorType={x:Type swcntl:SettingsControl}}}"
+                  Grid.IsSharedSizeScope="True" Focusable="False">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <!--<Setter Property="Visibility" Value="{Binding SettingType, Converter={StaticResource EnumMatchToVisibilityInverseConverter}, ConverterParameter={x:Static sswvm:SettingType.Hidden}}" />-->
+                </Style>
+            </ListView.ItemContainerStyle>
+            <!--<swui:YeetTemplateSelector.CustomTemplates>
+                <CompositeCollection>
+                    <CollectionContainer Collection="{Binding Source={StaticResource SettingCustomTemplates}}" />
+                </CompositeCollection>
+            </swui:YeetTemplateSelector.CustomTemplates>-->
+        </ListView>
+        <Button 
+            Visibility="{Binding ShowSaveButton, ElementName=ThisControl, Converter={swui:BoolToVisibilityConverter}}"
+            VerticalAlignment="{Binding SaveButtonVerticalAlignment, ElementName=ThisControl}" 
+            HorizontalAlignment="{Binding SaveButtonHorizontalAlignment, ElementName=ThisControl}"
+            Command="{Binding Settings.SaveCommand, ElementName=ThisControl}">
+            <swcntl:YeetLabel Kind="{x:Static iconPacks:PackIconModernKind.Save}" />
+        </Button>
+    </Grid>
+</swcntl:YeetControlBase>
