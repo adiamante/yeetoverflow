@@ -3,7 +3,7 @@ using YeetOverFlow.Core.Application.Persistence;
 
 namespace YeetOverFlow.Core.EntityFramework
 {
-    public class YeetEFUnitOfWork<TParent, TChild> : IYeetUnitOfWork<TParent, TChild>
+    public class YeetEfUnitOfWork<TParent, TChild> : IYeetUnitOfWork<TParent, TChild>
         where TParent : YeetItem, IYeetListBase<TChild>
         where TChild : YeetItem
     {
@@ -14,7 +14,7 @@ namespace YeetOverFlow.Core.EntityFramework
         public IRepository<TChild> YeetItems { get; private set; }
         public IRepository<YeetEvent<TChild>> Events { get; private set; }
 
-        public YeetEFUnitOfWork(YeetEfDbContext<TParent, TChild> context,
+        public YeetEfUnitOfWork(YeetEfDbContext<TParent, TChild> context,
             IRepository<YeetLibrary<TParent>> libraries, 
             IRepository<TParent> lists, 
             IRepository<TChild> items,

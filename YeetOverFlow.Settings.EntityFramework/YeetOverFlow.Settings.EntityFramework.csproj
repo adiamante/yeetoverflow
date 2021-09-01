@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YeetOverFlow.Core.EntityFramework\YeetOverFlow.Core.EntityFramework.csproj" />
+    <ProjectReference Include="..\YeetOverFlow.Settings\YeetOverFlow.Settings.csproj" />
+  </ItemGroup>
+
+</Project>

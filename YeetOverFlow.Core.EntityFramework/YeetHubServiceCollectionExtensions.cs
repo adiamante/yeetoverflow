@@ -35,7 +35,7 @@ namespace YeetOverFlow.Core.EntityFramework.ServiceExtensions
             if (setup != null)
             {
                 services.AddDbContext<YeetEfDbContext<TParent, TChild>>(setup);
-                services.AddTransient<IYeetUnitOfWork<TParent, TChild>, YeetEFUnitOfWork<TParent, TChild>>();
+                services.AddTransient<IYeetUnitOfWork<TParent, TChild>, YeetEfUnitOfWork<TParent, TChild>>();
             }
 
             services.AddYeetOverFlowQueryHandlers<TParent, TChild>();
