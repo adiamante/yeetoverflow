@@ -15,14 +15,14 @@ using YeetOverFlow.Core.Application.CommandHandlers;
 
 namespace YeetOverFlow.Core.EntityFramework.ServiceExtensions
 {
-    public static class YeetHubServiceCollectionExtensions
+    public static class YeetOverFlowServiceCollectionExtensions
     {
-        public static void AddYeetHub(this IServiceCollection services, Action<DbContextOptionsBuilder> setup = null)
+        public static void AddYeetOverFlow(this IServiceCollection services, Action<DbContextOptionsBuilder> setup = null)
         {
-            services.AddYeetHub<YeetList, YeetItem>(setup);
+            services.AddYeetOverFlow<YeetList, YeetItem>(setup);
         }
 
-        public static void AddYeetHub<TParent, TChild>(this IServiceCollection services, Action<DbContextOptionsBuilder> setup = null)
+        public static void AddYeetOverFlow<TParent, TChild>(this IServiceCollection services, Action<DbContextOptionsBuilder> setup = null)
             where TParent : YeetItem, IYeetListBase<TChild>
             where TChild : YeetItem
         {
@@ -38,11 +38,11 @@ namespace YeetOverFlow.Core.EntityFramework.ServiceExtensions
                 services.AddTransient<IYeetUnitOfWork<TParent, TChild>, YeetEFUnitOfWork<TParent, TChild>>();
             }
 
-            services.AddYeetHubQueryHandlers<TParent, TChild>();
-            services.AddYeetHubCommandHandlers<TParent, TChild>();
+            services.AddYeetOverFlowQueryHandlers<TParent, TChild>();
+            services.AddYeetOverFlowCommandHandlers<TParent, TChild>();
         }
 
-        private static void AddYeetHubQueryHandlers<TParent, TChild>(this IServiceCollection services)
+        private static void AddYeetOverFlowQueryHandlers<TParent, TChild>(this IServiceCollection services)
             where TParent : YeetItem, IYeetListBase<TChild>
             where TChild : YeetItem
         {
@@ -52,7 +52,7 @@ namespace YeetOverFlow.Core.EntityFramework.ServiceExtensions
             services.AddTransient<IQueryDispatcher, QueryDispatcher>();
         }
 
-        private static void AddYeetHubCommandHandlers<TParent, TChild>(this IServiceCollection services)
+        private static void AddYeetOverFlowCommandHandlers<TParent, TChild>(this IServiceCollection services)
             where TParent : YeetItem, IYeetListBase<TChild>
             where TChild : YeetItem
         {
