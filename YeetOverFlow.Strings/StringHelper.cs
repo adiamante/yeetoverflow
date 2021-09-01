@@ -1,9 +1,9 @@
 ﻿using Pluralize.NET;
 using StringExtensions;
 
-namespace YeetOverFlow.Common
+namespace YeetOverFlow.Strings
 {
-    public static class StringHelpera
+    public static class StringHelper
     {
         static IPluralize _pluralize = new Pluralizer();
 
