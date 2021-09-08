@@ -47,7 +47,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Wpf", "YeetOve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Wpf.Demo", "YeetOverFlow.Wpf.Demo\YeetOverFlow.Wpf.Demo.csproj", "{390D90C1-1800-42EC-9B57-EF10BA113065}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Data", "YeetOverFlow.Data\YeetOverFlow.Data.csproj", "{D49149F7-9B04-4D7D-B927-1BDF70794EA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Data", "YeetOverFlow.Data\YeetOverFlow.Data.csproj", "{D49149F7-9B04-4D7D-B927-1BDF70794EA4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Data.EntityFramework", "YeetOverFlow.Data.EntityFramework\YeetOverFlow.Data.EntityFramework.csproj", "{24794B1A-CA55-43FC-B010-2DAA0BE3FEA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,10 @@ Global
 		{D49149F7-9B04-4D7D-B927-1BDF70794EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49149F7-9B04-4D7D-B927-1BDF70794EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49149F7-9B04-4D7D-B927-1BDF70794EA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24794B1A-CA55-43FC-B010-2DAA0BE3FEA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24794B1A-CA55-43FC-B010-2DAA0BE3FEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24794B1A-CA55-43FC-B010-2DAA0BE3FEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24794B1A-CA55-43FC-B010-2DAA0BE3FEA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,6 +146,7 @@ Global
 		{291B950D-D990-4EA1-B8FF-0E8CE0DAEDAF} = {95759507-FDC4-43E6-918C-24C9808EA723}
 		{390D90C1-1800-42EC-9B57-EF10BA113065} = {95759507-FDC4-43E6-918C-24C9808EA723}
 		{D49149F7-9B04-4D7D-B927-1BDF70794EA4} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
+		{24794B1A-CA55-43FC-B010-2DAA0BE3FEA1} = {96FBAA41-5D3C-46A8-9178-044FED31AEEA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F96CC3E8-1159-4878-A367-7758DD2843A5}
