@@ -14,7 +14,7 @@ namespace YeetOverFlow.Settings
         }
         public YeetSettingList(Guid guid, string key) : base(guid, key)
         {
-            _yeetKeyedList = new YeetKeyedList<YeetSettingList, YeetSetting>(key);
+            _yeetKeyedList = new YeetKeyedList<YeetSettingList, YeetSetting>();
         }
         public YeetSetting this[int index] { get => _yeetKeyedList[index]; }
         public override YeetSetting this[string key] { get => ((IYeetKeyedList<YeetSetting>)_yeetKeyedList)[key]; set => ((IYeetKeyedList<YeetSetting>)_yeetKeyedList)[key] = value; }

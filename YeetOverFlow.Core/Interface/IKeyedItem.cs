@@ -1,4 +1,4 @@
-﻿namespace YeetOverFlow.Settings
+﻿namespace YeetOverFlow.Core
 {
     public interface IKeyedItem
     {

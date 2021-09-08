@@ -45,7 +45,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Service", "2. Service", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Wpf", "YeetOverFlow.Wpf\YeetOverFlow.Wpf.csproj", "{291B950D-D990-4EA1-B8FF-0E8CE0DAEDAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Wpf.Demo", "YeetOverFlow.Wpf.Demo\YeetOverFlow.Wpf.Demo.csproj", "{390D90C1-1800-42EC-9B57-EF10BA113065}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YeetOverFlow.Wpf.Demo", "YeetOverFlow.Wpf.Demo\YeetOverFlow.Wpf.Demo.csproj", "{390D90C1-1800-42EC-9B57-EF10BA113065}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YeetOverFlow.Data", "YeetOverFlow.Data\YeetOverFlow.Data.csproj", "{D49149F7-9B04-4D7D-B927-1BDF70794EA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,10 @@ Global
 		{390D90C1-1800-42EC-9B57-EF10BA113065}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{390D90C1-1800-42EC-9B57-EF10BA113065}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{390D90C1-1800-42EC-9B57-EF10BA113065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D49149F7-9B04-4D7D-B927-1BDF70794EA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D49149F7-9B04-4D7D-B927-1BDF70794EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D49149F7-9B04-4D7D-B927-1BDF70794EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D49149F7-9B04-4D7D-B927-1BDF70794EA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +139,7 @@ Global
 		{25072CBB-69E3-4777-A90E-6B7246A6B522} = {96FBAA41-5D3C-46A8-9178-044FED31AEEA}
 		{291B950D-D990-4EA1-B8FF-0E8CE0DAEDAF} = {95759507-FDC4-43E6-918C-24C9808EA723}
 		{390D90C1-1800-42EC-9B57-EF10BA113065} = {95759507-FDC4-43E6-918C-24C9808EA723}
+		{D49149F7-9B04-4D7D-B927-1BDF70794EA4} = {C26C3329-E98F-4D9E-9FCE-FA51BBE4C4A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F96CC3E8-1159-4878-A367-7758DD2843A5}

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using YeetOverFlow.Core;
-using YeetOverFlow.Settings;
 
 namespace YeetOverFlow.Wpf.ViewModels
 {
@@ -11,7 +10,7 @@ namespace YeetOverFlow.Wpf.ViewModels
         where TChild : YeetItem, IKeyedItem
         where TParent : TChild, IYeetKeyedList<TChild>
     {
-        protected YeetKeyedList<TParent, TChild> _yeetKeyedList = new YeetKeyedList<TParent, TChild>("");
+        protected YeetKeyedList<TParent, TChild> _yeetKeyedList = new YeetKeyedList<TParent, TChild>();
         protected ObservableCollection<TChild> _children = new ObservableCollection<TChild>();
 
         #region Indexer
@@ -30,8 +29,6 @@ namespace YeetOverFlow.Wpf.ViewModels
             }
         }
         #endregion Indexer
-
-        public string Key => ((IYeetKeyedList<TChild>)_yeetKeyedList).Key;
 
         public IEnumerable<TChild> Children => _children;
 

@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using YeetOverFlow.Core;
-using YeetOverFlow.Settings;
 
 namespace YeetOverFlow.Wpf.ViewModels
 {

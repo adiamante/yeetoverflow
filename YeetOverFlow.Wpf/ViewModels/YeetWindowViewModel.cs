@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace YeetOverFlow.Wpf.ViewModels
+﻿namespace YeetOverFlow.Wpf.ViewModels
 {
     public class YeetWindowViewModel : YeetItemViewModelBase
     {

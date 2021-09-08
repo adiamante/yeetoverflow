@@ -1,16 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using YeetOverFlow.Core;
 
-namespace YeetOverFlow.Settings
+namespace YeetOverFlow.Core
 {
-    public class YeetKeyedList<TParent, TChild> : IKeyedItem, IYeetKeyedList<TChild> 
+    public class YeetKeyedList<TParent, TChild> : YeetKeyedList<TChild>
         where TChild : YeetItem, IKeyedItem
         where TParent : TChild
     {
+
+        #region Indexer
+        public override TChild this[string key]
+        {
+            get
+            {
+                if (!_dict.ContainsKey(key))
+                {
+                    var child = (TParent)Activator.CreateInstance(typeof(TParent), Guid.NewGuid(), key);
+                    AddChild(child);
+                    Validate(key, child);
+                }
+                return _dict[key];
+            }
+            set
+            {
+                if (!_dict.ContainsKey(key))
+                {
+                    _yeetList.AddChild(value);
+                    Validate(key, value);
+                }
+                _dict[key] = value;
+            }
+        }
+        #endregion Indexer
+    }
+
+    public class YeetKeyedList<TChild> : YeetItem, IKeyedItem, IYeetKeyedList<TChild> 
+        where TChild : YeetItem, IKeyedItem
+    {
         public Action<String, TChild> InvalidChildCallback { get; set; }
         public string Key { get; private set; }
-        private YeetList<TChild> _yeetList;
+        protected YeetList<TChild> _yeetList;
 
         public IEnumerable<TChild> Children => ((IYeetListBaseRead<TChild>)_yeetList).Children;
 
@@ -19,9 +48,8 @@ namespace YeetOverFlow.Settings
         //not being filled yet; will figure out when we start persisting
         protected Dictionary<string, TChild> _dict = new Dictionary<string, TChild>();
 
-        public YeetKeyedList(string key)
+        public YeetKeyedList()
         {
-            Key = key;
             _yeetList = new YeetList<TChild>();
         }
 
@@ -63,18 +91,9 @@ namespace YeetOverFlow.Settings
             get => _yeetList[index];
         }
 
-        public TChild this[string key]
+        public virtual TChild this[string key]
         {
-            get
-            {
-                if (!_dict.ContainsKey(key))
-                {
-                    var child = (TParent)Activator.CreateInstance(typeof(TParent), Guid.NewGuid(), key);
-                    AddChild(child);
-                    Validate(key, child);
-                }
-                return _dict[key];
-            }
+            get { return _dict[key]; }
             set
             {
                 if (!_dict.ContainsKey(key))
@@ -93,7 +112,7 @@ namespace YeetOverFlow.Settings
             return _dict.ContainsKey(key);
         }
 
-        private void Validate(string key, TChild child)
+        protected void Validate(string key, TChild child)
         {
             if (String.IsNullOrEmpty(child.Key))
             {
