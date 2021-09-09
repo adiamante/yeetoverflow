@@ -10,12 +10,13 @@ namespace YeetOverFlow.Data
 
         public YeetDataSet() : base()
         {
-
+            _yeetKeyedList = new YeetKeyedList<YeetDataSet, YeetData>();
         }
 
         public YeetDataSet(Guid guid, string key) : base(guid, key)
         {
             _key = key;
+            _yeetKeyedList = new YeetKeyedList<YeetDataSet, YeetData>();
         }
 
         public YeetData this[string key] { get => ((IYeetKeyedList<YeetData>)_yeetKeyedList)[key]; set => ((IYeetKeyedList<YeetData>)_yeetKeyedList)[key] = value; }
