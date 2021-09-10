@@ -6,6 +6,16 @@ namespace YeetOverFlow.Data.EntityFramework
 {
     public class YeetDataEfDbContext : YeetEfDbContext<YeetDataSet, YeetData>
     {
+        public DbSet<YeetTable> Tables { get; set; }
+        public DbSet<YeetColumn> Columns { get; set; }
+        public DbSet<YeetRow> Rows { get; set; }
+        public DbSet<YeetCell> Cells { get; set; }
+        public DbSet<YeetBooleanCell> BooleanCells { get; set; }
+        public DbSet<YeetStringCell> StringCells { get; set; }
+        public DbSet<YeetIntCell> IntCells { get; set; }
+        public DbSet<YeetDoubleCell> DoubleCells { get; set; }
+        public DbSet<YeetDateTimeCell> DateTimeCells { get; set; }
+
         public YeetDataEfDbContext(DbContextOptions<YeetDataEfDbContext> options) : base(options)
         {
         }
