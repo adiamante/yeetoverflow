@@ -34,8 +34,11 @@ namespace YeetOverFlow.Wpf.ViewModels
 
         public int Count => ((IYeetListBaseRead<TChild>)_yeetKeyedList).Count;
 
-        public Action<string, TChild> InvalidChildCallback { get => _yeetKeyedList.InvalidChildCallback; set { _yeetKeyedList.InvalidChildCallback = value; } }
-
+        public void SetInvalidChildCallback(Action<string, TChild> invalidChildCallback)
+        {
+            _yeetKeyedList.SetInvalidChildCallback(invalidChildCallback);
+        }
+        
         public event NotifyCollectionChangedEventHandler CollectionChanged
         {
             add

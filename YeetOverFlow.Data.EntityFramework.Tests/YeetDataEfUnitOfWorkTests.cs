@@ -1,10 +1,11 @@
 using System;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using YeetOverFlow.Core.Application.Persistence;
-using YeetOverFlow.Core;
 using FluentAssertions;
+using YeetOverFlow.Core;
+using YeetOverFlow.Core.Application.Persistence;
+using YeetOverFlow.Data.EntityFramework.ServiceExtensions;
 
 namespace YeetOverFlow.Data.EntityFramework.Tests
 {

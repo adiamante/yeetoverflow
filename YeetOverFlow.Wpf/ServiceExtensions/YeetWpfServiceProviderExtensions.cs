@@ -24,8 +24,6 @@ namespace YeetOverFlow.Wpf.ServiceCollectionExtensions
 
             var lib = window.Settings;
             var logger = sp.GetRequiredService<ILogger<YeetSettingLibraryViewModel>>();
-
-
             var ctx = sp.GetRequiredService<YeetSettingsEfDbContext>();
             var qryDispatcher = sp.GetRequiredService<IQueryDispatcher>();
             var qry = new GetYeetLibrariesQuery();

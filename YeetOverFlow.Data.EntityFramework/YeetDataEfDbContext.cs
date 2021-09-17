@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using YeetOverFlow.Core;
 using YeetOverFlow.Core.EntityFramework;
 
 namespace YeetOverFlow.Data.EntityFramework
@@ -7,6 +8,8 @@ namespace YeetOverFlow.Data.EntityFramework
     public class YeetDataEfDbContext : YeetEfDbContext<YeetDataSet, YeetData>
     {
         public DbSet<YeetTable> Tables { get; set; }
+        public DbSet<YeetColumnCollection> ColumnCollections { get; set; }
+        public DbSet<YeetRowCollection> RowCollections { get; set; }
         public DbSet<YeetColumn> Columns { get; set; }
         public DbSet<YeetRow> Rows { get; set; }
         public DbSet<YeetCell> Cells { get; set; }
@@ -23,17 +26,63 @@ namespace YeetOverFlow.Data.EntityFramework
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new YeetTableEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new YeetColumnCollectionEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new YeetRowCollectionEntityConfiguration());
             modelBuilder.ApplyConfiguration(new YeetDataEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new YeetColumnEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new YeetRowEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new YeetCellEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetBooleanCell>());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetStringCell>());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetIntCell>());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetDoubleCell>());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetDateTimeCell>());
         }
     }
 
-    //internal class YeetDataSetEntityConfiguration : IEntityTypeConfiguration<YeetDataSet>
-    //{
-    //    public void Configure(EntityTypeBuilder<YeetDataSet> builder)
-    //    {
-    //        builder.ToTable(nameof(YeetDataSet));
-    //    }
-    //}
+    internal class YeetDataGenericEntityConfiguration<T> : IEntityTypeConfiguration<T>
+        where T : YeetItem
+    {
+        public void Configure(EntityTypeBuilder<T> builder)
+        {
+            builder.ToTable(typeof(T).Name);
+        }
+    }
+
+    internal class YeetTableEntityConfiguration : IEntityTypeConfiguration<YeetTable>
+    {
+        public void Configure(EntityTypeBuilder<YeetTable> builder)
+        {
+            builder.ToTable(nameof(YeetTable));
+            builder.HasOne(t => t.Columns)
+                .WithOne()
+                .HasForeignKey<YeetTable>("ColumnCollectionGuid")
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(t => t.Rows)
+                .WithOne()
+                .HasForeignKey<YeetTable>("RowCollectionGuid")
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+    }
+
+    internal class YeetColumnCollectionEntityConfiguration : IEntityTypeConfiguration<YeetColumnCollection>
+    {
+        public void Configure(EntityTypeBuilder<YeetColumnCollection> builder)
+        {
+            builder.HasKey(cc => cc.Guid);
+            builder.ToTable(nameof(YeetColumnCollection));
+        }
+    }
+
+    internal class YeetRowCollectionEntityConfiguration : IEntityTypeConfiguration<YeetRowCollection>
+    {
+        public void Configure(EntityTypeBuilder<YeetRowCollection> builder)
+        {
+            builder.HasKey(rc => rc.Guid);
+            builder.ToTable(nameof(YeetRowCollection));
+        }
+    }
 
     internal class YeetDataEntityConfiguration : IEntityTypeConfiguration<YeetData>
     {
@@ -44,4 +93,31 @@ namespace YeetOverFlow.Data.EntityFramework
         }
     }
 
+    internal class YeetColumnEntityConfiguration : IEntityTypeConfiguration<YeetColumn>
+    {
+        public void Configure(EntityTypeBuilder<YeetColumn> builder)
+        {
+            builder.HasKey(yc => yc.Guid);
+            builder.ToTable(nameof(YeetColumn));
+        }
+    }
+
+    internal class YeetRowEntityConfiguration : IEntityTypeConfiguration<YeetRow>
+    {
+        public void Configure(EntityTypeBuilder<YeetRow> builder)
+        {
+            builder.HasKey(yc => yc.Guid);
+            builder.ToTable(nameof(YeetRow));
+            builder.HasMany(r => r.Children);
+        }
+    }
+
+    internal class YeetCellEntityConfiguration : IEntityTypeConfiguration<YeetCell>
+    {
+        public void Configure(EntityTypeBuilder<YeetCell> builder)
+        {
+            builder.HasKey(yc => yc.Guid);
+            builder.ToTable(nameof(YeetCell));
+        }
+    }
 }

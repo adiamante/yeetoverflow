@@ -37,7 +37,7 @@ namespace YeetOverFlow.Core
     public class YeetKeyedList<TChild> : YeetItem, IKeyedItem, IYeetKeyedList<TChild> 
         where TChild : YeetItem, IKeyedItem
     {
-        public Action<String, TChild> InvalidChildCallback { get; set; }
+        private Action<String, TChild> _invalidChildCallback;
         public string Key { get; private set; }
         protected YeetList<TChild> _yeetList;
 
@@ -48,7 +48,12 @@ namespace YeetOverFlow.Core
         //not being filled yet; will figure out when we start persisting
         protected Dictionary<string, TChild> _dict = new Dictionary<string, TChild>();
 
-        public YeetKeyedList()
+
+        public YeetKeyedList() : this(Guid.NewGuid())
+        {
+        }
+
+        public YeetKeyedList(Guid guid) : base(guid)
         {
             _yeetList = new YeetList<TChild>();
         }
@@ -112,11 +117,16 @@ namespace YeetOverFlow.Core
             return _dict.ContainsKey(key);
         }
 
+        public void SetInvalidChildCallback(Action<string, TChild> invalidChildCallback)
+        {
+            _invalidChildCallback = invalidChildCallback;
+        }
+
         protected void Validate(string key, TChild child)
         {
             if (String.IsNullOrEmpty(child.Key))
             {
-                InvalidChildCallback?.Invoke(key, child);
+                _invalidChildCallback?.Invoke(key, child);
             }
             if (String.IsNullOrEmpty(child.Name))
             {

@@ -25,13 +25,13 @@ namespace YeetOverFlow.Wpf.ViewModels
         {
             _yeetKeyedList = new YeetObservableKeyedList<YeetSettingListViewModel, YeetSettingViewModel>();
             _yeetKeyedList.CollectionChanged += _yeetKeyedList_CollectionChanged;
-            _yeetKeyedList.InvalidChildCallback = (key, child) =>
+            _yeetKeyedList.SetInvalidChildCallback((key, child) =>
             {
                 if (string.IsNullOrEmpty(child.Key))
                 {
                     SetKey(key, child);
                 }
-            };
+            });
         }
 
         private void _yeetKeyedList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
