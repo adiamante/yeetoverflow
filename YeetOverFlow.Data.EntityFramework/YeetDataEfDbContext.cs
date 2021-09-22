@@ -63,6 +63,10 @@ namespace YeetOverFlow.Data.EntityFramework
                 .WithOne()
                 .HasForeignKey<YeetTable>("RowCollectionGuid")
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //https://dotnetcoretutorials.com/2021/03/07/eager-load-navigation-properties-by-default-in-ef-core/
+            builder.Navigation(t => t.Columns).AutoInclude();
+            builder.Navigation(t => t.Rows).AutoInclude();
         }
     }
 
@@ -72,6 +76,7 @@ namespace YeetOverFlow.Data.EntityFramework
         {
             builder.HasKey(cc => cc.Guid);
             builder.ToTable(nameof(YeetColumnCollection));
+            builder.Navigation(t => t.Children).AutoInclude();
         }
     }
 
@@ -81,6 +86,7 @@ namespace YeetOverFlow.Data.EntityFramework
         {
             builder.HasKey(rc => rc.Guid);
             builder.ToTable(nameof(YeetRowCollection));
+            builder.Navigation(t => t.Children).AutoInclude();
         }
     }
 
@@ -99,6 +105,7 @@ namespace YeetOverFlow.Data.EntityFramework
         {
             builder.HasKey(yc => yc.Guid);
             builder.ToTable(nameof(YeetColumn));
+            builder.Property(itm => itm.Key).HasField("_key");
         }
     }
 
@@ -109,6 +116,7 @@ namespace YeetOverFlow.Data.EntityFramework
             builder.HasKey(yc => yc.Guid);
             builder.ToTable(nameof(YeetRow));
             builder.HasMany(r => r.Children);
+            builder.Navigation(t => t.Children).AutoInclude();
         }
     }
 
@@ -118,6 +126,7 @@ namespace YeetOverFlow.Data.EntityFramework
         {
             builder.HasKey(yc => yc.Guid);
             builder.ToTable(nameof(YeetCell));
+            builder.Property(itm => itm.Key).HasField("_key");
         }
     }
 }

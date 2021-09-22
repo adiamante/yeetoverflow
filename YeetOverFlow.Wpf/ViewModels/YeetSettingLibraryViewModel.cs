@@ -11,6 +11,7 @@ using YeetOverFlow.Core.Application.Data.Core;
 using YeetOverFlow.Core.Application.Data.Commands;
 using YeetOverFlow.Settings;
 using YeetOverFlow.Wpf.Commands;
+using YeetOverFlow.Wpf.Mappers;
 
 namespace YeetOverFlow.Wpf.ViewModels
 {
@@ -23,10 +24,10 @@ namespace YeetOverFlow.Wpf.ViewModels
         IMapper _mapper;
         bool _isOpen;
 
-        public YeetSettingLibraryViewModel(ICommandDispatcher commandDispatcher, IMapper mapper, YeetCommandManagerViewModel commandManager)
+        public YeetSettingLibraryViewModel(ICommandDispatcher commandDispatcher, IMapperFactory mapperFactory, YeetCommandManagerViewModel commandManager)
         {
             _commandDispatcher = commandDispatcher;
-            _mapper = mapper;
+            _mapper = mapperFactory.GetMapper("Settings");
             _commandManager = commandManager;
         }
 

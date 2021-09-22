@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using YeetOverFlow.Wpf.ServiceCollectionExtensions;
+using YeetOverFlow.Wpf.ServiceExtensions;
 
 namespace YeetOverFlow.Wpf.Demo
 {

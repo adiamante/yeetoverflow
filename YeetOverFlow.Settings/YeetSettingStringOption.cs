@@ -4,7 +4,7 @@ namespace YeetOverFlow.Settings
 {
     public class YeetSettingStringOption : YeetSettingOption<String>
     {
-        YeetSettingStringOption() : this(Guid.Empty, null)
+        YeetSettingStringOption() : this(Guid.NewGuid(), null)
         {
 
         }

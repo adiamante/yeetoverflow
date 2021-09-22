@@ -8,7 +8,7 @@ namespace YeetOverFlow.Settings
     {
         protected YeetKeyedList<YeetSettingList, YeetSetting> _yeetKeyedList;
 
-        YeetSettingList() : this(Guid.Empty, null)
+        YeetSettingList() : this(Guid.NewGuid(), null)
         {
 
         }

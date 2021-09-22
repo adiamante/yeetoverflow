@@ -33,7 +33,7 @@ namespace YeetOverFlow.Wpf.ViewModels
             InsertChildAt(_yeetList.Count, newChild);
         }
 
-        public void Init()
+        public virtual void Init()
         {
             if (_children.Count > 0 && _yeetList.Count == 0)
             {

@@ -1,19 +1,10 @@
 ﻿using System;
-using YeetOverFlow.Core;
 using YeetOverFlow.Settings;
 
 namespace YeetOverFlow.Wpf.ViewModels
 {
-    public class YeetSettingViewModel : YeetItemViewModelBaseExtended, IKeyedItem
+    public class YeetSettingViewModel : YeetKeyedItemViewModel
     {
-        protected string _key;
-
-        #region Key
-        public String Key
-        {
-            get { return _key; }
-        }
-        #endregion Key
         public Enum Icon { get; set; }
         public Enum Icon2 { get; set; }
 
@@ -37,9 +28,8 @@ namespace YeetOverFlow.Wpf.ViewModels
 
         }
 
-        public YeetSettingViewModel(Guid guid, string key) : base(guid)
+        public YeetSettingViewModel(Guid guid, string key) : base(guid, key)
         {
-            _key = key;
         }
 
         protected virtual void SetKey(String key, YeetSettingViewModel setting)

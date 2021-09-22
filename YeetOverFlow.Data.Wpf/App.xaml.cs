@@ -2,8 +2,9 @@
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using YeetOverFlow.Wpf.ServiceCollectionExtensions;
+using YeetOverFlow.Wpf.ServiceExtensions;
 using YeetOverFlow.Data.EntityFramework.ServiceExtensions;
+using YeetOverFlow.Data.Wpf.ServiceExtensions;
 
 namespace YeetOverFlow.Data.Wpf
 {
@@ -21,18 +22,13 @@ namespace YeetOverFlow.Data.Wpf
             ConfigureServices(services);
             _serviceProvider = services.BuildServiceProvider();
             _serviceProvider.InitYeetWpf();         //Initialize wpf app
-            _serviceProvider.InitYeetData();        //Initialize yeet data
+            _serviceProvider.InitYeetDataWpf();        //Initialize yeet data
         }
 
         private void ConfigureServices(ServiceCollection services)
         {
             services.AddSingleton<YeetDataWindow>();
-            services.AddYeetWpf();
-            services.AddYeetDataEf((opt) =>
-            {
-                if (!Directory.Exists("db")) Directory.CreateDirectory("db");
-                opt.UseSqlite("Data Source=db/yeetdata.db");
-            });
+            services.AddYeetDataWpf();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

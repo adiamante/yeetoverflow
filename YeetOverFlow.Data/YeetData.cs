@@ -3,19 +3,15 @@ using YeetOverFlow.Core;
 
 namespace YeetOverFlow.Data
 {
-    public class YeetData : YeetItem, IKeyedItem
+    public class YeetData : YeetKeyedItem
     {
-        protected string _key;
-        public string Key { get => _key; }
-
-        public YeetData() : base()
+        public YeetData() : this(Guid.NewGuid(), null)
         {
 
         }
 
-        public YeetData(Guid guid, string key) : base(guid)
+        public YeetData(Guid guid, string key) : base(guid, key)
         {
-            _key = key;
         }
     }
 }

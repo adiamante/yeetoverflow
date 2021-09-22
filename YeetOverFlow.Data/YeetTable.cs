@@ -5,17 +5,13 @@ namespace YeetOverFlow.Data
 {
     public class YeetColumnCollection : YeetKeyedList<YeetColumn>
     {
-        protected string _key;
-        public string Key { get => _key; }
-
-        public YeetColumnCollection()
+        public YeetColumnCollection() : this(Guid.NewGuid())
         {
 
         }
 
-        public YeetColumnCollection(Guid guid, string key) : base(guid)
+        public YeetColumnCollection(Guid guid) : base(guid)
         {
-            _key = key;
         }
     }
 
@@ -31,6 +27,11 @@ namespace YeetOverFlow.Data
         public YeetRowCollection Rows { get; set; } = new YeetRowCollection();
 
         public YeetTable()
+        {
+
+        }
+
+        public YeetTable(Guid guid, string key) : base(guid, key)
         {
         }
     }

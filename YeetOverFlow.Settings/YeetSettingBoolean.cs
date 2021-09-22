@@ -5,7 +5,7 @@ namespace YeetOverFlow.Settings
     public class YeetSettingBoolean : YeetSetting<bool>
     {
         public override string Kind => nameof(YeetSettingBoolean);
-        YeetSettingBoolean() : this(Guid.Empty, null)
+        YeetSettingBoolean() : this(Guid.NewGuid(), null)
         {
 
         }

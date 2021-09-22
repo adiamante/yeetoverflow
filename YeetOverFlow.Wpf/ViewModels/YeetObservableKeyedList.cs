@@ -6,12 +6,21 @@ using YeetOverFlow.Core;
 
 namespace YeetOverFlow.Wpf.ViewModels
 {
-    public class YeetObservableKeyedList<TParent, TChild> : YeetItem, IYeetKeyedList<TChild>, INotifyCollectionChanged
+    public class YeetObservableKeyedList<TChild> : YeetItem, IYeetKeyedList<TChild>, INotifyCollectionChanged
         where TChild : YeetItem, IKeyedItem
-        where TParent : TChild, IYeetKeyedList<TChild>
     {
-        protected YeetKeyedList<TParent, TChild> _yeetKeyedList = new YeetKeyedList<TParent, TChild>();
+        protected YeetKeyedList<TChild> _yeetKeyedList = new YeetKeyedList<TChild>();
         protected ObservableCollection<TChild> _children = new ObservableCollection<TChild>();
+
+        public YeetObservableKeyedList() : this(Guid.NewGuid())
+        {
+
+        }
+
+        public YeetObservableKeyedList(Guid guid) : base(guid)
+        {
+
+        }
 
         #region Indexer
         public TChild this[int index] { get => _yeetKeyedList[index]; }

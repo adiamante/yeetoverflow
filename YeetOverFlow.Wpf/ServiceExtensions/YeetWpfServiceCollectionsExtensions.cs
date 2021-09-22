@@ -1,8 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
 using YeetOverFlow.Core.Interface;
 using YeetOverFlow.Core.Application.Events;
 using YeetOverFlow.Logging;
@@ -10,9 +10,9 @@ using YeetOverFlow.Settings;
 using YeetOverFlow.Settings.EntityFramework.ServiceExtensions;
 using YeetOverFlow.Wpf.Events;
 using YeetOverFlow.Wpf.ViewModels;
-using System.IO;
+using YeetOverFlow.Wpf.Mappers;
 
-namespace YeetOverFlow.Wpf.ServiceCollectionExtensions
+namespace YeetOverFlow.Wpf.ServiceExtensions
 {
     public static class YeetWpfServiceCollectionsExtensions
     {
@@ -30,32 +30,7 @@ namespace YeetOverFlow.Wpf.ServiceCollectionExtensions
             }
 
             services.AddYeetSettingsEf(setup);
-
-            services.AddSingleton<IMapper>(sp => {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<YeetSetting, YeetSettingViewModel>()
-                        .IncludeAllDerived();
-
-                    cfg.CreateMap<YeetSettingViewModel, YeetSetting>()
-                        .IncludeAllDerived();
-
-                    cfg.CreateMap<YeetSettingList, YeetSettingListViewModel>()
-                        .ReverseMap();
-
-                    cfg.CreateMap<YeetSettingBoolean, YeetSettingBooleanViewModel>()
-                        .ReverseMap();
-
-                    cfg.CreateMap<YeetSettingString, YeetSettingStringViewModel>()
-                        .ReverseMap();
-
-                    cfg.CreateMap<YeetSettingStringOption, YeetSettingStringOptionViewModel>()
-                        .ReverseMap();
-                });
-
-                return config.CreateMapper();
-            });
-
+            services.AddSingleton<IMapperFactory, MapperFactory>();
             services.AddSingleton<YeetWindowViewModel>();
             services.AddSingleton<YeetCommandManagerViewModel>();
             services.AddSingleton<YeetSettingLibraryViewModel>();

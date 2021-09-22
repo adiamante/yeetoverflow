@@ -5,7 +5,7 @@ namespace YeetOverFlow.Settings
     public class YeetSettingString : YeetSetting<string>
     {
         public override string Kind => nameof(YeetSettingString);
-        YeetSettingString() : this(Guid.Empty, null)
+        YeetSettingString() : this(Guid.NewGuid(), null)
         {
 
         }

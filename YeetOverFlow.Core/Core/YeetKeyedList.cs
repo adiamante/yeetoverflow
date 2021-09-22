@@ -7,6 +7,13 @@ namespace YeetOverFlow.Core
         where TChild : YeetItem, IKeyedItem
         where TParent : TChild
     {
+        public YeetKeyedList() : this(Guid.NewGuid())
+        {
+        }
+
+        public YeetKeyedList(Guid guid) : base(guid)
+        {
+        }
 
         #region Indexer
         public override TChild this[string key]
@@ -34,21 +41,17 @@ namespace YeetOverFlow.Core
         #endregion Indexer
     }
 
-    public class YeetKeyedList<TChild> : YeetItem, IKeyedItem, IYeetKeyedList<TChild> 
+    public class YeetKeyedList<TChild> : YeetItem, IYeetKeyedList<TChild> 
         where TChild : YeetItem, IKeyedItem
     {
         private Action<String, TChild> _invalidChildCallback;
-        public string Key { get; private set; }
         protected YeetList<TChild> _yeetList;
 
         public IEnumerable<TChild> Children => ((IYeetListBaseRead<TChild>)_yeetList).Children;
 
         public int Count => ((IYeetListBaseRead<TChild>)_yeetList).Count;
 
-        //not being filled yet; will figure out when we start persisting
         protected Dictionary<string, TChild> _dict = new Dictionary<string, TChild>();
-
-
         public YeetKeyedList() : this(Guid.NewGuid())
         {
         }

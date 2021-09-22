@@ -15,7 +15,7 @@ namespace YeetOverFlow.Wpf.ViewModels
             set { SetValue(ref _isExpanded, value); }
         }
 
-        protected YeetObservableKeyedList<YeetSettingListViewModel, YeetSettingViewModel> _yeetKeyedList;
+        protected YeetObservableKeyedList<YeetSettingViewModel> _yeetKeyedList;
 
         public YeetSettingListViewModel() : this(Guid.NewGuid(), null)
         {
@@ -23,7 +23,7 @@ namespace YeetOverFlow.Wpf.ViewModels
 
         public YeetSettingListViewModel(Guid guid, string key) : base(guid, key)
         {
-            _yeetKeyedList = new YeetObservableKeyedList<YeetSettingListViewModel, YeetSettingViewModel>();
+            _yeetKeyedList = new YeetObservableKeyedList<YeetSettingViewModel>();
             _yeetKeyedList.CollectionChanged += _yeetKeyedList_CollectionChanged;
             _yeetKeyedList.SetInvalidChildCallback((key, child) =>
             {

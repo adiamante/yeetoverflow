@@ -3,20 +3,17 @@ using YeetOverFlow.Core;
 
 namespace YeetOverFlow.Settings
 {
-    public class YeetSetting : YeetItem, IKeyedItem
+    public class YeetSetting : YeetKeyedItem
     {
-        protected string _key;
-        public string Key { get => _key; }
         public Enum Icon { get; set; }
         public Enum Icon2 { get; set; }
-        public YeetSetting()
+        public YeetSetting() : this(Guid.NewGuid(), null)
         {
 
         }
 
-        public YeetSetting(Guid guid, string key) : base(guid)
+        public YeetSetting(Guid guid, string key) : base(guid, key)
         {
-            _key = key;
         }
 
         #region Indexer
