@@ -1,13 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:swcntl="clr-namespace:YeetOverFlow.Wpf.Controls"
+                    xmlns:ywcntl="clr-namespace:YeetOverFlow.Wpf.Controls"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                     xmlns:ui="clr-namespace:YeetOverFlow.Wpf.Ui">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/YeetOverFlow.Wpf;component/Themes/Common.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    <Style TargetType="{x:Type swcntl:YeetWindow}" BasedOn="{StaticResource {x:Type metro:MetroWindow}}">
+    <Style TargetType="{x:Type ywcntl:YeetWindow}" BasedOn="{StaticResource {x:Type metro:MetroWindow}}">
         <Setter Property="DataContext">
             <Setter.Value>
                 <Binding Path="ViewModel" RelativeSource="{RelativeSource Mode=Self}" />
@@ -17,10 +17,10 @@
             <Setter.Value>
                 <metro:WindowCommands>
                     <ToggleButton IsChecked="{Binding CommandManager.IsOpen}">
-                        <swcntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.History}" />
+                        <ywcntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.History}" />
                     </ToggleButton>
                     <ToggleButton IsChecked="{Binding Settings.IsOpen}">
-                        <swcntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Cog}" />
+                        <ywcntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Cog}" />
                     </ToggleButton>
                 </metro:WindowCommands>
             </Setter.Value>
@@ -31,7 +31,7 @@
                     <metro:Flyout IsOpen="{Binding CommandManager.IsOpen}" Position="Right" Theme="Accent">
                         <metro:Flyout.Header>
                             <StackPanel Orientation="Horizontal">
-                                <swcntl:YeetLabel Text="Commands" Kind="{x:Static iconPacks:PackIconMaterialKind.History}" />
+                                <ywcntl:YeetLabel Text="Commands" Kind="{x:Static iconPacks:PackIconMaterialKind.History}" />
                             </StackPanel>
                         </metro:Flyout.Header>
                         <GroupBox>
@@ -44,10 +44,10 @@
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="History" Foreground="{DynamicResource MahApps.Brushes.SystemControlForegroundChromeWhite}" />
                                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Button Command="{Binding CommandManager.UndoCommand}">
-                                            <swcntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Undo}" />
+                                            <ywcntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Undo}" />
                                         </Button>
                                         <Button Command="{Binding CommandManager.RedoCommand}">
-                                            <swcntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Redo}" />
+                                            <ywcntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Redo}" />
                                         </Button>
                                     </StackPanel>
                                 </Grid>
@@ -86,10 +86,10 @@
                     <metro:Flyout IsOpen="{Binding Settings.IsOpen}" Position="Right" Theme="Accent">
                         <metro:Flyout.Header>
                             <StackPanel Orientation="Horizontal">
-                                <swcntl:YeetLabel Text="Settings" Kind="{x:Static iconPacks:PackIconMaterialKind.Cog}" />
+                                <ywcntl:YeetLabel Text="Settings" Kind="{x:Static iconPacks:PackIconMaterialKind.Cog}" />
                             </StackPanel>
                         </metro:Flyout.Header>
-                        <swcntl:SettingsControl Settings="{Binding Settings}" ShowSaveButton="True" SaveButtonHorizontalAlignment="Right" SaveButtonVerticalAlignment="Bottom" />
+                        <ywcntl:SettingsControl Settings="{Binding Settings}" ShowSaveButton="True" SaveButtonHorizontalAlignment="Right" SaveButtonVerticalAlignment="Bottom" />
                     </metro:Flyout>
                 </metro:FlyoutsControl>
             </Setter.Value>
@@ -99,14 +99,14 @@
                 <DataTemplate>
                     <DockPanel>
                         <Grid DockPanel.Dock="Bottom" >
-                            <StatusBar Style="{StaticResource MahApps.Styles.StatusBar}">
-                                <TextBlock Text="{Binding ViewModel.Message, RelativeSource={RelativeSource AncestorType={x:Type swcntl:YeetWindow}}}" />
+                            <StatusBar Style="{StaticResource MahApps.Styles.StatusBar}" MaxHeight="200">
+                                <TextBlock Text="{Binding ViewModel.Message, RelativeSource={RelativeSource AncestorType={x:Type ywcntl:YeetWindow}}}" />
                             </StatusBar>
-                            <metro:MetroProgressBar IsIndeterminate="{Binding ViewModel.IsBusy, RelativeSource={RelativeSource AncestorType={x:Type swcntl:YeetWindow}}}" />
+                            <metro:MetroProgressBar IsIndeterminate="{Binding ViewModel.IsBusy, RelativeSource={RelativeSource AncestorType={x:Type ywcntl:YeetWindow}}}" />
                         </Grid>
                         <Grid>
-                            <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type swcntl:YeetWindow}}}" />
-                            <metro:ProgressRing IsActive="{Binding ViewModel.IsBusy, RelativeSource={RelativeSource AncestorType={x:Type swcntl:YeetWindow}}}" />
+                            <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type ywcntl:YeetWindow}}}" />
+                            <metro:ProgressRing IsActive="{Binding ViewModel.IsBusy, RelativeSource={RelativeSource AncestorType={x:Type ywcntl:YeetWindow}}}" />
                         </Grid>
                     </DockPanel>
                 </DataTemplate>

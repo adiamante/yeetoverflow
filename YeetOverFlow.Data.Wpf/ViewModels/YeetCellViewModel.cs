@@ -117,4 +117,18 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         {
         }
     }
+
+    //This only exists because Automapper crashes when a generic method exists in a class that is not generic
+    public static class YeetCellViewModelHelper
+    {
+        public static T GetValue<T>(this YeetCellViewModel vm)
+        {
+            return (T)vm.GetValue();
+        }
+
+        public static void SetValue<T>(this YeetCellViewModel vm, T val)
+        {
+            vm.SetValue(val);
+        }
+    }
 }

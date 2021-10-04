@@ -1,13 +1,18 @@
-﻿<swcntl:YeetWindow x:Class="YeetOverFlow.Wpf.Demo.DemoWindow"
+﻿<ywcntl:YeetWindow x:Class="YeetOverFlow.Wpf.Demo.DemoWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:YeetOverFlow.Wpf.Demo"
-        xmlns:swcntl="clr-namespace:YeetOverFlow.Wpf.Controls;assembly=YeetOverFlow.Wpf"
+        xmlns:ywcntl="clr-namespace:YeetOverFlow.Wpf.Controls;assembly=YeetOverFlow.Wpf" 
         mc:Ignorable="d"
+        x:Name="ThisWindow"
         Title="YeetWpf Demo" Height="450" Width="800">
     <Grid>
-
+        <TabControl DataContext="{Binding DemoViewModel, ElementName=ThisWindow}">
+            <TabItem Header="SearchTextBox" DataContext="{Binding SearchTextBox}">
+                <ywcntl:SearchTextBox Width="200" Height="20" FilterMode="{Binding FilterMode}" SearchCommand="{Binding SearchCommand}" />
+            </TabItem>
+        </TabControl>
     </Grid>
-</swcntl:YeetWindow>
+</ywcntl:YeetWindow>

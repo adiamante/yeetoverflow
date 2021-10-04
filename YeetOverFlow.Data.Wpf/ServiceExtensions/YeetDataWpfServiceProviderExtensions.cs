@@ -95,8 +95,8 @@ namespace YeetOverFlow.Data.Wpf.ServiceExtensions
                 r1["Col2"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col2") { Value = "R1Col2" };
 
                 var r2 = new YeetRowViewModel();
-                r2["Col1"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col1") { Value = "R1Col1" };
-                r2["Col2"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col2") { Value = "R1Col2" };
+                r2["Col1"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col1") { Value = "R2Col1" };
+                r2["Col2"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col2") { Value = "R2Col2" };
 
                 t.Rows.AddChild(r1);
                 t.Rows.AddChild(r2);

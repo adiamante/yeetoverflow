@@ -1,5 +1,4 @@
 ﻿using System;
-using YeetOverFlow.Core;
 using YeetOverFlow.Wpf.ViewModels;
 
 namespace YeetOverFlow.Data.Wpf.ViewModels

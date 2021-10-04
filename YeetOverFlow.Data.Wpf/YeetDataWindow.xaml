@@ -1,13 +1,18 @@
-﻿<swcntl:YeetWindow 
-        xmlns:swcntl="clr-namespace:YeetOverFlow.Wpf.Controls;assembly=YeetOverFlow.Wpf" x:Class="YeetOverFlow.Data.Wpf.YeetDataWindow"
+﻿<ycntl:YeetWindow 
+        xmlns:ycntl="clr-namespace:YeetOverFlow.Wpf.Controls;assembly=YeetOverFlow.Wpf" 
+        xmlns:ydcntl="clr-namespace:YeetOverFlow.Data.Wpf.Controls"
+        x:Class="YeetOverFlow.Data.Wpf.YeetDataWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:YeetOverFlow.Data.Wpf"
         mc:Ignorable="d"
+        x:Name="ThisControl"
         Title="YeetData" Height="450" Width="800">
     <Grid>
-
+        <ydcntl:YeetDataControl Data="{Binding Data, ElementName=ThisControl}">
+            
+        </ydcntl:YeetDataControl>
     </Grid>
-</swcntl:YeetWindow>
+</ycntl:YeetWindow>

@@ -8,7 +8,7 @@ using System.Windows.Markup;
 using MahApps.Metro.IconPacks;
 using MahApps.Metro.IconPacks.Converter;
 
-namespace YeetOverFlow.Wpf.Ui
+namespace YeetOverFlow.Wpf.Converters
 {
     public class PackIconKindToDataTemplateConverter : MarkupConverter
     {
