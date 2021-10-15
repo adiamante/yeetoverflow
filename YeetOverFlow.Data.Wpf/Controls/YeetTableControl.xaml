@@ -18,7 +18,45 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/YeetOverFlow.WPF;component/Themes/Common.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="YeetColumnHeaderStyle"
+            <ContextMenu x:Key="ColumnHeaderContextMenu">
+                <MenuItem Header="Clear Filter" Command="{Binding [0].ClearColumnFilterCommand}" CommandParameter="{Binding [1].Key}">
+                    <MenuItem.Icon>
+                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.FilterMinus}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Rename" StaysOpenOnClick="True">
+                    <MenuItem.Icon>
+                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.RenameBox}" />
+                    </MenuItem.Icon>
+                    <MenuItem StaysOpenOnClick="True">
+                        <MenuItem.Icon>
+                            <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.KeyboardOutline}" />
+                        </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <Grid Tag="{Binding [1].Key, Mode=OneWay}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtColName" Grid.Row="0" Grid.Column="0" Text="{Binding Tag, RelativeSource={RelativeSource AncestorType=Grid}, UpdateSourceTrigger=PropertyChanged}" 
+                                         MinWidth="100" Loaded="ColumnHeader_TextBoxLoaded" KeyDown="ColumnHeader_TextBoxKeyDown" />
+                                <Button Grid.Row="1" Grid.Column="0" Command="{Binding [0].RenameColumnCommand}" Content="Rename" Click="ColumnHeader_RenameClick">
+                                    <Button.CommandParameter>
+                                        <MultiBinding Converter="{yconv:RelayMultiConverter}">
+                                            <Binding Path="[1].Key" />
+                                            <Binding Path="Tag" RelativeSource="{RelativeSource AncestorType=Grid}" />
+                                        </MultiBinding>
+                                    </Button.CommandParameter>
+                                </Button>
+                            </Grid>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </MenuItem>
+            </ContextMenu>
+            <Style x:Key="ColumnHeaderStyle"
                    TargetType="{x:Type DataGridColumnHeader}">
                 <Setter Property="metro:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}" />
@@ -37,11 +75,17 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                            <Grid>
-                                <Grid.DataContext>
+                            <Grid ContextMenu="{StaticResource ColumnHeaderContextMenu}">
+                                <Grid.Tag>
                                     <MultiBinding Converter="{yconv:YeetColumnConverter}" Mode="OneTime">
                                         <Binding RelativeSource="{RelativeSource AncestorType=local:YeetTableControl, Mode=FindAncestor}" />
                                         <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="DataContext" />
+                                    </MultiBinding>
+                                </Grid.Tag>
+                                <Grid.DataContext>
+                                    <MultiBinding Converter="{yconv:RelayMultiConverter}">
+                                        <Binding RelativeSource="{RelativeSource AncestorType=local:YeetTableControl, Mode=FindAncestor}" Path="Table" />
+                                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag" />
                                     </MultiBinding>
                                 </Grid.DataContext>
                                 <Grid.RowDefinitions>
@@ -62,10 +106,10 @@
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                                                    <DataTrigger Binding="{Binding [1].IsSelected}" Value="False">
                                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray5}" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <DataTrigger Binding="{Binding [1].IsSelected}" Value="True">
                                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.AccentBase}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -91,15 +135,15 @@
                                                 <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
                                                     <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray}" />
                                                     <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}" />
-                                                    <Setter Property="IsChecked" Value="{Binding IsColumnFilterOpen}" />
+                                                    <Setter Property="IsChecked" Value="{Binding [1].IsColumnFilterOpen}" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding HasAppliedFilter}" Value="True">
+                                                        <DataTrigger Binding="{Binding [1].HasAppliedFilter}" Value="True">
                                                             <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.AccentBase}" />
                                                         </DataTrigger>
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsColumnFilterOpen}" Value="True" />
-                                                                <Condition Binding="{Binding HasAppliedFilter}" Value="True"  />
+                                                                <Condition Binding="{Binding [1].IsColumnFilterOpen}" Value="True" />
+                                                                <Condition Binding="{Binding [1].HasAppliedFilter}" Value="True"  />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.GrayNormal}" />
@@ -110,43 +154,55 @@
                                             </ToggleButton.Style>
                                             <ycntl:YeetLabel Padding="0,0,0,0" Kind="{x:Static iconPacks:PackIconMaterialKind.Filter}" />
                                         </ToggleButton>
-                                        <Popup StaysOpen="False" IsOpen="{Binding IsColumnFilterOpen}"
+                                        <Popup StaysOpen="False" IsOpen="{Binding [1].IsColumnFilterOpen}"
                                             PlacementTarget="{Binding ElementName=tbColumnFilter}" PopupAnimation="Slide" 
                                             x:Name="puPopup">
                                             <ContentPresenter>
                                                 <ContentPresenter.ContentTemplate>
                                                     <DataTemplate>
                                                         <Border Background="{DynamicResource MahApps.Brushes.Control.Background}" BorderThickness="3" BorderBrush="{StaticResource MahApps.Brushes.Gray5}" MinWidth="150">
-                                                            <DockPanel MaxHeight="400" DataContext="{Binding Table, RelativeSource={RelativeSource AncestorType=local:YeetTableControl, Mode=FindAncestor}}">
-                                                                <Button DockPanel.Dock="Top" Margin="3" Padding="0" Height="20" Command="{Binding ClearColumnFilterCommand}" CommandParameter="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}">
+                                                            <DockPanel MaxHeight="400">
+                                                                <DockPanel.Tag>
+                                                                    <MultiBinding Converter="{yconv:YeetColumnConverter}" Mode="OneTime">
+                                                                        <Binding RelativeSource="{RelativeSource AncestorType=local:YeetTableControl, Mode=FindAncestor}" />
+                                                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="DataContext" />
+                                                                    </MultiBinding>
+                                                                </DockPanel.Tag>
+                                                                <DockPanel.DataContext>
+                                                                    <MultiBinding Converter="{yconv:RelayMultiConverter}">
+                                                                        <Binding RelativeSource="{RelativeSource AncestorType=local:YeetTableControl, Mode=FindAncestor}" Path="Table" />
+                                                                        <Binding RelativeSource="{RelativeSource Self}" Path="Tag" />
+                                                                    </MultiBinding>
+                                                                </DockPanel.DataContext>
+                                                                <Button DockPanel.Dock="Top" Margin="3" Padding="0" Height="20" Command="{Binding [0].ClearColumnFilterCommand}" CommandParameter="{Binding [1].Key}">
                                                                     <ycntl:YeetLabel Padding="0,0,0,0" Kind="{x:Static iconPacks:PackIconMaterialKind.FilterMinus}" />
                                                                 </Button>
                                                                 <ycntl:SearchTextBox DockPanel.Dock="Top"
                                                                              LabelText="Search Column"
-                                                                             SearchCommand="{Binding ApplyColumnFilterCommand}"
-                                                                             SearchCommandParameter="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}" />
+                                                                             SearchCommand="{Binding [0].ApplyColumnFilterCommand}"
+                                                                             SearchCommandParameter="{Binding [1].Key}" />
                                                                 <Expander Header="List">
                                                                     <DockPanel>
                                                                         <ycntl:SearchTextBox DockPanel.Dock="Top"
                                                                              LabelText="Search List"
-                                                                             SearchCommand="{Binding FilterColumnValuesCommand}"
-                                                                             SearchCommandParameter="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                                                        <Button DockPanel.Dock="Top" Margin="3" Command="{Binding ApplyColumnValuesFilterCommand}" CommandParameter="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}">
+                                                                             SearchCommand="{Binding [0].FilterColumnValuesCommand}"
+                                                                             SearchCommandParameter="{Binding [1].Key}"/>
+                                                                        <Button DockPanel.Dock="Top" Margin="3" Command="{Binding [0].ApplyColumnValuesFilterCommand}" CommandParameter="{Binding [1].Key}">
                                                                             <ycntl:YeetLabel Text="Apply" Kind="{x:Static iconPacks:PackIconMaterialKind.Play}" />
                                                                         </Button>
                                                                         <CheckBox DockPanel.Dock="Top" Padding="3" Margin="6,0,0,0" Content="Show All">
                                                                             <CheckBox.Tag>
                                                                                 <MultiBinding Converter="{yconv:RelayMultiConverter}">
-                                                                                    <Binding Path="DataContext" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                                                                    <Binding Path="[1].Key" />
                                                                                     <Binding Path="IsChecked" RelativeSource="{RelativeSource Self}"/>
                                                                                 </MultiBinding>
                                                                             </CheckBox.Tag>
                                                                             <i:Interaction.Triggers>
                                                                                 <i:EventTrigger EventName="Checked">
-                                                                                    <i:InvokeCommandAction Command="{Binding ShowAllColumnValuesCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
+                                                                                    <i:InvokeCommandAction Command="{Binding [0].ShowAllColumnValuesCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
                                                                                 </i:EventTrigger>
                                                                                 <i:EventTrigger EventName="Unchecked">
-                                                                                    <i:InvokeCommandAction Command="{Binding ShowAllColumnValuesCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
+                                                                                    <i:InvokeCommandAction Command="{Binding [0].ShowAllColumnValuesCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
                                                                                 </i:EventTrigger>
                                                                             </i:Interaction.Triggers>
                                                                         </CheckBox>
@@ -163,16 +219,16 @@
                                                                                 <CheckBox HorizontalContentAlignment="Stretch">
                                                                                     <CheckBox.Tag>
                                                                                         <MultiBinding Converter="{yconv:RelayMultiConverter}">
-                                                                                            <Binding Path="DataContext" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                                                                            <Binding Path="[1].Key" />
                                                                                             <Binding Path="IsChecked" RelativeSource="{RelativeSource Self}"/>
                                                                                         </MultiBinding>
                                                                                     </CheckBox.Tag>
                                                                                     <i:Interaction.Triggers>
                                                                                         <i:EventTrigger EventName="Checked">
-                                                                                            <i:InvokeCommandAction Command="{Binding ApplyAllCheckedColumnValuesCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
+                                                                                            <i:InvokeCommandAction Command="{Binding [0].ApplyAllCheckedColumnValuesCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
                                                                                         </i:EventTrigger>
                                                                                         <i:EventTrigger EventName="Unchecked">
-                                                                                            <i:InvokeCommandAction Command="{Binding ApplyAllCheckedColumnValuesCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
+                                                                                            <i:InvokeCommandAction Command="{Binding [0].ApplyAllCheckedColumnValuesCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
                                                                                         </i:EventTrigger>
                                                                                     </i:Interaction.Triggers>
                                                                                     <Grid>
@@ -181,7 +237,7 @@
                                                                                             <ColumnDefinition Width="Auto" />
                                                                                         </Grid.ColumnDefinitions>
                                                                                         <TextBlock Grid.Column="0" Text="All" />
-                                                                                        <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding Rows.Children.Count, StringFormat={}({0})}" />
+                                                                                        <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding [0].Rows.Children.Count, StringFormat={}({0})}" />
                                                                                     </Grid>
                                                                                 </CheckBox>
                                                                             </ListViewItem>
@@ -193,7 +249,7 @@
                                                                             <ListView.ItemsSource>
                                                                                 <MultiBinding Converter="{yconv:YeetColumnValuesConverter}" Mode="OneTime">
                                                                                     <Binding RelativeSource="{RelativeSource AncestorType=local:YeetTableControl, Mode=FindAncestor}" />
-                                                                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="DataContext" />
+                                                                                    <Binding Path="[1].Key" />
                                                                                 </MultiBinding>
                                                                             </ListView.ItemsSource>
                                                                             <ItemsControl.ItemsPanel>
@@ -293,7 +349,7 @@
             CanUserSortColumns="False"
             AutoGenerateColumns="False"
             ItemsSource="{Binding Rows.Children}"
-            ColumnHeaderStyle="{StaticResource YeetColumnHeaderStyle}"
+            ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}"
             ColumnReordered="DataGrid_ColumnReordered"
             SelectedCellsChanged="DataGrid_SelectedCellsChanged">
             <DataGrid.Style>

@@ -15,7 +15,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     public class YeetTableViewModel : YeetDataViewModel
     {
         #region Private Members
-        ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand;
+        ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand,
+            _renameColumnCommand;
         Dictionary<string, ObservableCollection<YeetColumnValueViewModel>> _columnValues = new Dictionary<string, ObservableCollection<YeetColumnValueViewModel>>();
         #endregion Private Members
 
@@ -134,6 +135,21 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
         #endregion ShowAllColumnValuesCommand
+
+        #region RenameColumnCommand
+        [JsonIgnore]
+        public ICommand RenameColumnCommand
+        {
+            get
+            {
+                return _renameColumnCommand ?? (_renameColumnCommand =
+                    new RelayCommand<string, string>((colName, newName) =>
+                    {
+                        RenameColumn(colName, newName);
+                    }));
+            }
+        }
+        #endregion RenameColumnCommand
         #endregion Commands
 
         #region Initialization
@@ -219,6 +235,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
                 return true;
             };
+
+            view.Refresh();
         }
 
         public ICollectionView GetColumnValuesView(string colName)
@@ -269,6 +287,22 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
 
             return true;
+        }
+
+        private void RenameColumn(string colName, string newName)
+        {
+            var col = Columns[colName];
+            Columns.Remove(colName);
+            col.Rename(newName);
+
+            foreach (var row in Rows.Children)
+            {
+                var cell = row[colName];
+                row.Remove(colName);
+                row[newName] = cell;
+            }
+
+            Columns.InsertChildAt(col.Sequence, col);
         }
         #endregion Methods
     }

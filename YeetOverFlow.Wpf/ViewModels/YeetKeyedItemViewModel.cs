@@ -23,5 +23,11 @@ namespace YeetOverFlow.Wpf.ViewModels
         {
             _key = key;
         }
+
+        protected virtual void SetKey(string key)
+        {
+            _key = key;
+            OnPropertyChanged("Key");
+        }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Controls.Primitives;
+using YeetOverFlow.Wpf.Ui;
 using YeetOverFlow.Wpf.Controls;
 using YeetOverFlow.Data.Wpf.ViewModels;
-using System.Windows.Controls;
-using System.Collections.Specialized;
-using System.Windows.Data;
 
 namespace YeetOverFlow.Data.Wpf.Controls
 {
@@ -85,6 +88,24 @@ namespace YeetOverFlow.Data.Wpf.Controls
 
         private void Columns_CollectionChanged(object s, NotifyCollectionChangedEventArgs e)
         {
+            //var columns = (YeetColumnCollectionViewModel)s;
+            DataGrid dataGrid = DataGrid;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    dataGrid.Columns.RemoveAt(e.OldStartingIndex);
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (YeetColumnViewModel colVm in e.NewItems)
+                    {
+                        DataGridTextColumn dgc = new DataGridTextColumn();
+                        dgc.Header = colVm.Key;
+                        dgc.Binding = new Binding($"[{colVm.Key}].Value");
+                        dataGrid.Columns.Add(dgc);
+                    }
+                    break;
+            }
             //ICollectionView cols = (ICollectionView)s;
             //DataGrid dataGrid = DataGrid;   //This is kind of dirty but gotta get it working yo
             //switch (e.Action)
@@ -197,6 +218,32 @@ namespace YeetOverFlow.Data.Wpf.Controls
             //    this.SelectedTotal = selectedTotal;
             //    this.SelectedCount = DataGrid.SelectedCells.Count;
             //}
+        }
+
+        private void ColumnHeader_RenameClick(object sender, RoutedEventArgs e)
+        {
+            Button btnRename = (Button)sender;
+            ContextMenu contextMenu = DependencyObjectHelper.TryFindParent<ContextMenu>(btnRename);
+            contextMenu.IsOpen = false;
+        }
+
+        private void ColumnHeader_TextBoxLoaded(object sender, RoutedEventArgs e)
+        {
+            TextBox txtText = (TextBox)sender;
+            txtText.SelectAll();
+            txtText.Focus();
+        }
+
+        private void ColumnHeader_TextBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox txtText = (TextBox)sender;
+                MenuItem menuItem = (MenuItem)DependencyObjectHelper.TryFindParent<MenuItem>(txtText);
+                Button btn = menuItem.FindLogicalChild<Button>();
+                btn.Command.Execute(btn.CommandParameter);
+                btn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using YeetOverFlow.Wpf.Ui;
 using YeetOverFlow.Wpf.ViewModels;
@@ -46,7 +47,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             
         }
 
-        private void ColumnFilter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ColumnFilter_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -63,6 +64,12 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             ColumnFilter.PropertyChanged += ColumnFilter_PropertyChanged;
         }
         #endregion Initialization
+
+        public void Rename(string newName)
+        {
+            //OnPropertyChangedExtended(new PropertyChangedExtendedEventArgs()
+            SetKey(newName);
+        }
     }
 
     public class YeetColumnValueViewModel : YeetItemViewModelBaseExtended
@@ -103,7 +110,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         #region Private Members
         FilterMode _filtermode;
         string _filter = "";
-        bool _showAllValues = true;
+        bool _showAllValues = false;
         List<object> _values = new List<object>();
         #endregion Private Members
 
