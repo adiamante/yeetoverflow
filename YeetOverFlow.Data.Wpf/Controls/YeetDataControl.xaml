@@ -7,6 +7,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:dvm="clr-namespace:YeetOverFlow.Data.Wpf.ViewModels"
         xmlns:local="clr-namespace:YeetOverFlow.Data.Wpf.Controls"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
         mc:Ignorable="d" 
         x:Name="ThisControl"
         d:DesignHeight="450" d:DesignWidth="800">
@@ -17,8 +18,15 @@
         <DataTemplate DataType="{x:Type dvm:YeetTableViewModel}">
             <local:YeetTableControl Table="{Binding .}" />
         </DataTemplate>
+        <ContextMenu x:Key="DataContextMenu">
+            <MenuItem Header="Save" Command="{Binding SaveCommand}">
+                <MenuItem.Icon>
+                    <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.ContentSave}" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
     </ycntl:YeetControlBase.Resources>
-    <Grid DataContext="{Binding Data, ElementName=ThisControl}">
+    <Grid DataContext="{Binding Data, ElementName=ThisControl}" ContextMenu="{StaticResource DataContextMenu}">
         <TabControl ItemsSource="{Binding Root.Children}"
                     ItemTemplate="{StaticResource DataHeaderTemplate}">
             

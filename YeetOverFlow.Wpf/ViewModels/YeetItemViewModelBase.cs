@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using YeetOverFlow.Core;
 
@@ -79,6 +80,18 @@ namespace YeetOverFlow.Wpf.ViewModels
     }
     #endregion PropertyChangedExtendedEventArgs
 
+    #region MultiPropertyChangedExtendedEventArgs
+    public class MultiPropertyChangedExtendedEventArgs : PropertyChangedExtendedEventArgs
+    {
+        public virtual List<PropertyChangedEventArgs> ArgsList { get; private set; }
+        public MultiPropertyChangedExtendedEventArgs(string propertyName, object obj, List<PropertyChangedEventArgs> argsList, object oldValue, object newValue)
+            : base(propertyName, obj, oldValue, newValue)
+        {
+            ArgsList = argsList;
+        }
+    }
+    #endregion MultiPropertyChangedExtendedEventArgs
+
     #region CollectionPropertyChangedEventArgs
     public class CollectionPropertyChangedEventArgs : PropertyChangedEventArgs
     {
@@ -101,6 +114,9 @@ namespace YeetOverFlow.Wpf.ViewModels
     #region YeetItemViewModelBaseExtended
     public abstract class YeetItemViewModelBaseExtended : YeetItemViewModelBase
     {
+        bool _holdChanges = false;
+        List<PropertyChangedEventArgs> _propertyChanges = new List<PropertyChangedEventArgs>();
+
         public YeetItemViewModelBaseExtended() : base()
         {
 
@@ -114,24 +130,66 @@ namespace YeetOverFlow.Wpf.ViewModels
         public event EventHandler<PropertyChangedExtendedEventArgs> PropertyChangedExtended;
         public event EventHandler<CollectionPropertyChangedEventArgs> CollectionPropertyChanged;
 
+        public void HoldChanges()
+        {
+            _holdChanges = true;
+        }
+
+        public void DispatchHeldChanges(string name = "", object oldValue = null, object newValue = null)
+        {
+            _holdChanges = false;
+
+            if (_propertyChanges.Count > 0)
+            {
+                OnPropertyChangedExtended(new MultiPropertyChangedExtendedEventArgs(name, this, new List<PropertyChangedEventArgs>(_propertyChanges), oldValue, newValue));
+                _propertyChanges.Clear();
+            }
+        }
+
         protected virtual void OnPropertyChangedExtended(PropertyChangedExtendedEventArgs eventArgs, [CallerMemberName] string propertyName = null)
         {
-            PropertyChangedExtended?.Invoke(this, eventArgs);
-        }
+            Debug.WriteLine($"[{eventArgs.PropertyName}] {eventArgs.OldValue} => {eventArgs.NewValue}");
 
-        protected virtual void OnCollectionPropertyChanged(NotifyCollectionChangedEventArgs eventArgs, [CallerMemberName] string propertyName = null)
-        {
-            CollectionPropertyChanged?.Invoke(this, new CollectionPropertyChangedEventArgs(propertyName, this, eventArgs.Action, eventArgs.OldItems, eventArgs.NewItems));
-        }
-
-        protected virtual void OnCollectionPropertyChanged(CollectionPropertyChangedEventArgs eventArgs, [CallerMemberName] string propertyName = null)
-        {
-            CollectionPropertyChanged?.Invoke(this, eventArgs);
+            if (_holdChanges)
+            {
+                _propertyChanges.Add(eventArgs);
+            }
+            else
+            {
+                PropertyChangedExtended?.Invoke(this, eventArgs);
+            }
         }
 
         protected virtual void OnPropertyChangedExtended(object oldValue, object newValue, [CallerMemberName] string propertyName = null)
         {
-            PropertyChangedExtended?.Invoke(this, new PropertyChangedExtendedEventArgs(propertyName, this, oldValue, newValue));
+            OnPropertyChangedExtended(new PropertyChangedExtendedEventArgs(propertyName, this, oldValue, newValue));
+        }
+
+        protected virtual void OnCollectionPropertyChanged(CollectionPropertyChangedEventArgs eventArgs, [CallerMemberName] string propertyName = null)
+        {
+            if (eventArgs.NewItems != null && eventArgs.NewItems.Count > 0)
+            {
+                Debug.WriteLine($"Add {((YeetItem)eventArgs.NewItems[0]).Guid}");
+            }
+
+            if (eventArgs.OldItems != null && eventArgs.OldItems.Count > 0)
+            {
+                Debug.WriteLine($"Remove {((YeetItem)eventArgs.OldItems[0]).Guid}");
+            }
+
+            if (_holdChanges)
+            {
+                _propertyChanges.Add(eventArgs);
+            }
+            else
+            {
+                CollectionPropertyChanged?.Invoke(this, eventArgs);
+            }
+        }
+
+        protected virtual void OnCollectionPropertyChanged(NotifyCollectionChangedEventArgs eventArgs, [CallerMemberName] string propertyName = null)
+        {
+            OnCollectionPropertyChanged(new CollectionPropertyChangedEventArgs(propertyName, this, eventArgs.Action, eventArgs.OldItems, eventArgs.NewItems));
         }
 
         protected override void SetValue<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)

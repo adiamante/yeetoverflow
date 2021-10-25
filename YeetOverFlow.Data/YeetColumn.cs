@@ -3,7 +3,7 @@ using YeetOverFlow.Core;
 
 namespace YeetOverFlow.Data
 {
-    public class YeetColumn : YeetKeyedItem
+    public class YeetColumn : YeetData
     {
         public YeetColumn() : this(Guid.NewGuid(), null)
         {

@@ -6,7 +6,7 @@ using YeetOverFlow.Core;
 
 namespace YeetOverFlow.Wpf.ViewModels
 {
-    public class YeetObservableKeyedList<TChild> : YeetItem, IYeetKeyedList<TChild>, INotifyCollectionChanged
+    public class YeetObservableKeyedList<TChild> : YeetItemViewModelBaseExtended, IYeetKeyedList<TChild>, INotifyCollectionChanged
         where TChild : YeetItem, IKeyedItem
     {
         protected YeetKeyedList<TChild> _yeetKeyedList = new YeetKeyedList<TChild>();
@@ -19,7 +19,6 @@ namespace YeetOverFlow.Wpf.ViewModels
 
         public YeetObservableKeyedList(Guid guid) : base(guid)
         {
-
         }
 
         #region Indexer
@@ -71,7 +70,7 @@ namespace YeetOverFlow.Wpf.ViewModels
             return ((IYeetKeyedList<TChild>)_yeetKeyedList).ContainsKey(key);
         }
 
-        public void Init()
+        public virtual void Init()
         {
             _yeetKeyedList.Init();
 

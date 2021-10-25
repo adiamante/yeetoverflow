@@ -8,14 +8,12 @@ namespace YeetOverFlow.Data
     {
         protected YeetKeyedList<YeetDataSet, YeetData> _yeetKeyedList;
 
-        public YeetDataSet() : base()
+        public YeetDataSet() : this(Guid.NewGuid(), null)
         {
-            _yeetKeyedList = new YeetKeyedList<YeetDataSet, YeetData>();
         }
 
         public YeetDataSet(Guid guid, string key) : base(guid, key)
         {
-            _key = key;
             _yeetKeyedList = new YeetKeyedList<YeetDataSet, YeetData>();
         }
 

@@ -86,8 +86,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             {
                 switch (child)
                 {
-                    case YeetDataSetViewModel childdataSet:
-                        childdataSet.Init();
+                    case YeetDataSetViewModel childDataSet:
+                        childDataSet.Init();
                         break;
                     case YeetTableViewModel childTable:
                         childTable.Init();

@@ -59,7 +59,7 @@
                                             <TextBlock>
                                                 <Run Text="{Binding Object.Name}"/>
                                                 <Run Text="."/>
-                                                <Run Text="{Binding Property}"/>
+                                                <Run Text="{Binding PropertyName}"/>
                                                 <Run Text=" => "/>
                                                 <Run Text="{Binding OldValueDisplay, Mode=OneWay}"/>
                                             </TextBlock>
@@ -73,7 +73,7 @@
                                             <TextBlock>
                                                 <Run Text="{Binding Object.Name}"/>
                                                 <Run Text="."/>
-                                                <Run Text="{Binding Property}"/>
+                                                <Run Text="{Binding PropertyName}"/>
                                                 <Run Text=" => "/>
                                                 <Run Text="{Binding NewValueDisplay, Mode=OneWay}"/>
                                             </TextBlock>

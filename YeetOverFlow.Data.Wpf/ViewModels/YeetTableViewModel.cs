@@ -17,12 +17,25 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         #region Private Members
         ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand,
             _renameColumnCommand;
+        YeetColumnCollectionViewModel _columns = new YeetColumnCollectionViewModel();
+        YeetRowCollectionViewModel _rows = new YeetRowCollectionViewModel();
         Dictionary<string, ObservableCollection<YeetColumnValueViewModel>> _columnValues = new Dictionary<string, ObservableCollection<YeetColumnValueViewModel>>();
         #endregion Private Members
 
         #region Public Properties
-        public YeetColumnCollectionViewModel Columns { get; set; } = new YeetColumnCollectionViewModel();
-        public YeetRowCollectionViewModel Rows { get; set; } = new YeetRowCollectionViewModel();
+
+        public YeetColumnCollectionViewModel Columns
+        {
+            get { return _columns; }
+            set { 
+                SetValue(ref _columns, value); 
+            }
+        }
+        public YeetRowCollectionViewModel Rows
+        {
+            get { return _rows; }
+            set { SetValue(ref _rows, value); }
+        }
         #endregion Public Properties
 
         #region Commands
@@ -160,12 +173,33 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
         public YeetTableViewModel(Guid guid, string key) : base(guid, key)
         {
+            Init();
+        }
+
+        private void Columns_CollectionPropertyChanged(object sender, CollectionPropertyChangedEventArgs e)
+        {
+            OnCollectionPropertyChanged(e, nameof(Columns));
+        }
+
+        private void Rows_CollectionPropertyChanged(object sender, CollectionPropertyChangedEventArgs e)
+        {
+            OnCollectionPropertyChanged(e, nameof(Rows));
+        }
+
+        private void Data_PropertyChangedExtended(object sender, PropertyChangedExtendedEventArgs e)
+        {
+            OnPropertyChangedExtended(e);
         }
 
         public void Init()
         {
             Columns.Init();
             Rows.Init();
+
+            Rows.PropertyChangedExtended += Data_PropertyChangedExtended;
+            Columns.PropertyChangedExtended += Data_PropertyChangedExtended;
+            Rows.CollectionPropertyChanged += Rows_CollectionPropertyChanged;
+            Columns.CollectionPropertyChanged += Columns_CollectionPropertyChanged;
         }
         #endregion Initialization
 
@@ -291,18 +325,21 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
         private void RenameColumn(string colName, string newName)
         {
+            HoldChanges();
             var col = Columns[colName];
-            Columns.Remove(colName);
             col.Rename(newName);
+            Columns.Remove(colName);
 
             foreach (var row in Rows.Children)
             {
                 var cell = row[colName];
+                cell.Rename(newName);
                 row.Remove(colName);
                 row[newName] = cell;
             }
 
             Columns.InsertChildAt(col.Sequence, col);
+            DispatchHeldChanges(nameof(RenameColumn), colName, newName);
         }
         #endregion Methods
     }

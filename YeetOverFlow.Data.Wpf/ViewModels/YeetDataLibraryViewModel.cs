@@ -17,15 +17,13 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     public class YeetDataLibraryViewModel : YeetLibrary<YeetDataSetViewModel>, INotifyPropertyChanged
     {
         System.Windows.Input.ICommand _saveCommand;
-        ICommandDispatcher _commandDispatcher;
         YeetCommandManagerViewModel _commandManager;
         ConcurrentDictionary<Guid, YeetDataViewModel> _guidToYeetData = new ConcurrentDictionary<Guid, YeetDataViewModel>();
         IMapper _mapper;
         bool _isOpen;
 
-        public YeetDataLibraryViewModel(ICommandDispatcher commandDispatcher, IMapperFactory mapperFactory, YeetCommandManagerViewModel commandManager)
+        public YeetDataLibraryViewModel(IMapperFactory mapperFactory, YeetCommandManagerViewModel commandManager)
         {
-            _commandDispatcher = commandDispatcher;
             _mapper = mapperFactory.GetMapper("Data");
             _commandManager = commandManager;
         }
@@ -74,23 +72,21 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
         private void _root_PropertyChangedExtended(object sender, PropertyChangedExtendedEventArgs e)
         {
-            if (e.PropertyName != "IsExpanded")
+            if (e.PropertyName != "IsColumnFilterOpen")
             {
-                var updates = new Dictionary<string, string>() { { e.PropertyName, e.NewValue?.ToString() } };
-                var cmd = new UpdateYeetItemCommand<YeetData>(((YeetDataViewModel)e.Object).Guid, updates) { DeferCommit = true };
-                _commandDispatcher.Dispatch<UpdateYeetItemCommand<YeetData>, Result>(cmd);
+                _commandManager.Handle<YeetData>(e, _mapper);
             }
         }
 
         private void _root_CollectionPropertyChanged(object sender, CollectionPropertyChangedEventArgs e)
         {
+            _commandManager.Handle<YeetData>(e, _mapper);
+
             if (e.NewItems != null)
             {
                 foreach (YeetDataViewModel data in e.NewItems)
                 {
                     _guidToYeetData.TryAdd(data.Guid, data);
-                    var cmd = new AddYeetItemCommand<YeetData>(((YeetDataSetViewModel)e.Object).Guid, _mapper.Map<YeetData>(data), Int32.MaxValue) { DeferCommit = true };
-                    _commandDispatcher.Dispatch<AddYeetItemCommand<YeetData>, Result>(cmd);
                 }
             }
 
@@ -99,8 +95,6 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 foreach (YeetDataViewModel data in e.OldItems)
                 {
                     _guidToYeetData.TryRemove(data.Guid, out YeetDataViewModel outData);
-                    var cmd = new RemoveYeetItemCommand<YeetData>(((YeetDataSetViewModel)e.Object).Guid, data.Guid) { DeferCommit = true };
-                    _commandDispatcher.Dispatch<RemoveYeetItemCommand<YeetData>, Result>(cmd);
                 }
             }
         }
@@ -112,10 +106,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 return _saveCommand ?? (_saveCommand =
                     new RelayCommand(() =>
                     {
-                        var cmd = new SaveCommand<YeetData>();
-                        _commandDispatcher.Dispatch<SaveCommand<YeetData>, Result>(cmd);
+                        _commandManager.DispatchSave<YeetData>();
                         IsOpen = false;
-                        _commandManager.IsOpen = false;
                     }));
             }
         }
@@ -129,12 +121,30 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         {
             _guidToYeetData.TryAdd(data.Guid, data);
 
-            if (data is YeetDataSetViewModel dataList)
+            switch (data)
             {
-                foreach (var child in dataList.Children)
-                {
-                    Resolve(child);
-                }
+                case YeetDataSetViewModel dataSet:
+                    foreach (var child in dataSet.Children)
+                    {
+                        Resolve(child);
+                    }
+                    break;
+                case YeetTableViewModel dataTable:
+                    foreach (var row in dataTable.Rows.Children)
+                    {
+                        Resolve(row);
+                    }
+                    foreach (var col in dataTable.Rows.Children)
+                    {
+                        Resolve(col);
+                    }
+                    break;
+                case YeetRowViewModel row:
+                    foreach (var cell in row.Children)
+                    {
+                        Resolve(cell);
+                    }
+                    break;
             }
         }
 
@@ -159,6 +169,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         {
             Root = _mapper.Map<YeetDataSetViewModel>(library.Root);
             Root.Init();
+            Init();
         }
     }
 }

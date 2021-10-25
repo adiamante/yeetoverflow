@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using YeetOverFlow.Core;
 
 namespace YeetOverFlow.Wpf.ViewModels
 {
-    public class YeetObservableList<TChild> : YeetItem, IYeetListBase<TChild>, INotifyCollectionChanged
+    public class YeetObservableList<TChild> : YeetItemViewModelBaseExtended, IYeetListBase<TChild>, INotifyCollectionChanged
         where TChild : YeetItem
     {
         protected YeetList<TChild> _yeetList = new YeetList<TChild>();
@@ -31,6 +32,15 @@ namespace YeetOverFlow.Wpf.ViewModels
         public void AddChild(TChild newChild)
         {
             InsertChildAt(_yeetList.Count, newChild);
+        }
+
+        public YeetObservableList() : this(Guid.NewGuid())
+        {
+
+        }
+
+        public YeetObservableList(Guid guid) : base(guid)
+        {
         }
 
         public virtual void Init()

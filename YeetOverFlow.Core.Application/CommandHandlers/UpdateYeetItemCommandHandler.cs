@@ -31,16 +31,33 @@ namespace YeetOverFlow.Core.Application.CommandHandlers
 
             foreach (KeyValuePair<string, string> kvp in updates)
             {
-                PropertyInfo propInfo = ReflectionHelper.PropertyInfoCollection[targetItem.GetType()][kvp.Key];
-                if (propInfo != null)
+                if (kvp.Key.StartsWith('_'))
                 {
-                    TypeConverter converter = ReflectionHelper.TypeConverterCache[propInfo.PropertyType];
-                    var value = converter.ConvertFromString(kvp.Value);
-                    
-                    var originalValue = propInfo.GetValue(targetItem);
-                    original.Add(kvp.Key, originalValue?.ToString());
+                    FieldInfo fieldInfo = ReflectionHelper.FieldInfoCollection[targetItem.GetType()][kvp.Key];
+                    if (fieldInfo != null)
+                    {
+                        TypeConverter converter = ReflectionHelper.TypeConverterCache[fieldInfo.FieldType];
+                        var value = converter.ConvertFromString(kvp.Value);
 
-                    propInfo.SetValue(targetItem, value);
+                        var originalValue = fieldInfo.GetValue(targetItem);
+                        original.Add(kvp.Key, originalValue?.ToString());
+
+                        fieldInfo.SetValue(targetItem, value);
+                    }
+                }
+                else
+                {
+                    PropertyInfo propInfo = ReflectionHelper.PropertyInfoCollection[targetItem.GetType()][kvp.Key];
+                    if (propInfo != null)
+                    {
+                        TypeConverter converter = ReflectionHelper.TypeConverterCache[propInfo.PropertyType];
+                        var value = converter.ConvertFromString(kvp.Value);
+
+                        var originalValue = propInfo.GetValue(targetItem);
+                        original.Add(kvp.Key, originalValue?.ToString());
+
+                        propInfo.SetValue(targetItem, value);
+                    }
                 }
             }
 

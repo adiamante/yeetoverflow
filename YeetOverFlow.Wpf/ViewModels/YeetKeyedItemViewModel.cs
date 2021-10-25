@@ -26,8 +26,9 @@ namespace YeetOverFlow.Wpf.ViewModels
 
         protected virtual void SetKey(string key)
         {
+            var args = new PropertyChangedExtendedEventArgs(nameof(_key), this, _key, key);
             _key = key;
-            OnPropertyChanged("Key");
+            OnPropertyChangedExtended(args);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,6 +64,22 @@ namespace YeetOverFlow.Core.EntityFramework.ServiceExtensions
             services.AddTransient<ICommandHandler<SaveCommand<TChild>, Result>, SaveCommandHandler<TParent, TChild>>();
 
             services.AddTransient<ICommandDispatcher, CommandDispatcher>();
+        }
+
+        //https://stackoverflow.com/questions/43590769/replace-service-registration-in-asp-net-core-built-in-di-container
+        public static IServiceCollection Replace<TService, TImplementation>(this IServiceCollection services, ServiceLifetime lifetime)
+            where TService : class
+            where TImplementation : class, TService
+        {
+            var descriptorToRemove = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
+
+            services.Remove(descriptorToRemove);
+
+            var descriptorToAdd = new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime);
+
+            services.Add(descriptorToAdd);
+
+            return services;
         }
     }
 }

@@ -7,7 +7,7 @@ using YeetOverFlow.Wpf.ViewModels;
 
 namespace YeetOverFlow.Data.Wpf.ViewModels
 {
-    public class YeetColumnViewModel : YeetKeyedItemViewModel
+    public class YeetColumnViewModel : YeetDataViewModel
     {
         #region Private Members
         bool _isSelected, _isColumnFilterOpen;
@@ -65,11 +65,13 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         }
         #endregion Initialization
 
+        #region Methods
         public void Rename(string newName)
         {
-            //OnPropertyChangedExtended(new PropertyChangedExtendedEventArgs()
+            Name = newName;
             SetKey(newName);
         }
+        #endregion Methods
     }
 
     public class YeetColumnValueViewModel : YeetItemViewModelBaseExtended

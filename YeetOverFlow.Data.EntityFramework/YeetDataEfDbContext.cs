@@ -74,7 +74,6 @@ namespace YeetOverFlow.Data.EntityFramework
     {
         public void Configure(EntityTypeBuilder<YeetColumnCollection> builder)
         {
-            builder.HasKey(cc => cc.Guid);
             builder.ToTable(nameof(YeetColumnCollection));
             builder.Navigation(t => t.Children).AutoInclude();
         }
@@ -84,7 +83,6 @@ namespace YeetOverFlow.Data.EntityFramework
     {
         public void Configure(EntityTypeBuilder<YeetRowCollection> builder)
         {
-            builder.HasKey(rc => rc.Guid);
             builder.ToTable(nameof(YeetRowCollection));
             builder.Navigation(t => t.Children).AutoInclude();
         }
@@ -103,9 +101,7 @@ namespace YeetOverFlow.Data.EntityFramework
     {
         public void Configure(EntityTypeBuilder<YeetColumn> builder)
         {
-            builder.HasKey(yc => yc.Guid);
             builder.ToTable(nameof(YeetColumn));
-            builder.Property(itm => itm.Key).HasField("_key");
         }
     }
 
@@ -113,7 +109,6 @@ namespace YeetOverFlow.Data.EntityFramework
     {
         public void Configure(EntityTypeBuilder<YeetRow> builder)
         {
-            builder.HasKey(yc => yc.Guid);
             builder.ToTable(nameof(YeetRow));
             builder.HasMany(r => r.Children);
             builder.Navigation(t => t.Children).AutoInclude();
@@ -124,9 +119,7 @@ namespace YeetOverFlow.Data.EntityFramework
     {
         public void Configure(EntityTypeBuilder<YeetCell> builder)
         {
-            builder.HasKey(yc => yc.Guid);
-            builder.ToTable(nameof(YeetCell));
-            builder.Property(itm => itm.Key).HasField("_key");
+            builder.ToTable(nameof(YeetCell));;
         }
     }
 }

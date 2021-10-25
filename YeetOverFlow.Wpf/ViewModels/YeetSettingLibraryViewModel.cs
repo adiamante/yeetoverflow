@@ -18,15 +18,13 @@ namespace YeetOverFlow.Wpf.ViewModels
     public class YeetSettingLibraryViewModel : YeetLibrary<YeetSettingListViewModel>, INotifyPropertyChanged
     {
         System.Windows.Input.ICommand _saveCommand;
-        ICommandDispatcher _commandDispatcher;
         YeetCommandManagerViewModel _commandManager;
         ConcurrentDictionary<Guid, YeetSettingViewModel> _guidToYeetSetting = new ConcurrentDictionary<Guid, YeetSettingViewModel>();
         IMapper _mapper;
         bool _isOpen;
 
-        public YeetSettingLibraryViewModel(ICommandDispatcher commandDispatcher, IMapperFactory mapperFactory, YeetCommandManagerViewModel commandManager)
+        public YeetSettingLibraryViewModel(IMapperFactory mapperFactory, YeetCommandManagerViewModel commandManager)
         {
-            _commandDispatcher = commandDispatcher;
             _mapper = mapperFactory.GetMapper("Settings");
             _commandManager = commandManager;
         }
@@ -76,21 +74,19 @@ namespace YeetOverFlow.Wpf.ViewModels
         {
             if (e.PropertyName != "IsExpanded")
             {
-                var updates = new Dictionary<string, string>() { { e.PropertyName, e.NewValue?.ToString() } };
-                var cmd = new UpdateYeetItemCommand<YeetSetting>(((YeetSettingViewModel)e.Object).Guid, updates) { DeferCommit = true };
-                _commandDispatcher.Dispatch<UpdateYeetItemCommand<YeetSetting>, Result>(cmd);
+                _commandManager.Handle<YeetSetting>(e, _mapper);
             }
         }
 
         private void _root_CollectionPropertyChanged(object sender, CollectionPropertyChangedEventArgs e)
         {
+            _commandManager.Handle<YeetSetting>(e, _mapper);
+
             if (e.NewItems != null)
             {
                 foreach (YeetSettingViewModel setting in e.NewItems)
                 {
                     _guidToYeetSetting.TryAdd(setting.Guid, setting);
-                    var cmd = new AddYeetItemCommand<YeetSetting>(((YeetSettingListViewModel)e.Object).Guid, _mapper.Map<YeetSetting>(setting), Int32.MaxValue) { DeferCommit = true };
-                    _commandDispatcher.Dispatch<AddYeetItemCommand<YeetSetting>, Result>(cmd);
                 }
             }
 
@@ -98,9 +94,7 @@ namespace YeetOverFlow.Wpf.ViewModels
             {
                 foreach (YeetSettingViewModel setting in e.OldItems)
                 {
-                    _guidToYeetSetting.TryRemove(setting.Guid, out YeetSettingViewModel outSetting);
-                    var cmd = new RemoveYeetItemCommand<YeetSetting>(((YeetSettingListViewModel)e.Object).Guid, setting.Guid) { DeferCommit = true };
-                    _commandDispatcher.Dispatch<RemoveYeetItemCommand<YeetSetting>, Result>(cmd);
+                    _guidToYeetSetting.TryRemove(setting.Guid, out YeetSettingViewModel outData);
                 }
             }
         }
@@ -112,10 +106,8 @@ namespace YeetOverFlow.Wpf.ViewModels
                 return _saveCommand ?? (_saveCommand =
                     new RelayCommand(() =>
                     {
-                        var cmd = new SaveCommand<YeetSetting>();
-                        _commandDispatcher.Dispatch<SaveCommand<YeetSetting>, Result>(cmd);
+                        _commandManager.DispatchSave<YeetSetting>();
                         IsOpen = false;
-                        _commandManager.IsOpen = false;
                     }));
             }
         }

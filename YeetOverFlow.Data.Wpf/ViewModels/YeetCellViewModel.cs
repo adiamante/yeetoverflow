@@ -1,10 +1,8 @@
 ﻿using System;
-using YeetOverFlow.Core;
-using YeetOverFlow.Wpf.ViewModels;
 
 namespace YeetOverFlow.Data.Wpf.ViewModels
 {
-    public class YeetCellViewModel : YeetKeyedItemViewModel
+    public class YeetCellViewModel : YeetDataViewModel
     {
         YeetCellViewModel() : this(Guid.NewGuid(), null)
         {
@@ -24,6 +22,14 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         {
             throw new InvalidOperationException("This type does not support setting a value");
         }
+
+        #region Methods
+        public void Rename(string newName)
+        {
+            Name = newName;
+            SetKey(newName);
+        }
+        #endregion Methods
     }
 
     public class YeetCellViewModel<T> : YeetCellViewModel
