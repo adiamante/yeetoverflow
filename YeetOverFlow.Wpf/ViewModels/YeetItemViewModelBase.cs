@@ -114,7 +114,7 @@ namespace YeetOverFlow.Wpf.ViewModels
     #region YeetItemViewModelBaseExtended
     public abstract class YeetItemViewModelBaseExtended : YeetItemViewModelBase
     {
-        bool _holdChanges = false;
+        bool _inChangeScope = false;
         List<PropertyChangedEventArgs> _propertyChanges = new List<PropertyChangedEventArgs>();
 
         public YeetItemViewModelBaseExtended() : base()
@@ -130,14 +130,27 @@ namespace YeetOverFlow.Wpf.ViewModels
         public event EventHandler<PropertyChangedExtendedEventArgs> PropertyChangedExtended;
         public event EventHandler<CollectionPropertyChangedEventArgs> CollectionPropertyChanged;
 
-        public void HoldChanges()
-        {
-            _holdChanges = true;
+        public class ChangeScope : IDisposable {
+            YeetItemViewModelBaseExtended _model;
+            string _name;
+            object _oldValue;
+            object _newValue;
+
+            public ChangeScope(YeetItemViewModelBaseExtended model, string name = "", object oldValue = null, object newValue = null)
+            {
+                _model = model;
+                _model._inChangeScope = true;
+                _name = name;
+                _oldValue = oldValue;
+                _newValue = newValue;
+            }
+
+            public void Dispose() => _model.DispatchChanges(_name, _oldValue, _newValue);
         }
 
-        public void DispatchHeldChanges(string name = "", object oldValue = null, object newValue = null)
+        private void DispatchChanges(string name = "", object oldValue = null, object newValue = null)
         {
-            _holdChanges = false;
+            _inChangeScope = false;
 
             if (_propertyChanges.Count > 0)
             {
@@ -150,7 +163,7 @@ namespace YeetOverFlow.Wpf.ViewModels
         {
             Debug.WriteLine($"[{eventArgs.PropertyName}] {eventArgs.OldValue} => {eventArgs.NewValue}");
 
-            if (_holdChanges)
+            if (_inChangeScope)
             {
                 _propertyChanges.Add(eventArgs);
             }
@@ -177,7 +190,7 @@ namespace YeetOverFlow.Wpf.ViewModels
                 Debug.WriteLine($"Remove {((YeetItem)eventArgs.OldItems[0]).Guid}");
             }
 
-            if (_holdChanges)
+            if (_inChangeScope)
             {
                 _propertyChanges.Add(eventArgs);
             }

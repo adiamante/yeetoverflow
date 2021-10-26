@@ -325,21 +325,22 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
         private void RenameColumn(string colName, string newName)
         {
-            HoldChanges();
-            var col = Columns[colName];
-            col.Rename(newName);
-            Columns.Remove(colName);
-
-            foreach (var row in Rows.Children)
+            using (var scope = new YeetItemViewModelBaseExtended.ChangeScope(this, nameof(RenameColumn), colName, newName))
             {
-                var cell = row[colName];
-                cell.Rename(newName);
-                row.Remove(colName);
-                row[newName] = cell;
-            }
+                var col = Columns[colName];
+                col.Rename(newName);
+                Columns.Remove(colName);
 
-            Columns.InsertChildAt(col.Sequence, col);
-            DispatchHeldChanges(nameof(RenameColumn), colName, newName);
+                foreach (var row in Rows.Children)
+                {
+                    var cell = row[colName];
+                    cell.Rename(newName);
+                    row.Remove(colName);
+                    row[newName] = cell;
+                }
+
+                Columns.InsertChildAt(col.Sequence, col);
+            }
         }
         #endregion Methods
     }
