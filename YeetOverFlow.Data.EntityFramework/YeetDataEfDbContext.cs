@@ -11,6 +11,11 @@ namespace YeetOverFlow.Data.EntityFramework
         public DbSet<YeetColumnCollection> ColumnCollections { get; set; }
         public DbSet<YeetRowCollection> RowCollections { get; set; }
         public DbSet<YeetColumn> Columns { get; set; }
+        public DbSet<YeetBooleanColumn> BooleanColumns { get; set; }
+        public DbSet<YeetStringColumn> StringColumns { get; set; }
+        public DbSet<YeetIntColumn> IntColumns { get; set; }
+        public DbSet<YeetDoubleColumn> DoubleColumns { get; set; }
+        public DbSet<YeetDateTimeColumn> DateTimeColumns { get; set; }
         public DbSet<YeetRow> Rows { get; set; }
         public DbSet<YeetCell> Cells { get; set; }
         public DbSet<YeetBooleanCell> BooleanCells { get; set; }
@@ -31,6 +36,11 @@ namespace YeetOverFlow.Data.EntityFramework
             modelBuilder.ApplyConfiguration(new YeetRowCollectionEntityConfiguration());
             modelBuilder.ApplyConfiguration(new YeetDataEntityConfiguration());
             modelBuilder.ApplyConfiguration(new YeetColumnEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetBooleanColumn>());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetStringColumn>());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetIntColumn>());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetDoubleColumn>());
+            modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetDateTimeColumn>());
             modelBuilder.ApplyConfiguration(new YeetRowEntityConfiguration());
             modelBuilder.ApplyConfiguration(new YeetCellEntityConfiguration());
             modelBuilder.ApplyConfiguration(new YeetDataGenericEntityConfiguration<YeetBooleanCell>());
@@ -119,7 +129,7 @@ namespace YeetOverFlow.Data.EntityFramework
     {
         public void Configure(EntityTypeBuilder<YeetCell> builder)
         {
-            builder.ToTable(nameof(YeetCell));;
+            builder.ToTable(nameof(YeetCell));
         }
     }
 }

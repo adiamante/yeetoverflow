@@ -7,10 +7,11 @@ using YeetOverFlow.Wpf.ViewModels;
 
 namespace YeetOverFlow.Data.Wpf.ViewModels
 {
-    public class YeetColumnViewModel : YeetDataViewModel
+    public abstract class YeetColumnViewModel : YeetDataViewModel
     {
         #region Private Members
         bool _isSelected, _isColumnFilterOpen;
+        double _total;
         #endregion Private Members
 
         #region Public Properties
@@ -28,7 +29,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         public bool IsColumnFilterOpen
         {
             get { return _isColumnFilterOpen; }
-            set { SetValue(ref _isColumnFilterOpen, value); }
+            set { SetValue(ref _isColumnFilterOpen, value, true, false); }
         }
         #endregion IsColumnFilterOpen
 
@@ -39,6 +40,18 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             get { return !String.IsNullOrEmpty(ColumnFilter.Filter) || ColumnFilter.Values.Count > 0; }
         }
         #endregion HasAppliedFilter
+
+        #region Total
+        public double Total
+        {
+            get { return _total; }
+            set { SetValue(ref _total, value, true, false); }
+        }
+        #endregion Total
+
+        #region DataType
+        public abstract Type DataType { get; }
+        #endregion DataType
         #endregion Public Properties
 
         #region Initialization
@@ -72,6 +85,72 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             SetKey(newName);
         }
         #endregion Methods
+    }
+
+    public abstract class YeetColumnViewModel<T> : YeetColumnViewModel
+    {
+        public YeetColumnViewModel(Guid guid, string key) : base(guid, key)
+        {
+        }
+
+        public T Value { get; set; }
+
+        public override Type DataType => typeof(T);
+    }
+
+    public class YeetBooleanColumnViewModel : YeetColumnViewModel<bool>
+    {
+        YeetBooleanColumnViewModel() : this(Guid.Empty, null)
+        {
+
+        }
+        public YeetBooleanColumnViewModel(Guid guid, string key) : base(guid, key)
+        {
+        }
+    }
+
+    public class YeetStringColumnViewModel : YeetColumnViewModel<string>
+    {
+        YeetStringColumnViewModel() : this(Guid.Empty, null)
+        {
+
+        }
+        public YeetStringColumnViewModel(Guid guid, string key) : base(guid, key)
+        {
+        }
+    }
+
+    public class YeetIntColumnViewModel : YeetColumnViewModel<int>
+    {
+        YeetIntColumnViewModel() : this(Guid.Empty, null)
+        {
+
+        }
+        public YeetIntColumnViewModel(Guid guid, string key) : base(guid, key)
+        {
+        }
+    }
+
+    public class YeetDoubleColumnViewModel : YeetColumnViewModel<double>
+    {
+        YeetDoubleColumnViewModel() : this(Guid.Empty, null)
+        {
+
+        }
+        public YeetDoubleColumnViewModel(Guid guid, string key) : base(guid, key)
+        {
+        }
+    }
+
+    public class YeetDateTimeColumnViewModel : YeetColumnViewModel<DateTime>
+    {
+        YeetDateTimeColumnViewModel() : this(Guid.Empty, null)
+        {
+
+        }
+        public YeetDateTimeColumnViewModel(Guid guid, string key) : base(guid, key)
+        {
+        }
     }
 
     public class YeetColumnValueViewModel : YeetItemViewModelBaseExtended

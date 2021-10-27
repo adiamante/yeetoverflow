@@ -39,6 +39,24 @@ namespace YeetOverFlow.Data.Wpf.ServiceExtensions
                     .ReverseMap();
 
                 cfg.CreateMap<YeetColumn, YeetColumnViewModel>()
+                    .IncludeAllDerived();
+
+                cfg.CreateMap<YeetColumnViewModel, YeetColumn>()
+                    .IncludeAllDerived();
+
+                cfg.CreateMap<YeetBooleanColumn, YeetBooleanColumnViewModel>()
+                    .ReverseMap();
+
+                cfg.CreateMap<YeetStringColumn, YeetStringColumnViewModel>()
+                    .ReverseMap();
+
+                cfg.CreateMap<YeetIntColumn, YeetIntColumnViewModel>()
+                    .ReverseMap();
+
+                cfg.CreateMap<YeetDoubleColumn, YeetDoubleColumnViewModel>()
+                    .ReverseMap();
+
+                cfg.CreateMap<YeetDateTimeColumn, YeetDateTimeColumnViewModel>()
                     .ReverseMap();
 
                 cfg.CreateMap<YeetRowCollection, YeetRowCollectionViewModel>()
@@ -87,16 +105,16 @@ namespace YeetOverFlow.Data.Wpf.ServiceExtensions
 
                 //test data to play with
                 var t = new YeetTableViewModel(Guid.NewGuid(), "Tbl1");
-                t.Columns.AddChild(new YeetColumnViewModel(Guid.NewGuid(), "Col1") { Name = "Col1" });
-                t.Columns.AddChild(new YeetColumnViewModel(Guid.NewGuid(), "Col2") { Name = "Col2" });
+                t.Columns.AddChild(new YeetDoubleColumnViewModel(Guid.NewGuid(), "Col1") { Name = "Col1" });
+                t.Columns.AddChild(new YeetDoubleColumnViewModel(Guid.NewGuid(), "Col2") { Name = "Col2" });
 
                 var r1 = new YeetRowViewModel();
-                r1["Col1"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col1") { Value = "R1Col1" };
-                r1["Col2"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col2") { Value = "R1Col2" };
+                r1["Col1"] = new YeetDoubleCellViewModel(Guid.NewGuid(), "Col1") { Value = 1 };
+                r1["Col2"] = new YeetDoubleCellViewModel(Guid.NewGuid(), "Col2") { Value = 2 };
 
                 var r2 = new YeetRowViewModel();
-                r2["Col1"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col1") { Value = "R2Col1" };
-                r2["Col2"] = new YeetStringCellViewModel(Guid.NewGuid(), "Col2") { Value = "R2Col2" };
+                r2["Col1"] = new YeetDoubleCellViewModel(Guid.NewGuid(), "Col1") { Value = 3 };
+                r2["Col2"] = new YeetDoubleCellViewModel(Guid.NewGuid(), "Col2") { Value = 4 };
 
                 t.Rows.AddChild(r1);
                 t.Rows.AddChild(r2);

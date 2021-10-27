@@ -201,23 +201,23 @@ namespace YeetOverFlow.Data.Wpf.Controls
 
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            //if (DataGrid.SelectedCells.Count > 0)
-            //{
-            //    Decimal selectedTotal = 0.0m;
-            //    foreach (DataGridCellInfo cellInfo in DataGrid.SelectedCells)
-            //    {
-            //        DataGridColumn dgCol = cellInfo.Column;
-            //        DataRowView drv = (DataRowView)cellInfo.Item;
+            if (DataGrid.SelectedCells.Count > 0)
+            {
+                Decimal selectedTotal = 0.0m;
+                foreach (DataGridCellInfo cellInfo in DataGrid.SelectedCells)
+                {
+                    DataGridColumn dgCol = cellInfo.Column;
+                    YeetRowViewModel row = (YeetRowViewModel)cellInfo.Item;
 
-            //        if (Decimal.TryParse(drv[dgCol.Header.ToString()].ToString(), out Decimal val))
-            //        {
-            //            selectedTotal += val;
-            //        }
-            //    }
+                    if (Decimal.TryParse(row[dgCol.Header.ToString()].GetValue().ToString(), out Decimal val))
+                    {
+                        selectedTotal += val;
+                    }
+                }
 
-            //    this.SelectedTotal = selectedTotal;
-            //    this.SelectedCount = DataGrid.SelectedCells.Count;
-            //}
+                this.SelectedTotal = selectedTotal;
+                this.SelectedCount = DataGrid.SelectedCells.Count;
+            }
         }
 
         private void ColumnHeader_RenameClick(object sender, RoutedEventArgs e)

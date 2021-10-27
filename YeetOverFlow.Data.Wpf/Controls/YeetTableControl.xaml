@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:YeetOverFlow.Data.Wpf.Controls"
+    xmlns:ywconv="clr-namespace:YeetOverFlow.Wpf.Converters;assembly=YeetOverFlow.Wpf"
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -54,6 +55,16 @@
                             </Grid>
                         </MenuItem.Header>
                     </MenuItem>
+                </MenuItem>
+                <MenuItem Header="ShowTotals" Command="{Binding [0].ToggleColumnTotals}">
+                    <MenuItem.Icon>
+                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Sigma}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Debug" Command="{Binding [0].ToggleDebug}">
+                    <MenuItem.Icon>
+                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.AndroidDebugBridge}" />
+                    </MenuItem.Icon>
                 </MenuItem>
             </ContextMenu>
             <Style x:Key="ColumnHeaderStyle"
@@ -320,20 +331,20 @@
                                    Style="{StaticResource MahApps.Styles.Thumb.ColumnHeaderGripper}" />
 
                                 </Grid>
-                                <!--<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding SwagDataTable.ShowColumnTotals, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, TargetNullValue=Collapsed}">
-                                    <local:IconControl Text="{Binding Total, StringFormat=N}" Kind="{x:Static iconPacks:PackIconMaterialKind.Sigma}" />
-                                </Grid>-->
-                                <!--<Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding SwagDataTable.ShowDebug, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed, TargetNullValue=Collapsed}">
+                                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding [0].ShowColumnTotals, Converter={ywconv:BoolToVisibilityConverter}, FallbackValue=Collapsed, TargetNullValue=Collapsed}">
+                                    <ycntl:YeetLabel  Text="{Binding [1].Total, StringFormat=N}" Kind="{x:Static iconPacks:PackIconMaterialKind.Sigma}" />
+                                </Grid>
+                                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding [0].ShowDebug, Converter={ywconv:BoolToVisibilityConverter}, FallbackValue=Collapsed, TargetNullValue=Collapsed}">
                                     <GroupBox>
                                         <GroupBox.Header>
-                                            <local:IconControl Text="Debug" Kind="{x:Static iconPacks:PackIconMaterialKind.AndroidDebugBridge}" />
+                                            <ycntl:YeetLabel Text="Debug" Kind="{x:Static iconPacks:PackIconMaterialKind.AndroidDebugBridge}" />
                                         </GroupBox.Header>
                                         <StackPanel>
-                                            <local:IconControl Text="{Binding DataType}" Kind="{x:Static iconPacks:PackIconMaterialKind.ShapeOutline}" />
-                                            <local:IconControl Text="{Binding ColSeq}" Kind="{x:Static iconPacks:PackIconMaterialKind.Numeric}" />
+                                            <ycntl:YeetLabel Text="{Binding [1].DataType}" Kind="{x:Static iconPacks:PackIconMaterialKind.ShapeOutline}" />
+                                            <ycntl:YeetLabel Text="{Binding [1].Sequence}" Kind="{x:Static iconPacks:PackIconMaterialKind.Numeric}" />
                                         </StackPanel>
                                     </GroupBox>
-                                </Grid>-->
+                                </Grid>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>

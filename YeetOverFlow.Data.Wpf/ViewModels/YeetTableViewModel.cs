@@ -16,14 +16,14 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     {
         #region Private Members
         ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand,
-            _renameColumnCommand;
+            _renameColumnCommand, _toggleColumnTotals, _toggleDebug;
         YeetColumnCollectionViewModel _columns = new YeetColumnCollectionViewModel();
         YeetRowCollectionViewModel _rows = new YeetRowCollectionViewModel();
         Dictionary<string, ObservableCollection<YeetColumnValueViewModel>> _columnValues = new Dictionary<string, ObservableCollection<YeetColumnValueViewModel>>();
+        bool _showColumnTotals = false, _showDebug = false;
         #endregion Private Members
 
         #region Public Properties
-
         public YeetColumnCollectionViewModel Columns
         {
             get { return _columns; }
@@ -35,6 +35,16 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         {
             get { return _rows; }
             set { SetValue(ref _rows, value); }
+        }
+        public bool ShowColumnTotals
+        {
+            get { return _showColumnTotals; }
+            set { SetValue(ref _showColumnTotals, value, true, false); }
+        }
+        public bool ShowDebug
+        {
+            get { return _showDebug; }
+            set { SetValue(ref _showDebug, value, true, false); }
         }
         #endregion Public Properties
 
@@ -163,6 +173,36 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
         #endregion RenameColumnCommand
+
+        #region ToggleColumnTotals
+        [JsonIgnore]
+        public ICommand ToggleColumnTotals
+        {
+            get
+            {
+                return _toggleColumnTotals ?? (_toggleColumnTotals =
+                    new RelayCommand(() =>
+                    {
+                        ShowColumnTotals = !ShowColumnTotals;
+                    }));
+            }
+        }
+        #endregion ToggleColumnTotals
+
+        #region ToggleDebug
+        [JsonIgnore]
+        public ICommand ToggleDebug
+        {
+            get
+            {
+                return _toggleDebug ?? (_toggleDebug =
+                    new RelayCommand(() =>
+                    {
+                        ShowDebug = !ShowDebug;
+                    }));
+            }
+        }
+        #endregion ToggleDebug
         #endregion Commands
 
         #region Initialization
@@ -200,6 +240,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             Columns.PropertyChangedExtended += Data_PropertyChangedExtended;
             Rows.CollectionPropertyChanged += Rows_CollectionPropertyChanged;
             Columns.CollectionPropertyChanged += Columns_CollectionPropertyChanged;
+
+            RefreshTotals();
         }
         #endregion Initialization
 
@@ -213,7 +255,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 foreach (var col in Columns.Children)
                 {
                     var cell = row[col.Key];
-                    var cellVal = cell.GetValue<string>();
+                    var cellVal = cell.GetValue().ToString();
                     var colFilter = col.ColumnFilter;
                     var filter = col.ColumnFilter.Filter;
                     var filterMode = col.ColumnFilter.FilterMode;
@@ -240,6 +282,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 
                 FilterColumnValues(filter, filterMode, col.Key);
             }
+
+            RefreshTotals();
         }
 
         private void FilterColumnValues(string filter, FilterMode filterMode, string colName)
@@ -340,6 +384,24 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 }
 
                 Columns.InsertChildAt(col.Sequence, col);
+            }
+        }
+
+        private void RefreshTotals()
+        {
+            var rowsView = CollectionViewSource.GetDefaultView(Rows.Children);
+
+            foreach (var col in Columns.Children)
+            {
+                col.Total = 0;
+                
+                foreach (YeetRowViewModel row in rowsView)
+                {
+                    if (double.TryParse(row[col.Name].GetValue().ToString(), out double val))
+                    {
+                        col.Total += val;
+                    }
+                }
             }
         }
         #endregion Methods

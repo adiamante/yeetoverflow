@@ -210,7 +210,7 @@ namespace YeetOverFlow.Wpf.ViewModels
             SetValue<T>(ref backingField, value, true, propertyName);
         }
 
-        protected override void SetValue<T>(ref T backingField, T value, Boolean doEqualityCheck, [CallerMemberName] string propertyName = null)
+        protected override void SetValue<T>(ref T backingField, T value, bool doEqualityCheck, [CallerMemberName] string propertyName = null)
         {
             if (doEqualityCheck)
             {
@@ -222,6 +222,24 @@ namespace YeetOverFlow.Wpf.ViewModels
             backingField = value;
             OnPropertyChanged(propertyName);
             OnPropertyChangedExtended(oldValue, value, propertyName);
+        }
+
+        protected void SetValue<T>(ref T backingField, T value, bool doEqualityCheck, bool doChangedExtended, [CallerMemberName] string propertyName = null)
+        {
+            if (doEqualityCheck)
+            {
+                if (EqualityComparer<T>.Default.Equals(backingField, value))
+                    return;
+            }
+
+            T oldValue = backingField;
+            backingField = value;
+            OnPropertyChanged(propertyName);
+
+            if (doChangedExtended)
+            {
+                OnPropertyChangedExtended(oldValue, value, propertyName);
+            }
         }
     }
     #endregion YeetItemViewModelBaseExtended
