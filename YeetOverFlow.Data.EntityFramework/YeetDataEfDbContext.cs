@@ -85,7 +85,7 @@ namespace YeetOverFlow.Data.EntityFramework
         public void Configure(EntityTypeBuilder<YeetColumnCollection> builder)
         {
             builder.ToTable(nameof(YeetColumnCollection));
-            builder.Navigation(t => t.Children).AutoInclude();
+            //builder.Navigation(t => t.Children).AutoInclude();
         }
     }
 
@@ -94,7 +94,7 @@ namespace YeetOverFlow.Data.EntityFramework
         public void Configure(EntityTypeBuilder<YeetRowCollection> builder)
         {
             builder.ToTable(nameof(YeetRowCollection));
-            builder.Navigation(t => t.Children).AutoInclude();
+            //builder.Navigation(t => t.Children).AutoInclude();
         }
     }
 
@@ -106,6 +106,15 @@ namespace YeetOverFlow.Data.EntityFramework
             builder.Property(itm => itm.Key).HasField("_key");
         }
     }
+
+    //internal class YeetDataSetEntityConfiguration : IEntityTypeConfiguration<YeetDataSet>
+    //{
+    //    public void Configure(EntityTypeBuilder<YeetDataSet> builder)
+    //    {
+    //        builder.ToTable(nameof(YeetDataSet));
+    //        //builder.Navigation(ds => ds.Children).AutoInclude();
+    //    }
+    //}
 
     internal class YeetColumnEntityConfiguration : IEntityTypeConfiguration<YeetColumn>
     {
@@ -121,7 +130,7 @@ namespace YeetOverFlow.Data.EntityFramework
         {
             builder.ToTable(nameof(YeetRow));
             builder.HasMany(r => r.Children);
-            builder.Navigation(t => t.Children).AutoInclude();
+            //builder.Navigation(t => t.Children).AutoInclude();
         }
     }
 

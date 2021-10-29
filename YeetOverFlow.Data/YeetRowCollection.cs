@@ -1,51 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using YeetOverFlow.Core;
 
 namespace YeetOverFlow.Data
 {
-    public class YeetRowCollection : YeetData, IYeetListBase<YeetRow>
+    public class YeetRowCollection : YeetDataSet //, IYeetKeyedList<YeetRow>
     {
-        protected YeetList<YeetRow> _yeetKeyedList;
-
-        public YeetRowCollection() : this(Guid.NewGuid(), null)
+        public YeetRowCollection() : this(Guid.NewGuid())
         {
         }
 
-        public YeetRowCollection(Guid guid, string key) : base(guid, key)
+        public YeetRowCollection(Guid guid) : base(guid, null)
         {
-            _yeetKeyedList = new YeetList<YeetRow>();
         }
 
-        public YeetRow this[int key] => ((IYeetListBase<YeetRow>)_yeetKeyedList)[key];
+        public new YeetRow this[string key] { get => (YeetRow)_yeetKeyedList[key]; set => _yeetKeyedList[key] = value; }
 
-        public IEnumerable<YeetRow> Children => ((IYeetListBaseRead<YeetRow>)_yeetKeyedList).Children;
+        public new YeetRow this[int key] => (YeetRow)_yeetKeyedList[key];
 
-        public int Count => ((IYeetListBaseRead<YeetRow>)_yeetKeyedList).Count;
+        //public new IEnumerable<YeetRow> Children => _yeetKeyedList.Children.Cast<YeetRow>();
 
         public void AddChild(YeetRow newChild)
         {
-            ((IYeetListBaseWrite<YeetRow>)_yeetKeyedList).AddChild(newChild);
+            _yeetKeyedList.AddChild(newChild);
         }
 
         public void InsertChildAt(int targetSequence, YeetRow newChild)
         {
-            ((IYeetListBaseWrite<YeetRow>)_yeetKeyedList).InsertChildAt(targetSequence, newChild);
+            _yeetKeyedList.InsertChildAt(targetSequence, newChild);
         }
 
         public void MoveChild(int targetSequence, YeetRow childToMove)
         {
-            ((IYeetListBaseWrite<YeetRow>)_yeetKeyedList).MoveChild(targetSequence, childToMove);
+            _yeetKeyedList.MoveChild(targetSequence, childToMove);
         }
 
         public void RemoveChild(YeetRow childToRemove)
         {
-            ((IYeetListBaseWrite<YeetRow>)_yeetKeyedList).RemoveChild(childToRemove);
-        }
-
-        public void RemoveChildAt(int targetSequence)
-        {
-            ((IYeetListBaseWrite<YeetRow>)_yeetKeyedList).RemoveChildAt(targetSequence);
+            _yeetKeyedList.RemoveChild(childToRemove);
         }
     }
 }

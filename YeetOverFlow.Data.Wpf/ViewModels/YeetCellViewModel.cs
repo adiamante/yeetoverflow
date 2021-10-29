@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace YeetOverFlow.Data.Wpf.ViewModels
 {
@@ -34,9 +35,9 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
     public class YeetCellViewModel<T> : YeetCellViewModel
     {
-        T _value;
+        protected T? _value;
 
-        YeetCellViewModel() : this(Guid.NewGuid(), null)
+        YeetCellViewModel() : this(Guid.NewGuid(), null!)
         {
 
         }
@@ -46,7 +47,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         }
 
         #region Value
-        public T Value
+        public T? Value
         {
             get { return _value; }
             set { SetValue(ref _value, value); }
@@ -54,17 +55,49 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
         internal override object GetValue()
         {
-            return _value;
+            return _value!;
         }
 
         internal override void SetValue(object val)
         {
-            Value = (T)val;
+            Value = (T?)val;
         }
         #endregion Value
     }
 
-    public class YeetBooleanCellViewModel : YeetCellViewModel<bool>
+    public class YeetCellViewModelStruct<T> : YeetCellViewModel where T : struct
+    {
+        protected T? _value;
+
+        YeetCellViewModelStruct() : this(Guid.NewGuid(), null!)
+        {
+
+        }
+
+        public YeetCellViewModelStruct(Guid guid, string key) : base(guid, key)
+        {
+        }
+
+        #region Value
+        public T? Value
+        {
+            get { return _value; }
+            set { SetValue(ref _value, value); }
+        }
+
+        internal override object GetValue()
+        {
+            return _value!;
+        }
+
+        internal override void SetValue(object val)
+        {
+            Value = (T?)val;
+        }
+        #endregion Value
+    }
+
+    public class YeetBooleanCellViewModel : YeetCellViewModelStruct<bool>
     {
         public YeetBooleanCellViewModel() : this(Guid.NewGuid(), null)
         {
@@ -88,7 +121,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         }
     }
 
-    public class YeetIntCellViewModel : YeetCellViewModel<int>
+    public class YeetIntCellViewModel : YeetCellViewModelStruct<int>
     {
         public YeetIntCellViewModel() : this(Guid.NewGuid(), null)
         {
@@ -100,7 +133,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         }
     }
 
-    public class YeetDoubleCellViewModel : YeetCellViewModel<double>
+    public class YeetDoubleCellViewModel : YeetCellViewModelStruct<double>
     {
         public YeetDoubleCellViewModel() : this(Guid.NewGuid(), null)
         {
@@ -112,7 +145,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         }
     }
 
-    public class YeetDateTimeCellViewModel : YeetCellViewModel<DateTime>
+    public class YeetDateTimeCellViewModel : YeetCellViewModelStruct<DateTimeOffset>
     {
         public YeetDateTimeCellViewModel() : this(Guid.NewGuid(), null)
         {
@@ -127,14 +160,14 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     //This only exists because Automapper crashes when a generic method exists in a class that is not generic
     public static class YeetCellViewModelHelper
     {
-        public static T GetValue<T>(this YeetCellViewModel vm)
+        public static T? GetValue<T>(this YeetCellViewModel vm)
         {
-            return (T)vm.GetValue();
+            return (T?)vm.GetValue();
         }
 
         public static void SetValue<T>(this YeetCellViewModel vm, T val)
         {
-            vm.SetValue(val);
+            vm.SetValue(val!);
         }
     }
 }

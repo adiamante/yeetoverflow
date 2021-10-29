@@ -21,7 +21,9 @@ namespace YeetOverFlow.Data
         {
         }
 
-        public T Value { get; set; }
+        #nullable enable
+        public T? Value { get; set; }
+        #nullable disable
     }
 
     public class YeetBooleanCell : YeetCell<bool>

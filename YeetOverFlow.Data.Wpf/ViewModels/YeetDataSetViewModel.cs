@@ -16,7 +16,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
         public YeetDataSetViewModel(Guid guid, string key) : base(guid, key)
         {
-            _yeetKeyedList = new YeetObservableKeyedList<YeetDataViewModel>();
+            _yeetKeyedList = new YeetObservableKeyedList<YeetDataViewModel>(guid);
             _yeetKeyedList.CollectionChanged += _yeetKeyedList_CollectionChanged;
             _yeetKeyedList.SetInvalidChildCallback((key, child) =>
             {
@@ -78,7 +78,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             return ((IYeetKeyedList<YeetDataViewModel>)_yeetKeyedList).ContainsKey(key);
         }
 
-        public void Init()
+        public virtual void Init()
         {
             _yeetKeyedList.Init();
 

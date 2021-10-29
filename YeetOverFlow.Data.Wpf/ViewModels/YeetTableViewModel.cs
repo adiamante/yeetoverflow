@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AutoMapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
+using YeetOverFlow.Data.Wpf.HelperExtensions;
+using YeetOverFlow.Reflection;
 using YeetOverFlow.Wpf.Commands;
 using YeetOverFlow.Wpf.Ui;
 using YeetOverFlow.Wpf.ViewModels;
@@ -16,11 +19,12 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     {
         #region Private Members
         ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand,
-            _renameColumnCommand, _toggleColumnTotals, _toggleDebug;
+            _renameColumnCommand, _toggleColumnTotals, _toggleDebug, _convertColumnCommand;
         YeetColumnCollectionViewModel _columns = new YeetColumnCollectionViewModel();
         YeetRowCollectionViewModel _rows = new YeetRowCollectionViewModel();
         Dictionary<string, ObservableCollection<YeetColumnValueViewModel>> _columnValues = new Dictionary<string, ObservableCollection<YeetColumnValueViewModel>>();
         bool _showColumnTotals = false, _showDebug = false;
+        IMapper _columnMapper;
         #endregion Private Members
 
         #region Public Properties
@@ -203,6 +207,21 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
         #endregion ToggleDebug
+
+        #region ConvertColumnCommand
+        [JsonIgnore]
+        public ICommand ConvertColumnCommand
+        {
+            get
+            {
+                return _convertColumnCommand ?? (_convertColumnCommand =
+                    new RelayCommand<string, string, string>((colName, type, defaultValue) =>
+                    {
+                        ConvertColumn(colName, type, defaultValue);
+                    }));
+            }
+        }
+        #endregion ConvertColumnCommand
         #endregion Commands
 
         #region Initialization
@@ -213,7 +232,14 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
         public YeetTableViewModel(Guid guid, string key) : base(guid, key)
         {
-            Init();
+            var columnMapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<YeetColumnViewModel, YeetIntColumnViewModel>();
+                cfg.CreateMap<YeetColumnViewModel, YeetDoubleColumnViewModel>();
+                cfg.CreateMap<YeetColumnViewModel, YeetDateTimeColumnViewModel>();
+                cfg.CreateMap<YeetColumnViewModel, YeetStringColumnViewModel>();
+            });
+            _columnMapper = columnMapperConfig.CreateMapper();
         }
 
         private void Columns_CollectionPropertyChanged(object sender, CollectionPropertyChangedEventArgs e)
@@ -241,7 +267,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             Rows.CollectionPropertyChanged += Rows_CollectionPropertyChanged;
             Columns.CollectionPropertyChanged += Columns_CollectionPropertyChanged;
 
-            RefreshTotals();
+            RefreshColumnTotals();
         }
         #endregion Initialization
 
@@ -252,9 +278,9 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             view.Filter = (r) =>
             {
                 var row = (YeetRowViewModel)r;
-                foreach (var col in Columns.Children)
+                foreach (YeetColumnViewModel col in Columns.Children)
                 {
-                    var cell = row[col.Key];
+                    var cell = (YeetCellViewModel)row[col.Key];
                     var cellVal = cell.GetValue().ToString();
                     var colFilter = col.ColumnFilter;
                     var filter = col.ColumnFilter.Filter;
@@ -274,7 +300,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 return true;
             };
 
-            foreach (var col in Columns.Children)
+            foreach (YeetColumnViewModel col in Columns.Children)
             {
                 var colFilter = col.ColumnFilter;
                 var filter = col.ColumnFilter.Filter;
@@ -283,7 +309,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 FilterColumnValues(filter, filterMode, col.Key);
             }
 
-            RefreshTotals();
+            RefreshColumnTotals();
         }
 
         private void FilterColumnValues(string filter, FilterMode filterMode, string colName)
@@ -324,7 +350,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 ObservableCollection<YeetColumnValueViewModel> values = new ObservableCollection<YeetColumnValueViewModel>();
                 //OPT: Subscribe to row changes here
 
-                foreach (var valGroup in Rows.Children.GroupBy(r => r[colName].GetValue()))
+                foreach (var valGroup in Rows.Children.GroupBy(r => ((YeetCellViewModel)(((YeetRowViewModel)r)[colName])).GetValue()))
                 {
                     values.Add(new YeetColumnValueViewModel() { Value = valGroup.Key, Count = valGroup.Count() });
                 }
@@ -375,9 +401,9 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 col.Rename(newName);
                 Columns.Remove(colName);
 
-                foreach (var row in Rows.Children)
+                foreach (YeetRowViewModel row in Rows.Children)
                 {
-                    var cell = row[colName];
+                    var cell = (YeetCellViewModel)row[colName];
                     cell.Rename(newName);
                     row.Remove(colName);
                     row[newName] = cell;
@@ -387,23 +413,139 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
 
-        private void RefreshTotals()
+        private void ConvertColumn(string colName, string targetType, string defaultString)
+        {
+            var originalColumn = Columns[colName];
+            using (var scope = new YeetItemViewModelBaseExtended.ChangeScope(this, nameof(ConvertColumn), originalColumn.DataType.Name, targetType))
+            {
+                Columns.Remove(colName);
+
+                Func<string, String, object, object> convert = (type, input, defaultOutput) =>
+                {
+                    switch (type)
+                    {
+                        case "Int32":
+                            if (Int32.TryParse(input, out Int32 outInt32))
+                            {
+                                return outInt32;
+                            }
+                            break;
+                        case "Double":
+                            if (Double.TryParse(input, out Double outDouble))
+                            {
+                                return outDouble;
+                            }
+                            break;
+                        case "DateTime":
+                            if (DateTimeOffset.TryParse(input, out DateTimeOffset outDateTime))
+                            {
+                                return outDateTime;
+                            }
+                            break;
+                        case "TimeSpan":
+                            if (TimeSpan.TryParse(input, out TimeSpan outTimeSpan))
+                            {
+                                return outTimeSpan;
+                            }
+                            break;
+                        case "String":
+                        default:
+                            return input.ToString();
+                    }
+                    return defaultOutput;
+                };
+
+                Object defaultValue = null;
+                if (targetType == "String")
+                {
+                    defaultValue = defaultString;
+                }
+                else
+                {
+                    defaultValue = convert(targetType, defaultString, null);
+                }
+
+                foreach (YeetRowViewModel row in Rows.Children)
+                {
+                    var originalCell = (YeetCellViewModel)row[colName];
+                    row.Remove(colName);
+
+                    YeetCellViewModel newCell = null;
+                    switch (targetType)
+                    {
+                        case "Int32":
+                            newCell = new YeetIntCellViewModel(Guid.NewGuid(), originalCell.Key);
+                            break;
+                        case "Double":
+                            newCell = new YeetDoubleCellViewModel(Guid.NewGuid(), originalCell.Key);
+                            break;
+                        case "DateTime":
+                            newCell = new YeetDateTimeCellViewModel(Guid.NewGuid(), originalCell.Key);
+                            break;
+                        case "String":
+                        default:
+                            newCell = new YeetStringCellViewModel(Guid.NewGuid(), originalCell.Key);
+                            break;
+                    }
+
+                    newCell.SetValue(convert(targetType, originalCell.GetValue()?.ToString(), defaultValue));
+                    row.AddChild(newCell);
+                }
+
+                YeetColumnViewModel newColumn = null;
+                switch (targetType)
+                {
+                    case "Int32":
+                        newColumn = _columnMapper.Map<YeetIntColumnViewModel>((YeetColumnViewModel)originalColumn);
+                        break;
+                    case "Double":
+                        newColumn = _columnMapper.Map<YeetDoubleColumnViewModel>((YeetColumnViewModel)originalColumn);
+                        break;
+                    case "DateTime":
+                        newColumn = _columnMapper.Map<YeetDateTimeColumnViewModel>((YeetColumnViewModel)originalColumn);
+                        break;
+                    //case "TimeSpan":
+                    //    newColumn = _columnMapper.Map<YeetTimeSpanColumnViewModel>((YeetColumnViewModel)originalColumn);
+                    //    break;
+                    case "String":
+                    default:
+                        newColumn = _columnMapper.Map<YeetStringColumnViewModel>((YeetColumnViewModel)originalColumn);
+                        break;
+                }
+
+                ReflectionHelper.FieldInfoCollection[newColumn.GetType()]["_guid"].SetValue(newColumn, Guid.NewGuid());
+                Columns.InsertChildAt(originalColumn.Sequence, newColumn);
+                RefreshColumnTotals(newColumn.Name);
+            }
+        }
+
+        private void RefreshColumnTotals()
+        {
+            foreach (var col in Columns.Children)
+            {
+                RefreshColumnTotals(col.Name);
+            }
+        }
+
+        private void RefreshColumnTotals(string colName)
         {
             var rowsView = CollectionViewSource.GetDefaultView(Rows.Children);
 
-            foreach (var col in Columns.Children)
+            var col = Columns[colName];
+            col.Total = 0;
+            if (col.DataType.IsNumericType())
             {
-                col.Total = 0;
-                
                 foreach (YeetRowViewModel row in rowsView)
                 {
-                    if (double.TryParse(row[col.Name].GetValue().ToString(), out double val))
+                    var cell = (YeetCellViewModel)row[col.Name];
+                    if (double.TryParse(cell.GetValue()?.ToString(), out double val))
                     {
                         col.Total += val;
                     }
                 }
             }
         }
+
         #endregion Methods
     }
 }

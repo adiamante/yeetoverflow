@@ -208,8 +208,8 @@ namespace YeetOverFlow.Data.Wpf.Controls
                 {
                     DataGridColumn dgCol = cellInfo.Column;
                     YeetRowViewModel row = (YeetRowViewModel)cellInfo.Item;
-
-                    if (Decimal.TryParse(row[dgCol.Header.ToString()].GetValue().ToString(), out Decimal val))
+                    YeetCellViewModel cell = (YeetCellViewModel)row[dgCol.Header.ToString()];
+                    if (Decimal.TryParse(cell.GetValue().ToString(), out Decimal val))
                     {
                         selectedTotal += val;
                     }

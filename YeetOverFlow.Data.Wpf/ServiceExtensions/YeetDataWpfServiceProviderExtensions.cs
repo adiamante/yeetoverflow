@@ -30,7 +30,10 @@ namespace YeetOverFlow.Data.Wpf.ServiceExtensions
                     .IncludeAllDerived();
 
                 cfg.CreateMap<YeetDataSet, YeetDataSetViewModel>()
-                    .ReverseMap();
+                    .IncludeAllDerived();
+
+                cfg.CreateMap<YeetDataSetViewModel, YeetDataSet>()
+                    .IncludeAllDerived();
 
                 cfg.CreateMap<YeetTable, YeetTableViewModel>()
                     .ReverseMap();
@@ -94,10 +97,12 @@ namespace YeetOverFlow.Data.Wpf.ServiceExtensions
             var qry = new GetYeetLibrariesQuery();
             var result = qryDispatcher.Dispatch<GetYeetLibrariesQuery, Result<IEnumerable<YeetLibrary<YeetDataSet>>>>(qry);
             var vmLib = sp.GetRequiredService<YeetDataLibraryViewModel>();
+            var retrievedLib = result.Value.FirstOrDefault();
 
-            if (result.Value.Any()) //load library
+            if (retrievedLib != null) //load library
             {
-                vmLib.ImportLibrary(result.Value.First());
+                LoadData(retrievedLib.Root, ctx);
+                vmLib.ImportLibrary(retrievedLib);
             }
             else //init library
             {
@@ -121,6 +126,7 @@ namespace YeetOverFlow.Data.Wpf.ServiceExtensions
 
                 root.AddChild(t);
                 vmLib.Root = root;
+                vmLib.Init();
 
                 var lib = vmLib.ExportLibrary();
                 ctx.YeetLibraries.Add(lib);
@@ -133,6 +139,28 @@ namespace YeetOverFlow.Data.Wpf.ServiceExtensions
             //    .Include(t => t.Rows).ThenInclude(rc => rc.Children).ThenInclude(r => r.Children)
             //    .SingleOrDefaultAsync().Result;
 
+        }
+
+        private static void LoadData(YeetData yeetData, YeetDataEfDbContext ctx)
+        {
+            switch (yeetData)
+            {
+                case YeetDataSet ds:
+                    foreach (YeetData child in ds.Children)
+                    {
+                        LoadData(child, ctx);
+                    }
+                    break;
+                case YeetTable tbl:
+                    ctx.Entry(tbl.Columns).Collection(cc => cc.Children).Load();
+                    ctx.Entry(tbl.Rows).Collection(cc => cc.Children).Load();
+
+                    foreach (YeetRow row in tbl.Rows.Children)
+                    {
+                        ctx.Entry(row).Collection(cc => cc.Children).Load();
+                    }
+                    break;
+            }
         }
     }
 }

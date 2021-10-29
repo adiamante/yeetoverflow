@@ -14,7 +14,7 @@ namespace YeetOverFlow.Data
 
         public YeetDataSet(Guid guid, string key) : base(guid, key)
         {
-            _yeetKeyedList = new YeetKeyedList<YeetDataSet, YeetData>();
+            _yeetKeyedList = new YeetKeyedList<YeetDataSet, YeetData>(guid);
         }
 
         public YeetData this[string key] { get => ((IYeetKeyedList<YeetData>)_yeetKeyedList)[key]; set => ((IYeetKeyedList<YeetData>)_yeetKeyedList)[key] = value; }

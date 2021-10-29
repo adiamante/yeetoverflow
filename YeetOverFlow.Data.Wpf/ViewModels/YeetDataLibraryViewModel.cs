@@ -115,6 +115,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         public void Init()
         {
             Resolve(Root);
+            Root.Init();
         }
 
         private void Resolve(YeetDataViewModel data)
@@ -123,12 +124,6 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
             switch (data)
             {
-                case YeetDataSetViewModel dataSet:
-                    foreach (var child in dataSet.Children)
-                    {
-                        Resolve(child);
-                    }
-                    break;
                 case YeetTableViewModel dataTable:
                     foreach (var row in dataTable.Rows.Children)
                     {
@@ -143,6 +138,12 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                     foreach (var cell in row.Children)
                     {
                         Resolve(cell);
+                    }
+                    break;
+                case YeetDataSetViewModel dataSet:
+                    foreach (var child in dataSet.Children)
+                    {
+                        Resolve(child);
                     }
                     break;
             }
@@ -168,7 +169,6 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         public void ImportLibrary(YeetLibrary<YeetDataSet> library)
         {
             Root = _mapper.Map<YeetDataSetViewModel>(library.Root);
-            Root.Init();
             Init();
         }
     }
