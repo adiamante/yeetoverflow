@@ -164,13 +164,12 @@ namespace YeetOverFlow.Wpf.ViewModels
                     _commandDispatcher.Dispatch<UpdateYeetItemCommand<T>, Result>(updateCmd);
                     break;
                 case CollectionPropertyChangedEventArgs cpcArgs:
-                    
                     switch (cpcArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Move:
                             foreach (YeetItem data in cpcArgs.NewItems)
                             {
-                                var mvCmd = new MoveYeetItemCommand<T>(((YeetItem)cpcArgs.Object).Guid, ((YeetItem)cpcArgs.Object).Guid, data.Guid, data.Sequence) { DeferCommit = true };
+                                var mvCmd = new MoveYeetItemCommand<T>(((YeetItem)cpcArgs.Object).Guid, ((YeetItem)cpcArgs.Object).Guid, data.Guid, cpcArgs.NewStartingIndex) { DeferCommit = true };
                                 _commandDispatcher.Dispatch<MoveYeetItemCommand<T>, Result>(mvCmd);
                             }
                             break;
@@ -193,8 +192,6 @@ namespace YeetOverFlow.Wpf.ViewModels
                             }
                             break;
                     }
-                        
-                    
                     break;
             }
         }
@@ -333,10 +330,13 @@ namespace YeetOverFlow.Wpf.ViewModels
     {
         public override String PropertyName { get; set; }
         public override object Object { get; set; }
+        public NotifyCollectionChangedAction Action { get; set; }
         public IList OldItems { get; set; }
         public IList NewItems { get; set; }
         public override string NewValueDisplay => $"[{NewItems?.Count ?? 0}]";
         public override string OldValueDisplay => $"[{OldItems?.Count ?? 0}]";
+        public virtual int NewStartingIndex { get; set; }
+        public virtual int OldStartingIndex { get; set; }
 
         public YeetCollectionPropertyChangedCommandViewModel()
         {
@@ -344,39 +344,61 @@ namespace YeetOverFlow.Wpf.ViewModels
 
         public override void Execute()
         {
-            if (OldItems != null)
+            switch (Action)
             {
-                foreach (var item in OldItems)
-                {
-                    ReflectionHelper.MethodInfoCollection[Object.GetType()]["RemoveChild"].Invoke(Object, new Object[] { item });
-                }
-            }
+                case NotifyCollectionChangedAction.Move:
+                    foreach (var item in NewItems)
+                    {
+                        ReflectionHelper.MethodInfoCollection[Object.GetType()][nameof(IYeetListBase<YeetItem>.MoveChild)].Invoke(Object, new Object[] { NewStartingIndex, item });
+                    }
+                    break;
+                default:
+                    if (OldItems != null)
+                    {
+                        foreach (var item in OldItems)
+                        {
+                            ReflectionHelper.MethodInfoCollection[Object.GetType()][nameof(IYeetListBase<YeetItem>.RemoveChild)].Invoke(Object, new Object[] { item });
+                        }
+                    }
 
-            if (NewItems != null)
-            {
-                foreach (var item in NewItems)
-                {
-                    ReflectionHelper.MethodInfoCollection[Object.GetType()]["AddChild"].Invoke(Object, new Object[] { item });
-                }
+                    if (NewItems != null)
+                    {
+                        foreach (var item in NewItems)
+                        {
+                            ReflectionHelper.MethodInfoCollection[Object.GetType()][nameof(IYeetListBase<YeetItem>.AddChild)].Invoke(Object, new Object[] { item });
+                        }
+                    }
+                    break;
             }
         }
 
         public override void Undo()
         {
-            if (OldItems != null)
+            switch (Action)
             {
-                foreach (var item in OldItems)
-                {
-                    ReflectionHelper.MethodInfoCollection[Object.GetType()]["AddChild"].Invoke(Object, new Object[] { item });
-                }
-            }
+                case NotifyCollectionChangedAction.Move:
+                    foreach (var item in NewItems)
+                    {
+                        ReflectionHelper.MethodInfoCollection[Object.GetType()][nameof(IYeetListBase<YeetItem>.MoveChild)].Invoke(Object, new Object[] { OldStartingIndex, item });
+                    }
+                    break;
+                default:
+                    if (OldItems != null)
+                    {
+                        foreach (var item in OldItems)
+                        {
+                            ReflectionHelper.MethodInfoCollection[Object.GetType()][nameof(IYeetListBase<YeetItem>.AddChild)].Invoke(Object, new Object[] { item });
+                        }
+                    }
 
-            if (NewItems != null)
-            {
-                foreach (var item in NewItems)
-                {
-                    ReflectionHelper.MethodInfoCollection[Object.GetType()]["RemoveChild"].Invoke(Object, new Object[] { item });
-                }
+                    if (NewItems != null)
+                    {
+                        foreach (var item in NewItems)
+                        {
+                            ReflectionHelper.MethodInfoCollection[Object.GetType()][nameof(IYeetListBase<YeetItem>.RemoveChild)].Invoke(Object, new Object[] { item });
+                        }
+                    }
+                    break;
             }
         }
     }

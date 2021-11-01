@@ -99,14 +99,18 @@ namespace YeetOverFlow.Wpf.ViewModels
         public virtual object Object { get; private set; }
         public virtual IList OldItems { get; private set; }
         public virtual IList NewItems { get; private set; }
+        public virtual int NewStartingIndex { get; private set; }
+        public virtual int OldStartingIndex { get; private set; }
         //public virtual String Message { get; set; }
-        public CollectionPropertyChangedEventArgs(string propertyName, object obj, NotifyCollectionChangedAction action, IList oldValue, IList newValue)
+        public CollectionPropertyChangedEventArgs(string propertyName, object obj, NotifyCollectionChangedAction action, IList oldValue, IList newValue, int newStartingIndex, int oldStartingIndex)
             : base(propertyName)
         {
             Object = obj;
             Action = action;
             OldItems = oldValue;
             NewItems = newValue;
+            NewStartingIndex = newStartingIndex;
+            OldStartingIndex = oldStartingIndex;
         }
     }
     #endregion CollectionPropertyChangedEventArgs
@@ -202,7 +206,7 @@ namespace YeetOverFlow.Wpf.ViewModels
 
         protected virtual void OnCollectionPropertyChanged(NotifyCollectionChangedEventArgs eventArgs, [CallerMemberName] string propertyName = null)
         {
-            OnCollectionPropertyChanged(new CollectionPropertyChangedEventArgs(propertyName, this, eventArgs.Action, eventArgs.OldItems, eventArgs.NewItems));
+            OnCollectionPropertyChanged(new CollectionPropertyChangedEventArgs(propertyName, this, eventArgs.Action, eventArgs.OldItems, eventArgs.NewItems, eventArgs.NewStartingIndex, eventArgs.OldStartingIndex));
         }
 
         protected override void SetValue<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
