@@ -8,7 +8,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     {
         public YeetDataViewModel() : base()
         {
-
+            
         }
 
         public YeetDataViewModel(Guid guid, string key) : base(guid, key)
@@ -18,7 +18,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         protected virtual void SetKey(String key, YeetDataViewModel data)
         {
             data._key = key;
-            OnPropertyChanged(nameof(Key));
+            data.OnPropertyChanged(nameof(Key));
         }
     }
 }

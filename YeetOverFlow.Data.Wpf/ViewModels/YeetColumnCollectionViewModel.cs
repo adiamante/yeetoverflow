@@ -56,14 +56,14 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         //    OnCollectionPropertyChanged(e, nameof(Children));
         //}
 
-        private void Data_PropertyChangedExtended(object sender, PropertyChangedExtendedEventArgs e)
-        {
-            OnPropertyChangedExtended(e);
-        }
+        //private void Data_PropertyChangedExtended(object sender, PropertyChangedExtendedEventArgs e)
+        //{
+        //    OnPropertyChangedExtended(e);
+        //}
 
-        private void Data_CollectionPropertyChanged(object sender, CollectionPropertyChangedEventArgs e)
-        {
-            OnCollectionPropertyChanged(e, nameof(Children));
-        }
+        //private void Data_CollectionPropertyChanged(object sender, CollectionPropertyChangedEventArgs e)
+        //{
+        //    OnCollectionPropertyChanged(e, nameof(Children));
+        //}
     }
 }

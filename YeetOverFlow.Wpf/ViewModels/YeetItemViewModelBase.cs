@@ -56,7 +56,7 @@ namespace YeetOverFlow.Wpf.ViewModels
         protected override void SetSequence(int sequence, YeetItem yeetItem)
         {
             base.SetSequence(sequence, yeetItem);
-            OnPropertyChanged(nameof(YeetItem.Sequence));
+            ((YeetItemViewModelBase)yeetItem).OnPropertyChanged(nameof(YeetItem.Sequence));
         }
     }
     #endregion YeetItemViewModelBase
@@ -240,6 +240,13 @@ namespace YeetOverFlow.Wpf.ViewModels
             {
                 OnPropertyChangedExtended(oldValue, value, propertyName);
             }
+        }
+
+        protected override void SetSequence(int sequence, YeetItem yeetItem)
+        {
+            var args = new PropertyChangedExtendedEventArgs(nameof(_sequence), yeetItem, _sequence, sequence);
+            base.SetSequence(sequence, yeetItem);
+            OnPropertyChangedExtended(args);
         }
     }
     #endregion YeetItemViewModelBaseExtended

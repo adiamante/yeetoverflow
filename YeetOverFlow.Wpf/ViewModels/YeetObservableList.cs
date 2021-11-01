@@ -63,6 +63,8 @@ namespace YeetOverFlow.Wpf.ViewModels
         public void MoveChild(int targetSequence, TChild childToMove)
         {
             ((IYeetListBaseWrite<TChild>)_yeetList).MoveChild(targetSequence, childToMove);
+            _children.Remove(childToMove);
+            _children.Insert(targetSequence, childToMove);
         }
 
         public void RemoveChild(TChild childToRemove)

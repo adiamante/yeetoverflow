@@ -101,8 +101,8 @@ namespace YeetOverFlow.Core
         {
             if (!_children.Contains(childToMove)) throw new InvalidOperationException($"Cannot move '{nameof(childToMove)}' because it does not exists in _children.");
             int originalChildSequence = childToMove.Sequence;
-
             bool movingDown = targetSequence > originalChildSequence;
+
             foreach (T child in _children)
             {
                 //if targeted child

@@ -96,6 +96,55 @@
                         </MenuItem.CommandParameter>
                     </MenuItem>
                 </MenuItem>
+                <MenuItem Header="Move">
+                    <MenuItem.Icon>
+                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.DragVariant}" />
+                    </MenuItem.Icon>
+                    <MenuItem Header="Left 1" Tag="-1" Command="{Binding [0].MoveColumnCommand}">
+                        <MenuItem.Icon>
+                            <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.ChevronLeft}" />
+                        </MenuItem.Icon>
+                        <MenuItem.CommandParameter>
+                            <MultiBinding Converter="{yconv:RelayMultiConverter}">
+                                <Binding Path="[1].Name" />
+                                <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
+                            </MultiBinding>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                    <MenuItem Header="Right 1" Tag="1" Command="{Binding [0].MoveColumnCommand}">
+                        <MenuItem.Icon>
+                            <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.ChevronRight}" />
+                        </MenuItem.Icon>
+                        <MenuItem.CommandParameter>
+                            <MultiBinding Converter="{yconv:RelayMultiConverter}">
+                                <Binding Path="[1].Name" />
+                                <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
+                            </MultiBinding>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                    <MenuItem Header="Left Edge" Tag="-1000000" Command="{Binding [0].MoveColumnCommand}">
+                        <MenuItem.Icon>
+                            <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.ChevronTripleLeft}" />
+                        </MenuItem.Icon>
+                        <MenuItem.CommandParameter>
+                            <MultiBinding Converter="{yconv:RelayMultiConverter}">
+                                <Binding Path="[1].Name" />
+                                <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
+                            </MultiBinding>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                    <MenuItem Header="Right Edge" Tag="1000000" Command="{Binding [0].MoveColumnCommand}">
+                        <MenuItem.Icon>
+                            <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.ChevronTripleRight}" />
+                        </MenuItem.Icon>
+                        <MenuItem.CommandParameter>
+                            <MultiBinding Converter="{yconv:RelayMultiConverter}">
+                                <Binding Path="[1].Name" />
+                                <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
+                            </MultiBinding>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                </MenuItem>
                 <MenuItem Header="Rename" StaysOpenOnClick="True">
                     <MenuItem.Icon>
                         <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.RenameBox}" />

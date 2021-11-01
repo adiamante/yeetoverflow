@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Data;
@@ -163,22 +164,37 @@ namespace YeetOverFlow.Wpf.ViewModels
                     _commandDispatcher.Dispatch<UpdateYeetItemCommand<T>, Result>(updateCmd);
                     break;
                 case CollectionPropertyChangedEventArgs cpcArgs:
-                    if (cpcArgs.NewItems != null)
+                    
+                    switch (cpcArgs.Action)
                     {
-                        foreach (YeetItem data in cpcArgs.NewItems)
-                        {
-                            var addCmd = new AddYeetItemCommand<T>(((YeetItem)cpcArgs.Object).Guid, mapper.Map<T>(data), Int32.MaxValue) { DeferCommit = true };
-                            _commandDispatcher.Dispatch<AddYeetItemCommand<T>, Result>(addCmd);
-                        }
+                        case NotifyCollectionChangedAction.Move:
+                            foreach (YeetItem data in cpcArgs.NewItems)
+                            {
+                                var mvCmd = new MoveYeetItemCommand<T>(((YeetItem)cpcArgs.Object).Guid, ((YeetItem)cpcArgs.Object).Guid, data.Guid, data.Sequence) { DeferCommit = true };
+                                _commandDispatcher.Dispatch<MoveYeetItemCommand<T>, Result>(mvCmd);
+                            }
+                            break;
+                        default:
+                            if (cpcArgs.NewItems != null)
+                            {
+                                foreach (YeetItem data in cpcArgs.NewItems)
+                                {
+                                    var addCmd = new AddYeetItemCommand<T>(((YeetItem)cpcArgs.Object).Guid, mapper.Map<T>(data), data.Sequence) { DeferCommit = true };
+                                    _commandDispatcher.Dispatch<AddYeetItemCommand<T>, Result>(addCmd);
+                                }
+                            }
+                            if (cpcArgs.OldItems != null)
+                            {
+                                foreach (YeetItem data in cpcArgs.OldItems)
+                                {
+                                    var rmvCmd = new RemoveYeetItemCommand<T>(((YeetItem)cpcArgs.Object).Guid, data.Guid) { DeferCommit = true };
+                                    _commandDispatcher.Dispatch<RemoveYeetItemCommand<T>, Result>(rmvCmd);
+                                }
+                            }
+                            break;
                     }
-                    if (cpcArgs.OldItems != null)
-                    {
-                        foreach (YeetItem data in cpcArgs.OldItems)
-                        {
-                            var rmvCmd = new RemoveYeetItemCommand<T>(((YeetItem)cpcArgs.Object).Guid, data.Guid) { DeferCommit = true };
-                            _commandDispatcher.Dispatch<RemoveYeetItemCommand<T>, Result>(rmvCmd);
-                        }
-                    }
+                        
+                    
                     break;
             }
         }

@@ -23,6 +23,8 @@ namespace YeetOverFlow.Data.Wpf.ServiceExtensions
             var mapperFactory = sp.GetRequiredService<IMapperFactory>();
             var mapperConfig = new MapperConfiguration(cfg =>
             {
+                cfg.ShouldMapField = fieldInfo => fieldInfo.Name == "_sequence";
+
                 cfg.CreateMap<YeetData, YeetDataViewModel>()
                     .IncludeAllDerived();
 

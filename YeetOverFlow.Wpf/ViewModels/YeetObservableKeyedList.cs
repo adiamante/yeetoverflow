@@ -19,6 +19,12 @@ namespace YeetOverFlow.Wpf.ViewModels
 
         public YeetObservableKeyedList(Guid guid) : base(guid)
         {
+            _children.CollectionChanged += _children_CollectionChanged;
+        }
+
+        private void _children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnCollectionChanged(e);
         }
 
         #region Indexer
@@ -46,19 +52,15 @@ namespace YeetOverFlow.Wpf.ViewModels
         {
             _yeetKeyedList.SetInvalidChildCallback(invalidChildCallback);
         }
-        
-        public event NotifyCollectionChangedEventHandler CollectionChanged
-        {
-            add
-            {
-                ((INotifyCollectionChanged)_children).CollectionChanged += value;
-            }
 
-            remove
-            {
-                ((INotifyCollectionChanged)_children).CollectionChanged -= value;
-            }
+        #region INotifyCollectionChanged
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        protected void OnCollectionChanged(NotifyCollectionChangedEventArgs changes)
+        {
+            CollectionChanged?.Invoke(this, changes);
         }
+        #endregion INotifyCollectionChanged
 
         public void AddChild(TChild newChild)
         {
@@ -78,7 +80,7 @@ namespace YeetOverFlow.Wpf.ViewModels
             {
                 foreach (var child in _children)
                 {
-                    _yeetKeyedList.AddChild(child);
+                    _yeetKeyedList.InsertChildAt(child.Sequence, child);
                 }
             }
         }
@@ -86,12 +88,20 @@ namespace YeetOverFlow.Wpf.ViewModels
         public void InsertChildAt(int targetSequence, TChild newChild)
         {
             ((IYeetListBaseWrite<TChild>)_yeetKeyedList).InsertChildAt(targetSequence, newChild);
-            _children.Add(newChild);
+            _children.Insert(targetSequence, newChild);
         }
 
         public void MoveChild(int targetSequence, TChild childToMove)
         {
+            var originalSequence = childToMove.Sequence;
             ((IYeetListBaseWrite<TChild>)_yeetKeyedList).MoveChild(targetSequence, childToMove);
+
+            foreach (var child in _yeetKeyedList.Children)
+            {
+                SetSequence(child.Sequence, child);
+            }
+
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, new List<TChild>() { childToMove }, targetSequence, originalSequence));
         }
 
         public void Remove(string keyToRemove)

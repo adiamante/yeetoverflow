@@ -104,6 +104,7 @@ namespace YeetOverFlow.Data.EntityFramework
         {
             builder.ToTable(nameof(YeetData));
             builder.Property(itm => itm.Key).HasField("_key");
+            builder.Property(itm => itm.Sequence).HasField("_sequence");
         }
     }
 

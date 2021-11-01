@@ -19,7 +19,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     {
         #region Private Members
         ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand,
-            _renameColumnCommand, _toggleColumnTotals, _toggleDebug, _convertColumnCommand;
+            _renameColumnCommand, _toggleColumnTotals, _toggleDebug, _convertColumnCommand, _moveColumnCommand;
         YeetColumnCollectionViewModel _columns = new YeetColumnCollectionViewModel();
         YeetRowCollectionViewModel _rows = new YeetRowCollectionViewModel();
         Dictionary<string, ObservableCollection<YeetColumnValueViewModel>> _columnValues = new Dictionary<string, ObservableCollection<YeetColumnValueViewModel>>();
@@ -222,6 +222,21 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
         #endregion ConvertColumnCommand
+
+        #region MoveColumnCommand
+        [JsonIgnore]
+        public ICommand MoveColumnCommand
+        {
+            get
+            {
+                return _moveColumnCommand ?? (_moveColumnCommand =
+                    new RelayCommand<string, string>((colName, diff) =>
+                    {
+                        MoveColumn(colName, Convert.ToInt32(diff));
+                    }));
+            }
+        }
+        #endregion MoveColumnCommand
         #endregion Commands
 
         #region Initialization
@@ -516,6 +531,25 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 ReflectionHelper.FieldInfoCollection[newColumn.GetType()]["_guid"].SetValue(newColumn, Guid.NewGuid());
                 Columns.InsertChildAt(originalColumn.Sequence, newColumn);
                 RefreshColumnTotals(newColumn.Name);
+            }
+        }
+
+        private void MoveColumn(string colName, int diff)
+        {
+            var col = Columns[colName];
+            var targetSequence = col.Sequence + diff;
+            if (targetSequence > Columns.Count - 1)
+            {
+                targetSequence = Columns.Count - 1;
+            }
+            if (targetSequence < 0)
+            {
+                targetSequence = 0;
+            }
+
+            using (var scope = new YeetItemViewModelBaseExtended.ChangeScope(this, nameof(MoveColumn), col.Sequence, targetSequence))
+            {
+                Columns.MoveChild(targetSequence, col);
             }
         }
 
