@@ -9,6 +9,7 @@ using YeetOverFlow.Wpf.Ui;
 using YeetOverFlow.Wpf.Controls;
 using YeetOverFlow.Data.Wpf.ViewModels;
 using System.ComponentModel;
+using System.Linq;
 
 namespace YeetOverFlow.Data.Wpf.Controls
 {
@@ -255,6 +256,21 @@ namespace YeetOverFlow.Data.Wpf.Controls
                 btn.Command.Execute(btn.CommandParameter);
                 btn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
+        }
+
+        private void ColumnHeader_SelectColumn(object sender, RoutedEventArgs e)
+        {
+            var colName = ((FrameworkElement)sender).Tag.ToString();
+            var colTarget = DataGrid.Columns.FirstOrDefault(dgc => dgc.Header.ToString() == colName);
+            DataGrid.SelectedCells.Clear();
+
+            DataGrid.SelectedCellsChanged -= DataGrid_SelectedCellsChanged;
+            foreach (var row in Table.Rows.Children)
+            {
+                DataGrid.SelectedCells.Add(new DataGridCellInfo(row, colTarget));
+            }
+            DataGrid.SelectedCellsChanged += DataGrid_SelectedCellsChanged;
+            DataGrid_SelectedCellsChanged(null, null);
         }
     }
 }

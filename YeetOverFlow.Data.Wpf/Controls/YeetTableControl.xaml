@@ -181,6 +181,11 @@
                         <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Sigma}" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="SelectColumn" Click="ColumnHeader_SelectColumn" Tag="{Binding [1].Name}">
+                    <MenuItem.Icon>
+                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.SelectGroup}" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Debug" Command="{Binding [0].ToggleDebug}">
                     <MenuItem.Icon>
                         <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.AndroidDebugBridge}" />
