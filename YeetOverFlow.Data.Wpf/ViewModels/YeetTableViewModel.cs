@@ -19,7 +19,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     {
         #region Private Members
         ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand,
-            _renameColumnCommand, _toggleColumnTotals, _toggleDebug, _convertColumnCommand, _moveColumnCommand;
+            _renameColumnCommand, _toggleColumnTotals, _toggleDebug, _convertColumnCommand, _moveColumnCommand,
+            _hideColumnCommand;
         YeetColumnCollectionViewModel _columns = new YeetColumnCollectionViewModel();
         YeetRowCollectionViewModel _rows = new YeetRowCollectionViewModel();
         Dictionary<string, ObservableCollection<YeetColumnValueViewModel>> _columnValues = new Dictionary<string, ObservableCollection<YeetColumnValueViewModel>>();
@@ -237,6 +238,21 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
         #endregion MoveColumnCommand
+
+        #region HideColumnCommand
+        [JsonIgnore]
+        public ICommand HideColumnCommand
+        {
+            get
+            {
+                return _hideColumnCommand ?? (_hideColumnCommand =
+                    new RelayCommand<string>((colName) =>
+                    {
+                        HideColumn(colName);
+                    }));
+            }
+        }
+        #endregion HideColumnCommand
         #endregion Commands
 
         #region Initialization
@@ -579,7 +595,15 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 }
             }
         }
+        
+        private void HideColumn(string colName)
+        {
+            var col = Columns[colName];
+            col.IsVisible = false;
 
+            //ICollectionView columns = CollectionViewSource.GetDefaultView(Columns.Children);
+            //columns.Refresh();
+        }
         #endregion Methods
     }
 }

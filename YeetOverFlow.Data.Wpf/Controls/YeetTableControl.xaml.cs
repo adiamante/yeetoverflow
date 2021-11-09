@@ -10,6 +10,9 @@ using YeetOverFlow.Wpf.Controls;
 using YeetOverFlow.Data.Wpf.ViewModels;
 using System.ComponentModel;
 using System.Linq;
+using System.IO;
+using System.Xml;
+using System.Windows.Markup;
 
 namespace YeetOverFlow.Data.Wpf.Controls
 {
@@ -60,20 +63,11 @@ namespace YeetOverFlow.Data.Wpf.Controls
                         {
                             columns.SortDescriptions.Add(sortDescription);
                         }
-                        //columns.Filter = (itm) =>
-                        //{
-                        //    KeyValuePair<String, SwagDataColumn> kvp = (KeyValuePair<String, SwagDataColumn>)itm;
-                        //    return kvp.Value.IsVisible;
-                        //};
 
                         dataGrid.Columns.Clear();
                         foreach (YeetColumnViewModel col in columns)
                         {
-                            //dataGrid.Columns.Add(sdcKvp.Value.DataGridColumn());
-                            DataGridTextColumn dgc = new DataGridTextColumn();
-                            dgc.Header = col.Key;
-                            dgc.Binding = new Binding($"[{col.Key}].Value");
-                            dataGrid.Columns.Add(dgc);
+                            dataGrid.Columns.Add(CreateDataGridColumn(col));
                         }
 
                         ccvm.CollectionChanged += fdgDataGrid.Columns_CollectionChanged;
@@ -88,6 +82,18 @@ namespace YeetOverFlow.Data.Wpf.Controls
             }
         }
 
+        private static DataGridTextColumn CreateDataGridColumn(YeetColumnViewModel col)
+        {
+            DataGridTextColumn dgc = new DataGridTextColumn();
+            dgc.Header = col.Key;
+            dgc.Binding = new Binding($"[{col.Key}].Value");
+            Binding binding = new Binding("IsVisible");
+            binding.Source = col;
+            binding.Converter = new BooleanToVisibilityConverter();
+            BindingOperations.SetBinding(dgc, DataGridTextColumn.VisibilityProperty, binding);
+            return dgc;
+        }
+
         private void Columns_CollectionChanged(object s, NotifyCollectionChangedEventArgs e)
         {
             //var columns = (YeetColumnCollectionViewModel)s;
@@ -99,22 +105,16 @@ namespace YeetOverFlow.Data.Wpf.Controls
                     dataGrid.Columns.RemoveAt(e.OldStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Add:
-                    foreach (YeetColumnViewModel colVm in e.NewItems)
+                    foreach (YeetColumnViewModel col in e.NewItems)
                     {
-                        DataGridTextColumn dgc = new DataGridTextColumn();
-                        dgc.Header = colVm.Key;
-                        dgc.Binding = new Binding($"[{colVm.Key}].Value");
-                        dataGrid.Columns.Insert(e.NewStartingIndex, dgc);
+                        dataGrid.Columns.Insert(e.NewStartingIndex, CreateDataGridColumn(col));
                     }
                     break;
                 case NotifyCollectionChangedAction.Move:
-                    foreach (YeetColumnViewModel colVm in e.NewItems)
+                    foreach (YeetColumnViewModel col in e.NewItems)
                     {
-                        DataGridTextColumn dgc = new DataGridTextColumn();
-                        dgc.Header = colVm.Key;
-                        dgc.Binding = new Binding($"[{colVm.Key}].Value");
                         dataGrid.Columns.RemoveAt(e.OldStartingIndex);
-                        dataGrid.Columns.Insert(e.NewStartingIndex, dgc);
+                        dataGrid.Columns.Insert(e.NewStartingIndex, CreateDataGridColumn(col));
                     }
                     break;
             }
