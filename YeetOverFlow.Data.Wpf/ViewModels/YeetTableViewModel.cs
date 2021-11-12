@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using YeetOverFlow.Data.Wpf.HelperExtensions;
@@ -426,6 +427,17 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
         private void RenameColumn(string colName, string newName)
         {
+            if (colName == newName)
+            {
+                return;
+            }
+
+            if (Columns.Children.Any(c => c.Name == newName))
+            {
+                MessageBox.Show($"Column name '{newName}' already taken");
+                return;
+            }
+
             using (var scope = new YeetItemViewModelBaseExtended.ChangeScope(this, nameof(RenameColumn), colName, newName))
             {
                 var col = Columns[colName];
