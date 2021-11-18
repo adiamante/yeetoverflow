@@ -5,11 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:YeetOverFlow.Wpf.Demo"
         xmlns:ywcntl="clr-namespace:YeetOverFlow.Wpf.Controls;assembly=YeetOverFlow.Wpf" 
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
+        xmlns:ywconv="clr-namespace:YeetOverFlow.Wpf.Converters;assembly=YeetOverFlow.Wpf"
         x:Name="ThisWindow"
         Title="YeetWpf Demo" Height="450" Width="800">
     <Grid>
         <TabControl DataContext="{Binding DemoViewModel, ElementName=ThisWindow}">
+            <TabItem Header="SidePanel">
+                <ywcntl:SidePanelControl>
+                    <TabItem Header="Number 1">
+                        <TabItem.Tag>
+                            <MultiBinding Converter="{ywconv:RelayMultiConverter}">
+                                <Binding Source="{x:Static iconPacks:PackIconMaterialKind.Numeric1}"/>
+                                <Binding Source="{x:Static iconPacks:PackIconMaterialKind.Numeric2}"/>
+                            </MultiBinding>
+                        </TabItem.Tag>
+                        Test 1
+                    </TabItem>
+                    <TabItem Header="Number 2" Tag="{x:Static iconPacks:PackIconMaterialKind.Numeric2}">
+                        Test 2
+                    </TabItem>
+                </ywcntl:SidePanelControl>
+            </TabItem>
             <TabItem Header="SearchTextBox" DataContext="{Binding SearchTextBox}">
                 <ywcntl:SearchTextBox Width="200" Height="20" FilterMode="{Binding FilterMode}" SearchCommand="{Binding SearchCommand}" />
             </TabItem>

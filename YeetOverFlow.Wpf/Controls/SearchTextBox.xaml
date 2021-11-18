@@ -172,7 +172,7 @@
                                     x:Name="btnSearch" Margin="0,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Center" 
                                     Padding="0"
                                     Style="{StaticResource MahApps.Styles.Button.Flat}"
-                                    Foreground="{DynamicResource MahApps.Brushes.Black}"
+                                    Foreground="{DynamicResource MahApps.Brushes.Gray}"
                                     Background="{DynamicResource MahApps.Brushes.Control.Background}"
                                     VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="btnSearch_Click">
                                 <local:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}" />

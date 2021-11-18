@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace YeetOverFlow.Data.Wpf.Converters
+namespace YeetOverFlow.Wpf.Converters
 {
     public class RelayMultiConverter : MarkupExtension, IMultiValueConverter
     {
