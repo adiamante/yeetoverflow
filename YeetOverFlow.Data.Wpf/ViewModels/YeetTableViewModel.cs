@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -19,11 +20,16 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 {
     public class YeetTableViewModel : YeetDataViewModel
     {
+        #region Data Structures
+        public enum TableExportType { Tsql, Csv  }
+        public enum TableExportDestination { Clipboard, File }
+        #endregion Data Structures
+
         #region Private Members
         ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand,
             _renameColumnCommand, _toggleColumnTotals, _toggleDebug, _convertColumnCommand, _moveColumnCommand,
             _hideColumnCommand, _applyAllCheckedColumnVisibilityCommand, _filterColumnVisibilityCommand, _applyColumnVisibilityCommand,
-            _applyAllCheckedColumnFilterCommand, _filterColumnFilterCommand, _applyColumnFilterClearCommand;
+            _applyAllCheckedColumnFilterCommand, _filterColumnFilterCommand, _applyColumnFilterClearCommand, _exportCommand;
         YeetColumnCollectionViewModel _columns = new YeetColumnCollectionViewModel();
         YeetRowCollectionViewModel _rows = new YeetRowCollectionViewModel();
         Dictionary<string, ObservableCollection<YeetColumnValueViewModel>> _columnValues = new Dictionary<string, ObservableCollection<YeetColumnValueViewModel>>();
@@ -90,6 +96,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             get { return _showDebug; }
             set { SetValue(ref _showDebug, value, true, false); }
         }
+        public TableExportType ExportType { get; set; }
+        public TableExportDestination ExportDestination { get; set; }
         #endregion Public Properties
 
         #region Commands
@@ -410,6 +418,106 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
         #endregion ApplyColumnFilterClearCommand
+
+        #region ExportCommand
+        [JsonIgnore]
+        public ICommand ExportCommand
+        {
+            get
+            {
+                return _exportCommand ?? (_exportCommand =
+                    new RelayCommand(() =>
+                    {
+                        StringBuilder sbExport = new StringBuilder();
+                        switch (ExportType)
+                        {
+                            case TableExportType.Tsql:
+                                sbExport.Append($"CREATE TABLE #{Key} (");
+                                foreach (YeetColumnViewModel col in Columns.Children)
+                                {
+                                    if (col.IsVisible)
+                                    {
+                                        var tSqlType = "";
+
+                                        switch (col.DataType.Name.ToLower())
+                                        {
+                                            case "double":
+                                                tSqlType = "FLOAT";
+                                                break;
+                                            case "int":
+                                                tSqlType = "INT";
+                                                break;
+                                            case "string":
+                                            default:
+                                                tSqlType = "VARCHAR(MAX)";
+                                                break;
+                                        }
+                                        sbExport.Append($"{col.Key} {tSqlType}, ");
+                                    }
+                                }
+                                sbExport.Length--;  //remove last space
+                                sbExport.Length--;  //remove last comma
+                                sbExport.AppendLine(")");
+
+                                sbExport.Append($"INSERT INTO #{Key} (");
+                                foreach (YeetColumnViewModel col in Columns.Children)
+                                {
+                                    if (col.IsVisible)
+                                    {
+                                        sbExport.Append($"{col.Key}, ");
+                                    }
+                                }
+                                sbExport.Length--;  //remove last space
+                                sbExport.Length--;  //remove last comma
+                                sbExport.AppendLine(") VALUES");
+
+                                var view = CollectionViewSource.GetDefaultView(Rows.Children);
+                                foreach (YeetRowViewModel row in view)
+                                {
+                                    sbExport.Append("\t(");
+                                    foreach (YeetColumnViewModel col in Columns.Children)
+                                    {
+                                        if (col.IsVisible)
+                                        {
+                                            var cell = (YeetCellViewModel)row[col.Key];
+                                            if (col.DataType.IsNumericType())
+                                            {
+                                                sbExport.Append($"{cell.GetValue()}, ");
+                                            }
+                                            else
+                                            {
+                                                sbExport.Append($"'{cell.GetValue()}', ");
+                                            }
+                                        }
+                                    }
+                                    sbExport.Length--;  //remove last space
+                                    sbExport.Length--;  //remove last comma
+                                    sbExport.AppendLine("),");
+                                }
+
+                                sbExport.Length--;  //remove carriage return
+                                sbExport.Length--;  //remove last new line
+                                sbExport.Length--;  //remove last comma
+                                sbExport.AppendLine();
+
+                                sbExport.AppendLine($"SELECT * FROM #{Key}");
+                                break;
+                            case TableExportType.Csv:
+                                throw new NotImplementedException();
+                        }
+
+                        switch (ExportDestination)
+                        {
+                            case TableExportDestination.Clipboard:
+                                Clipboard.SetText(sbExport.ToString());
+                                break;
+                            case TableExportDestination.File:
+                                throw new NotImplementedException();
+                        }
+                    }));
+            }
+        }
+        #endregion ExportCommand
         #endregion Commands
 
         #region Initialization

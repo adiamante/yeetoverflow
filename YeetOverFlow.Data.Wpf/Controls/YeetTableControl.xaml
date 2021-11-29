@@ -10,7 +10,9 @@
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
-    xmlns:ydwconv="clr-namespace:YeetOverFlow.Data.Wpf.Converters"
+    xmlns:ydwconv="clr-namespace:YeetOverFlow.Data.Wpf.Converters" 
+    xmlns:ywui="clr-namespace:YeetOverFlow.Wpf.Ui;assembly=YeetOverFlow.Wpf"
+    xmlns:ydwvm="clr-namespace:YeetOverFlow.Data.Wpf.ViewModels"
     mc:Ignorable="d" 
     x:Name="ThisControl"
     d:DesignHeight="450" d:DesignWidth="800">
@@ -621,6 +623,34 @@
                         </DockPanel>
                     </TabItem>
                 </ycntl:SidePanelControl>
+            </TabItem>
+            <TabItem Header="Export">
+                <TabItem.Tag>
+                    <MultiBinding Converter="{ywconv:RelayMultiConverter}">
+                        <Binding Source="{x:Static iconPacks:PackIconMaterialKind.Table}"/>
+                        <Binding Source="{x:Static iconPacks:PackIconMaterialKind.Export}"/>
+                    </MultiBinding>
+                </TabItem.Tag>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <ycntl:YeetLabel Grid.Row="0" Grid.Column="0" Text="Type: " Kind="{x:Static iconPacks:PackIconMaterialKind.Export}" Kind2="{x:Static iconPacks:PackIconMaterialKind.Export}" />
+                    <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Source={ywui:EnumerationExtension {x:Type ydwvm:YeetTableViewModel+TableExportType}}}" 
+                              SelectedValue="{Binding ExportType}" DisplayMemberPath="Description" SelectedValuePath="Value" />
+                    <ycntl:YeetLabel Grid.Row="1" Grid.Column="0" Text="Destintion: " Kind="{x:Static iconPacks:PackIconMaterialKind.Target}" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Source={ywui:EnumerationExtension {x:Type ydwvm:YeetTableViewModel+TableExportDestination}}}" 
+                              SelectedValue="{Binding ExportDestination}" DisplayMemberPath="Description" SelectedValuePath="Value" />
+                    <Button Grid.Row="2" Grid.ColumnSpan="2" Command="{Binding ExportCommand}">
+                        <ycntl:YeetLabel Text="Do Export!" Kind="{x:Static iconPacks:PackIconMaterialKind.Export}" />
+                    </Button>
+                </Grid>
             </TabItem>
         </ycntl:SidePanelControl>
         <DataGrid x:Name="DataGrid"
