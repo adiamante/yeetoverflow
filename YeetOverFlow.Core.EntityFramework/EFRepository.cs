@@ -132,7 +132,7 @@ namespace YeetOverFlow.Core.EntityFramework
 
         public virtual void Update(TEntity entityToUpdate)
         {
-            dbSet.Attach(entityToUpdate);
+            //dbSet.Attach(entityToUpdate);     //maybe only attach if detached
             var entry = context.Entry(entityToUpdate);
             if (entry.State != EntityState.Added)
             {

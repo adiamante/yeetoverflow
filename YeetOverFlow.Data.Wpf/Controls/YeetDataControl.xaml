@@ -26,7 +26,7 @@
             </MenuItem>
         </ContextMenu>
     </ycntl:YeetControlBase.Resources>
-    <Grid DataContext="{Binding Data, ElementName=ThisControl}" ContextMenu="{StaticResource DataContextMenu}">
+    <Grid DataContext="{Binding Data, ElementName=ThisControl}" AllowDrop="True" Drop="Grid_Drop" ContextMenu="{StaticResource DataContextMenu}">
         <TabControl ItemsSource="{Binding Root.Children}"
                     ItemTemplate="{StaticResource DataHeaderTemplate}">
             

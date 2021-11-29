@@ -135,7 +135,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
     public class YeetStringColumnViewModel : YeetColumnViewModel<string>
     {
-        YeetStringColumnViewModel() : this(Guid.Empty, null)
+        public YeetStringColumnViewModel() : this(Guid.NewGuid(), null)
         {
 
         }

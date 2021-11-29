@@ -47,7 +47,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 SetValue(ref _columns, value); 
             }
         }
-        public INotifyCollectionChanged ColumnsVisibility
+        public ICollectionView ColumnsVisibility
         {
             get
             {
@@ -64,7 +64,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 return _columnsVisibility;
             }
         }
-        public INotifyCollectionChanged ColumnsFilter
+        public ICollectionView ColumnsFilter
         {
             get
             {
@@ -432,7 +432,8 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                         switch (ExportType)
                         {
                             case TableExportType.Tsql:
-                                sbExport.Append($"CREATE TABLE #{Key} (");
+                                string tableName = Key.Replace(".", "_");
+                                sbExport.Append($"CREATE TABLE #{tableName} (");
                                 foreach (YeetColumnViewModel col in Columns.Children)
                                 {
                                     if (col.IsVisible)
@@ -459,7 +460,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                 sbExport.Length--;  //remove last comma
                                 sbExport.AppendLine(")");
 
-                                sbExport.Append($"INSERT INTO #{Key} (");
+                                sbExport.Append($"INSERT INTO #{tableName} (");
                                 foreach (YeetColumnViewModel col in Columns.Children)
                                 {
                                     if (col.IsVisible)
@@ -482,11 +483,11 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                             var cell = (YeetCellViewModel)row[col.Key];
                                             if (col.DataType.IsNumericType())
                                             {
-                                                sbExport.Append($"{cell.GetValue()}, ");
+                                                sbExport.Append($"{cell.GetValue().ToString().Replace("'", "''")}, ");
                                             }
                                             else
                                             {
-                                                sbExport.Append($"'{cell.GetValue()}', ");
+                                                sbExport.Append($"'{cell.GetValue().ToString().Replace("'", "''")}', ");
                                             }
                                         }
                                     }
@@ -500,7 +501,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                 sbExport.Length--;  //remove last comma
                                 sbExport.AppendLine();
 
-                                sbExport.AppendLine($"SELECT * FROM #{Key}");
+                                sbExport.AppendLine($"SELECT * FROM #{tableName}");
                                 break;
                             case TableExportType.Csv:
                                 throw new NotImplementedException();
@@ -607,7 +608,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
             RefreshColumnTotals();
             OnPropertyChanged(nameof(RowsViewCount));
-            _columnsFilter.Refresh();
+            ColumnsFilter.Refresh();
         }
 
         private void FilterColumnValues(string filter, FilterMode filterMode, string colName)
