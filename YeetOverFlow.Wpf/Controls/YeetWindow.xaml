@@ -99,7 +99,7 @@
                 <DataTemplate>
                     <DockPanel>
                         <Grid DockPanel.Dock="Bottom" >
-                            <StatusBar Style="{StaticResource MahApps.Styles.StatusBar}" MaxHeight="200">
+                            <StatusBar Style="{StaticResource MahApps.Styles.StatusBar}" MaxHeight="100">
                                 <TextBlock Text="{Binding ViewModel.Message, RelativeSource={RelativeSource AncestorType={x:Type ywcntl:YeetWindow}}}" />
                             </StatusBar>
                             <metro:MetroProgressBar IsIndeterminate="{Binding ViewModel.IsBusy, RelativeSource={RelativeSource AncestorType={x:Type ywcntl:YeetWindow}}}" />

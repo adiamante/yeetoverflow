@@ -505,56 +505,122 @@
                         <Binding Source="{x:Static iconPacks:PackIconFontAwesomeKind.EditSolid}"/>
                     </MultiBinding>
                 </TabItem.Tag>
-                <DockPanel>
-                    <ycntl:SearchTextBox DockPanel.Dock="Top"
-                                         SearchCommand="{Binding FilterColumnVisibilityCommad}">
-                        
-                    </ycntl:SearchTextBox>
-                    <Button DockPanel.Dock="Top" Command="{Binding ApplyColumnVisibilityCommand}">
-                        <ycntl:YeetLabel Text="Apply" Kind="{x:Static iconPacks:PackIconMaterialKind.PlayOutline}" />
-                    </Button>
-                    <ListView DockPanel.Dock="Top" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                                <Setter Property="VerticalAlignment" Value="Center" />
-                                <Setter Property="VerticalContentAlignment" Value="Center" />
-                                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListViewItem>
-                            <CheckBox HorizontalContentAlignment="Stretch">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Checked">
-                                        <i:InvokeCommandAction Command="{Binding ApplyAllCheckedColumnVisibilityCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
-                                    </i:EventTrigger>
-                                    <i:EventTrigger EventName="Unchecked">
-                                        <i:InvokeCommandAction Command="{Binding ApplyAllCheckedColumnVisibilityCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                                <TextBlock Grid.Column="0" Text="All" />
-                            </CheckBox>
-                        </ListViewItem>
-                    </ListView>
-                    <ListView ItemsSource="{Binding ColumnsVisibility}">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                                <Setter Property="VerticalAlignment" Value="Center" />
-                                <Setter Property="VerticalContentAlignment" Value="Center" />
-                                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <!--<Setter Property="ContextMenu" Value="{StaticResource SwagDataColumnContextMenu}" />-->
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsVisible_Checked}">
-                                    <ycntl:YeetLabel Text="{Binding Name}" Kind="{x:Static iconPacks:PackIconMaterialKind.TableColumn}" />
-                                </CheckBox>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </DockPanel>
+                <ycntl:SidePanelControl Grid.Column="0">
+                    <TabItem Header="Visibility">
+                        <TabItem.Tag>
+                            <MultiBinding Converter="{ywconv:RelayMultiConverter}">
+                                <Binding Source="{x:Static iconPacks:PackIconMaterialKind.TableColumn}"/>
+                                <Binding Source="{x:Static iconPacks:PackIconMaterialKind.Eye}"/>
+                            </MultiBinding>
+                        </TabItem.Tag>
+                        <DockPanel>
+                            <ycntl:SearchTextBox DockPanel.Dock="Top"
+                                         SearchCommand="{Binding FilterColumnVisibilityCommad}" />
+                            <Button DockPanel.Dock="Top" Command="{Binding ApplyColumnVisibilityCommand}">
+                                <ycntl:YeetLabel Text="Apply" Kind="{x:Static iconPacks:PackIconMaterialKind.PlayOutline}" />
+                            </Button>
+                            <ListView DockPanel.Dock="Top" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListViewItem>
+                                    <CheckBox HorizontalContentAlignment="Stretch">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding ApplyAllCheckedColumnVisibilityCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding ApplyAllCheckedColumnVisibilityCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <TextBlock Grid.Column="0" Text="All" />
+                                    </CheckBox>
+                                </ListViewItem>
+                            </ListView>
+                            <ListView ItemsSource="{Binding ColumnsVisibility}">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <!--<Setter Property="ContextMenu" Value="{StaticResource SwagDataColumnContextMenu}" />-->
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsChecked_Visible}">
+                                            <ycntl:YeetLabel Text="{Binding Name}" Kind="{x:Static iconPacks:PackIconMaterialKind.TableColumn}" />
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </DockPanel>
+                    </TabItem>
+                    <TabItem Header="Filters">
+                        <TabItem.Tag>
+                            <MultiBinding Converter="{ywconv:RelayMultiConverter}">
+                                <Binding Source="{x:Static iconPacks:PackIconMaterialKind.TableColumn}"/>
+                                <Binding Source="{x:Static iconPacks:PackIconMaterialKind.Filter}"/>
+                            </MultiBinding>
+                        </TabItem.Tag>
+                        <DockPanel>
+                            <ycntl:SearchTextBox DockPanel.Dock="Top"
+                                         SearchCommand="{Binding FilterColumnFilterCommad}" />
+                            <Button DockPanel.Dock="Top" Command="{Binding ApplyColumnFilterClearCommand}">
+                                <ycntl:YeetLabel Text="Clear" Kind="{x:Static iconPacks:PackIconMaterialKind.FilterOff}" />
+                            </Button>
+                            <ListView DockPanel.Dock="Top" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListViewItem>
+                                    <CheckBox HorizontalContentAlignment="Stretch">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding ApplyAllCheckedColumnFilterCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding ApplyAllCheckedColumnFilterCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <TextBlock Grid.Column="0" Text="All" />
+                                    </CheckBox>
+                                </ListViewItem>
+                            </ListView>
+                            <ListView ItemsSource="{Binding ColumnsFilter}">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsChecked_Filter}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <ycntl:YeetLabel Text="{Binding Name}" Kind="{x:Static iconPacks:PackIconUniconsKind.Filter}" />
+                                                <TextBlock Text="{Binding ColumnFilter.Filter, StringFormat={} ({0})}" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </DockPanel>
+                    </TabItem>
+                </ycntl:SidePanelControl>
             </TabItem>
         </ycntl:SidePanelControl>
         <DataGrid x:Name="DataGrid"

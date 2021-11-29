@@ -22,14 +22,15 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         #region Private Members
         ICommand _applyColumnFilterCommand, _clearColumnFilterCommand, _applyColumnValuesFilterCommand, _filterColumnValuesCommand, _applyAllCheckedColumnValuesCommand, _showAllColumnValuesCommand,
             _renameColumnCommand, _toggleColumnTotals, _toggleDebug, _convertColumnCommand, _moveColumnCommand,
-            _hideColumnCommand, _applyAllCheckedColumnVisibilityCommand, _filterColumnVisibilityCommad, _applyColumnVisibilityCommand;
+            _hideColumnCommand, _applyAllCheckedColumnVisibilityCommand, _filterColumnVisibilityCommand, _applyColumnVisibilityCommand,
+            _applyAllCheckedColumnFilterCommand, _filterColumnFilterCommand, _applyColumnFilterClearCommand;
         YeetColumnCollectionViewModel _columns = new YeetColumnCollectionViewModel();
         YeetRowCollectionViewModel _rows = new YeetRowCollectionViewModel();
         Dictionary<string, ObservableCollection<YeetColumnValueViewModel>> _columnValues = new Dictionary<string, ObservableCollection<YeetColumnValueViewModel>>();
         bool _showColumnTotals = false, _showDebug = false;
         IMapper _columnMapper;
-        CollectionViewSource _columnsVisibilitySource;
-        ICollectionView _columnsVisibility;
+        CollectionViewSource _columnsVisibilitySource, _columnsFilterSource;
+        ICollectionView _columnsVisibility, _columnsFilter;
         #endregion Private Members
 
         #region Public Properties
@@ -55,6 +56,23 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                     _columnsVisibility = _columnsVisibilitySource.View;
                 }
                 return _columnsVisibility;
+            }
+        }
+        public INotifyCollectionChanged ColumnsFilter
+        {
+            get
+            {
+                if (_columnsFilter == null && _columns != null)
+                {
+                    _columnsFilterSource = new CollectionViewSource() { Source = _columns.Children };
+                    _columnsFilterSource.View.Filter = (c) =>
+                    {
+                        var col = (YeetColumnViewModel)c;
+                        return col.HasAppliedFilter;
+                    };
+                    _columnsFilter = _columnsFilterSource.View;
+                }
+                return _columnsFilter;
             }
         }
         public YeetRowCollectionViewModel Rows
@@ -286,7 +304,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                     {
                         foreach (YeetColumnViewModel col in _columnsVisibility)
                         {
-                            col.IsVisible_Checked = !isChecked;
+                            col.IsChecked_Visible = !isChecked;
                         }
                     }));
             }
@@ -299,7 +317,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         {
             get
             {
-                return _filterColumnVisibilityCommad ?? (_filterColumnVisibilityCommad =
+                return _filterColumnVisibilityCommand ?? (_filterColumnVisibilityCommand =
                     new RelayCommand<string, FilterMode, object>((filter, filterMode, commandParameter) =>
                     {
                         FilterColumnVisibility(filter, filterMode);
@@ -319,7 +337,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                     {
                         foreach (YeetColumnViewModel col in Columns.Children)
                         {
-                            col.IsVisible = col.IsVisible_Checked;
+                            col.IsVisible = col.IsChecked_Visible;
                         }
                     }));
             }
@@ -336,6 +354,62 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
         #endregion RowsViewCount
+
+        #region ApplyAllCheckedColumnFilterCommand
+        [JsonIgnore]
+        public ICommand ApplyAllCheckedColumnFilterCommand
+        {
+            get
+            {
+                return _applyAllCheckedColumnFilterCommand ?? (_applyAllCheckedColumnFilterCommand =
+                    new RelayCommand<bool>((isChecked) =>
+                    {
+                        foreach (YeetColumnViewModel col in _columnsVisibility)
+                        {
+                            col.IsChecked_Filter = !isChecked;
+                        }
+                    }));
+            }
+        }
+        #endregion ApplyAllCheckedColumnFilterCommand
+
+        #region FilterColumnFilterCommad
+        [JsonIgnore]
+        public ICommand FilterColumnFilterCommad
+        {
+            get
+            {
+                return _filterColumnFilterCommand ?? (_filterColumnFilterCommand =
+                    new RelayCommand<string, FilterMode, object>((filter, filterMode, commandParameter) =>
+                    {
+                        FilterColumnFilter(filter, filterMode);
+                    }));
+            }
+        }
+        #endregion FilterColumnFilterCommad
+
+        #region ApplyColumnFilterClearCommand
+        [JsonIgnore]
+        public ICommand ApplyColumnFilterClearCommand
+        {
+            get
+            {
+                return _applyColumnFilterClearCommand ?? (_applyColumnFilterClearCommand =
+                    new RelayCommand(() =>
+                    {
+                        foreach (YeetColumnViewModel col in Columns.Children)
+                        {
+                            if (col.IsChecked_Filter)
+                            {
+                                col.ColumnFilter.Filter = "";
+                                col.ColumnFilter.Values = new List<object>();
+                            }
+                        }
+                        ApplyColumnFilters();
+                    }));
+            }
+        }
+        #endregion ApplyColumnFilterClearCommand
         #endregion Commands
 
         #region Initialization
@@ -425,6 +499,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
             RefreshColumnTotals();
             OnPropertyChanged(nameof(RowsViewCount));
+            _columnsFilter.Refresh();
         }
 
         private void FilterColumnValues(string filter, FilterMode filterMode, string colName)
@@ -461,6 +536,22 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         private void FilterColumnVisibility(string filter, FilterMode filterMode)
         {
             var view = _columnsVisibility;
+
+            view.Filter = (c) =>
+            {
+                var col = (YeetColumnViewModel)c;
+                if (!String.IsNullOrEmpty(filter) && !Evaluate(filter, filterMode, col.Name))
+                {
+                    return false;
+                }
+
+                return true;
+            };
+        }
+
+        private void FilterColumnFilter(string filter, FilterMode filterMode)
+        {
+            var view = _columnsFilter;
 
             view.Filter = (c) =>
             {
