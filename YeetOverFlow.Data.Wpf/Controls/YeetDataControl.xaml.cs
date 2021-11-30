@@ -6,9 +6,11 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using YeetOverFlow.Data.Wpf.ViewModels;
 using YeetOverFlow.Wpf.Controls;
+using YeetOverFlow.Wpf.Ui;
 
 namespace YeetOverFlow.Data.Wpf.Controls
 {
@@ -76,6 +78,33 @@ namespace YeetOverFlow.Data.Wpf.Controls
                 
                 e.Handled = true;
             }
+        }
+
+        private void TabHeader_TextBoxLoaded(object sender, RoutedEventArgs e)
+        {
+            TextBox txtText = (TextBox)sender;
+            txtText.SelectAll();
+            txtText.Focus();
+        }
+
+        private void TabHeader_TextBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox txtText = (TextBox)sender;
+                MenuItem menuItem = (MenuItem)DependencyObjectHelper.TryFindParent<MenuItem>(txtText);
+                Button btn = menuItem.FindLogicalChild<Button>();
+                btn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            }
+        }
+
+        private void TabHeader_RenameClick(object sender, RoutedEventArgs e)
+        {
+            Button btnRename = (Button)sender;
+            ContextMenu contextMenu = DependencyObjectHelper.TryFindParent<ContextMenu>(btnRename);
+            contextMenu.IsOpen = false;
+            var args = (object[])btnRename.Tag;
+            Data.RenameByGuid((Guid)args[0], (string)args[1]);
         }
     }
 

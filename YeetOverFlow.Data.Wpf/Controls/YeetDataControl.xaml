@@ -7,8 +7,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:dvm="clr-namespace:YeetOverFlow.Data.Wpf.ViewModels"
         xmlns:local="clr-namespace:YeetOverFlow.Data.Wpf.Controls"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
-        mc:Ignorable="d" 
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:ywconv="clr-namespace:YeetOverFlow.Wpf.Converters;assembly=YeetOverFlow.Wpf"
+    mc:Ignorable="d" 
         x:Name="ThisControl"
         d:DesignHeight="450" d:DesignWidth="800">
     <ycntl:YeetControlBase.Resources>
@@ -16,6 +16,37 @@
             <TextBlock Text="{Binding Key}" Tag="{Binding Data, RelativeSource={RelativeSource AncestorType=local:YeetDataControl}}">
                 <TextBlock.ContextMenu>
                     <ContextMenu Tag="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="Rename" StaysOpenOnClick="True">
+                            <MenuItem.Icon>
+                                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.RenameBox}" />
+                            </MenuItem.Icon>
+                            <MenuItem StaysOpenOnClick="True">
+                                <MenuItem.Icon>
+                                    <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.KeyboardOutline}" />
+                                </MenuItem.Icon>
+                                <MenuItem.Header>
+                                    <Grid Tag="{Binding Name, Mode=OneWay}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="txtColName" Grid.Row="0" Grid.Column="0" Text="{Binding Tag, RelativeSource={RelativeSource AncestorType=Grid}, UpdateSourceTrigger=PropertyChanged}" 
+                                            MinWidth="100" Loaded="TabHeader_TextBoxLoaded" KeyDown="TabHeader_TextBoxKeyDown" />
+                                        <Button Grid.Row="1" Grid.Column="0" Content="Rename" Click="TabHeader_RenameClick">
+                                            <Button.Tag>
+                                                <MultiBinding Converter="{ywconv:RelayMultiConverter}">
+                                                    <Binding Path="Guid" />
+                                                    <Binding Path="Tag" RelativeSource="{RelativeSource AncestorType=Grid}" />
+                                                </MultiBinding>
+                                            </Button.Tag>
+                                        </Button>
+                                    </Grid>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </MenuItem>
                         <MenuItem Header="Close" Command="{Binding Parent.Tag.RemoveCommand, RelativeSource={RelativeSource Self}}" CommandParameter="{Binding Guid}">
                             <MenuItem.Icon>
                                 <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Close}" />

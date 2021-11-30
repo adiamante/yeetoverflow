@@ -101,14 +101,6 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             ColumnFilter.PropertyChanged += ColumnFilter_PropertyChanged;
         }
         #endregion Initialization
-
-        #region Methods
-        public void Rename(string newName)
-        {
-            Name = newName;
-            SetKey(newName);
-        }
-        #endregion Methods
     }
 
     public abstract class YeetColumnViewModel<T> : YeetColumnViewModel

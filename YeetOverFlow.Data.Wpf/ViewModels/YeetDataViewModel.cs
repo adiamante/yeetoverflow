@@ -15,10 +15,18 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         {
         }
 
+        #region Methods
+        public void Rename(string newName)
+        {
+            Name = newName;
+            SetKey(newName);
+        }
+
         protected virtual void SetKey(String key, YeetDataViewModel data)
         {
             data._key = key;
             data.OnPropertyChanged(nameof(Key));
         }
+        #endregion Methods
     }
 }

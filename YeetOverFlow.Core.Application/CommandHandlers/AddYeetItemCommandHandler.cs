@@ -26,7 +26,11 @@ namespace YeetOverFlow.Core.Application.CommandHandlers
             if (targetList == null) throw new InvalidOperationException($"Could not find targetList with provided '{nameof(targetListGuid)}'");
 
             //Add to target list
-            _unitOfWork.YeetItems.Insert(targetChild);
+            if (_unitOfWork.YeetItems.GetById(targetChild.Guid) == null)
+            {
+                _unitOfWork.YeetItems.Insert(targetChild);
+            }
+
             targetList.InsertChildAt(targetChildSequence, targetChild);
             if (!command.DeferCommit) _unitOfWork.Save();
 

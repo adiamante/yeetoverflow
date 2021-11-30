@@ -8,6 +8,8 @@ using YeetOverFlow.Core;
 using YeetOverFlow.Wpf.Commands;
 using YeetOverFlow.Wpf.Mappers;
 using YeetOverFlow.Wpf.ViewModels;
+using System.Windows;
+using System.Linq;
 
 namespace YeetOverFlow.Data.Wpf.ViewModels
 {
@@ -126,6 +128,28 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
         {
             Resolve(Root);
             Root.Init();
+        }
+
+        public void RenameByGuid(Guid guid, string newName)
+        {
+            var child = _guidToYeetData[guid];
+            var parent = FindDataSet(Root, guid);
+
+            if (child.Name == newName)
+            {
+                return;
+            }
+
+            if (parent.Children.Any(c => c.Name == newName))
+            {
+                MessageBox.Show($"Child name '{newName}' already taken");
+                return;
+            }
+
+            var originalName = child.Name;
+            child.Rename(newName);
+            parent.Remove(originalName);
+            parent.InsertChildAt(child.Sequence, child);
         }
 
         private YeetDataSetViewModel FindDataSet(YeetDataSetViewModel data, Guid guid)
