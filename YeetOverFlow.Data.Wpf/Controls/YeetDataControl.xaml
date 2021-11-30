@@ -13,7 +13,17 @@
         d:DesignHeight="450" d:DesignWidth="800">
     <ycntl:YeetControlBase.Resources>
         <DataTemplate x:Key="DataHeaderTemplate">
-            <TextBlock Text="{Binding Key}" />
+            <TextBlock Text="{Binding Key}" Tag="{Binding Data, RelativeSource={RelativeSource AncestorType=local:YeetDataControl}}">
+                <TextBlock.ContextMenu>
+                    <ContextMenu Tag="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="Close" Command="{Binding Parent.Tag.RemoveCommand, RelativeSource={RelativeSource Self}}" CommandParameter="{Binding Guid}">
+                            <MenuItem.Icon>
+                                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Close}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </TextBlock.ContextMenu>
+            </TextBlock>
         </DataTemplate>
         <DataTemplate DataType="{x:Type dvm:YeetTableViewModel}">
             <local:YeetTableControl Table="{Binding .}" />
@@ -42,7 +52,6 @@
         </ycntl:SidePanelControl>
         <TabControl ItemsSource="{Binding Root.Children}"
                     ItemTemplate="{StaticResource DataHeaderTemplate}">
-            
         </TabControl>
     </DockPanel>
 </ycntl:YeetControlBase>

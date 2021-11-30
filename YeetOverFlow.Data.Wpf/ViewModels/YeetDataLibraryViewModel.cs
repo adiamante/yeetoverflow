@@ -5,9 +5,6 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using AutoMapper;
 using YeetOverFlow.Core;
-using YeetOverFlow.Core.Application.Commands;
-using YeetOverFlow.Core.Application.Data.Core;
-using YeetOverFlow.Core.Application.Data.Commands;
 using YeetOverFlow.Wpf.Commands;
 using YeetOverFlow.Wpf.Mappers;
 using YeetOverFlow.Wpf.ViewModels;
@@ -16,7 +13,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 {
     public class YeetDataLibraryViewModel : YeetLibrary<YeetDataSetViewModel>, INotifyPropertyChanged
     {
-        System.Windows.Input.ICommand _saveCommand;
+        System.Windows.Input.ICommand _saveCommand, _removeCommand;
         YeetCommandManagerViewModel _commandManager;
         ConcurrentDictionary<Guid, YeetDataViewModel> _guidToYeetData = new ConcurrentDictionary<Guid, YeetDataViewModel>();
         IMapper _mapper;
@@ -112,10 +109,41 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             }
         }
 
+        public System.Windows.Input.ICommand RemoveCommand
+        {
+            get
+            {
+                return _removeCommand ?? (_removeCommand =
+                    new RelayCommand<Guid>((guid) =>
+                    {
+                        var parent = FindDataSet(Root, guid);
+                        parent.RemoveChild(_guidToYeetData[guid]);
+                    }));
+            }
+        }
+
         public void Init()
         {
             Resolve(Root);
             Root.Init();
+        }
+
+        private YeetDataSetViewModel FindDataSet(YeetDataSetViewModel data, Guid guid)
+        {
+            foreach (var child in data.Children)
+            {
+                if (child.Guid == guid)
+                {
+                    return data;
+                }
+
+                if (child is YeetDataSetViewModel childSet && FindDataSet(childSet, guid) != null)
+                {
+                    return childSet;
+                }
+            }
+
+            return null;
         }
 
         private void Resolve(YeetDataViewModel data)
