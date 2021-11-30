@@ -44,14 +44,21 @@ namespace YeetOverFlow.Data.Wpf.Controls
                 {
                     String filename = Path.GetFileName(filePath);
                     String ext = Path.GetExtension(filePath).TrimStart('.');
+                    var opts = new YeetDataConverterOptions();
+
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        opts.HasHeaders = false;
+                    }
 
                     switch (ext.ToLower())
                     {
                         case "csv":
-                            Data.Root[filename] = YeetDataConverter.CsvFileToData(filePath);
+                            Data.Root[filename] = YeetDataConverter.CsvFileToData(filePath, opts);
                             break;
                         case "tsv":
-                            Data.Root[filename] = YeetDataConverter.CsvFileToData(filePath, new YeetDataConverterOptions() { FieldDelim = '\t' });
+                            opts.FieldDelim = '\t';
+                            Data.Root[filename] = YeetDataConverter.CsvFileToData(filePath, opts);
                             break;
                     }
                 }
@@ -192,29 +199,53 @@ namespace YeetOverFlow.Data.Wpf.Controls
             if (hasHeaders)
             {
                 csvReader.ReadHeader();
-            }
 
-            foreach (var header in csvReader.HeaderRecord)
-            {
-                var col = new YeetStringColumnViewModel();
-                tbl.Columns[header.Trim().Trim('"')] = col;
-            }
-
-            while (csvReader.Read())
-            {
-                var row = new YeetRowViewModel();
                 foreach (var header in csvReader.HeaderRecord)
                 {
-                    if (csvReader.TryGetField<String>(header, out string field))
+                    var col = new YeetStringColumnViewModel();
+                    tbl.Columns[header.Trim().Trim('"')] = col;
+                }
+
+                while (csvReader.Read())
+                {
+                    var row = new YeetRowViewModel();
+                    foreach (var header in csvReader.HeaderRecord)
                     {
+                        if (csvReader.TryGetField<String>(header, out string field))
+                        {
+                            var cell = new YeetStringCellViewModel();
+                            cell.Value = field;
+                            row[header.Trim().Trim('"')] = cell;
+                        }
+                    }
+                    tbl.Rows.AddChild(row);
+                }
+            }
+            else
+            {
+                while (csvReader.Read())
+                {
+                    var row = new YeetRowViewModel();
+
+                    for (int f = 0; f < csvReader.Parser.Count; f++)
+                    {
+                        var field = csvReader.Parser.Record[f];
+                        var colName = $"Col{f}";
+
+                        if (!tbl.Columns.ContainsKey(colName))
+                        {
+                            tbl.Columns[colName] = new YeetStringColumnViewModel();
+                        }
+
                         var cell = new YeetStringCellViewModel();
                         cell.Value = field;
-                        row[header.Trim().Trim('"')] = cell;
+                        row[colName] = cell;
                     }
-                }
-                tbl.Rows.AddChild(row);
-            }
 
+                    tbl.Rows.AddChild(row);
+                }
+            }
+            
             return tbl;
         }
     }
