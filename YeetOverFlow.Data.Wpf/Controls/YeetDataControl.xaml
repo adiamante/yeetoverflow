@@ -26,10 +26,23 @@
             </MenuItem>
         </ContextMenu>
     </ycntl:YeetControlBase.Resources>
-    <Grid DataContext="{Binding Data, ElementName=ThisControl}" AllowDrop="True" Drop="Grid_Drop" ContextMenu="{StaticResource DataContextMenu}">
+    <DockPanel DataContext="{Binding Data, ElementName=ThisControl}" AllowDrop="True" Drop="MainPanel_Drop" ContextMenu="{StaticResource DataContextMenu}">
+        <ycntl:SidePanelControl DockPanel.Dock="Left">
+            <TabItem Header="Parse" Tag="{x:Static iconPacks:PackIconZondiconsKind.DocumentAdd}">
+                <ycntl:SidePanelControl DockPanel.Dock="Left">
+                    <TabItem Header="Paste" Tag="{x:Static iconPacks:PackIconZondiconsKind.Paste}">
+                        <ycntl:SidePanelControl DockPanel.Dock="Left">
+                            <TabItem Header="TSV" Tag="{x:Static iconPacks:PackIconMaterialKind.AlphaTBoxOutline}">
+                                <TextBox MinWidth="150" CommandManager.PreviewExecuted="PasteTextBox_PreviewExecuted" />
+                            </TabItem>
+                        </ycntl:SidePanelControl>
+                    </TabItem>
+                </ycntl:SidePanelControl>
+            </TabItem>
+        </ycntl:SidePanelControl>
         <TabControl ItemsSource="{Binding Root.Children}"
                     ItemTemplate="{StaticResource DataHeaderTemplate}">
             
         </TabControl>
-    </Grid>
+    </DockPanel>
 </ycntl:YeetControlBase>
