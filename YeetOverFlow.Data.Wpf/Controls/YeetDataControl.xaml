@@ -59,6 +59,11 @@
         <DataTemplate DataType="{x:Type dvm:YeetTableViewModel}">
             <local:YeetTableControl Table="{Binding .}" />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type dvm:YeetDataSetViewModel}">
+            <TabControl ItemsSource="{Binding Children}"
+                        ItemTemplate="{StaticResource DataHeaderTemplate}">
+            </TabControl>
+        </DataTemplate>
         <ContextMenu x:Key="DataContextMenu">
             <MenuItem Header="Save" Command="{Binding SaveCommand}">
                 <MenuItem.Icon>
@@ -77,6 +82,12 @@
                                 <TextBox MinWidth="150" CommandManager.PreviewExecuted="PasteTextBox_PreviewExecuted" />
                             </TabItem>
                             <TabItem Header="CSV" Tag="{x:Static iconPacks:PackIconMaterialKind.AlphaCBoxOutline}">
+                                <TextBox MinWidth="150" CommandManager.PreviewExecuted="PasteTextBox_PreviewExecuted" />
+                            </TabItem>
+                            <TabItem Header="JSON" Tag="{x:Static iconPacks:PackIconMaterialKind.CodeJson}">
+                                <TextBox MinWidth="150" CommandManager.PreviewExecuted="PasteTextBox_PreviewExecuted" />
+                            </TabItem>
+                            <TabItem Header="XML" Tag="{x:Static iconPacks:PackIconMaterialKind.Xml}">
                                 <TextBox MinWidth="150" CommandManager.PreviewExecuted="PasteTextBox_PreviewExecuted" />
                             </TabItem>
                         </ycntl:SidePanelControl>

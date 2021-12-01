@@ -116,7 +116,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
     public class YeetBooleanColumnViewModel : YeetColumnViewModel<bool>
     {
-        YeetBooleanColumnViewModel() : this(Guid.Empty, null)
+        public YeetBooleanColumnViewModel() : this(Guid.NewGuid(), null)
         {
 
         }
@@ -138,7 +138,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
     public class YeetIntColumnViewModel : YeetColumnViewModel<int>
     {
-        YeetIntColumnViewModel() : this(Guid.Empty, null)
+        public YeetIntColumnViewModel() : this(Guid.NewGuid(), null)
         {
 
         }
@@ -149,7 +149,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
     public class YeetDoubleColumnViewModel : YeetColumnViewModel<double>
     {
-        YeetDoubleColumnViewModel() : this(Guid.Empty, null)
+        public YeetDoubleColumnViewModel() : this(Guid.NewGuid(), null)
         {
 
         }
@@ -160,7 +160,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
     public class YeetDateTimeColumnViewModel : YeetColumnViewModel<DateTime>
     {
-        YeetDateTimeColumnViewModel() : this(Guid.Empty, null)
+        public YeetDateTimeColumnViewModel() : this(Guid.NewGuid(), null)
         {
 
         }
