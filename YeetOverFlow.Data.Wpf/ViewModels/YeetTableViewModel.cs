@@ -453,7 +453,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                                 tSqlType = "VARCHAR(MAX)";
                                                 break;
                                         }
-                                        sbExport.Append($"{col.Key} {tSqlType}, ");
+                                        sbExport.Append($"[{col.Key}] {tSqlType}, ");
                                     }
                                 }
                                 sbExport.Length--;  //remove last space
@@ -465,7 +465,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                 {
                                     if (col.IsVisible)
                                     {
-                                        sbExport.Append($"{col.Key}, ");
+                                        sbExport.Append($"[{col.Key}], ");
                                     }
                                 }
                                 sbExport.Length--;  //remove last space

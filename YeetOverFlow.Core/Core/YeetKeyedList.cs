@@ -101,7 +101,14 @@ namespace YeetOverFlow.Core
 
         public virtual TChild this[string key]
         {
-            get { return _dict[key]; }
+            get 
+            {   
+                if (!_dict.ContainsKey(key))
+                {
+                    return default(TChild);
+                }
+                return _dict[key]; 
+            }
             set
             {
                 if (!_dict.ContainsKey(key))

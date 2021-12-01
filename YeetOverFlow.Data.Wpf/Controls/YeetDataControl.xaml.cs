@@ -72,14 +72,21 @@ namespace YeetOverFlow.Data.Wpf.Controls
                 var tabItem = (TabItem)((FrameworkElement)sender).Parent;
                 String text = Clipboard.GetText();
                 String name = $"Tbl {Data.Root.Count + 1}";
+                var opts = new YeetDataConverterOptions();
+
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    opts.HasHeaders = false;
+                }
 
                 switch (tabItem.Header.ToString().ToLower())
                 {
                     case "csv":
-                        Data.Root[name] = YeetDataConverter.CsvStringToData(text);
+                        Data.Root[name] = YeetDataConverter.CsvStringToData(text, opts);
                         break;
                     case "tsv":
-                        Data.Root[name] = YeetDataConverter.CsvStringToData(text, new YeetDataConverterOptions() { FieldDelim = '\t' });
+                        opts.FieldDelim = '\t';
+                        Data.Root[name] = YeetDataConverter.CsvStringToData(text, opts);
                         break;
                 }
                 
@@ -194,7 +201,6 @@ namespace YeetOverFlow.Data.Wpf.Controls
             _conf.HasHeaderRecord = hasHeaders;
             _conf.MissingFieldFound = null;
             CsvReader csvReader = new CsvReader(sr, _conf);
-            CsvDataReader dataReader = new CsvDataReader(csvReader);
 
             if (hasHeaders)
             {

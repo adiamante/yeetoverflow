@@ -10,9 +10,6 @@ using YeetOverFlow.Wpf.Controls;
 using YeetOverFlow.Data.Wpf.ViewModels;
 using System.ComponentModel;
 using System.Linq;
-using System.IO;
-using System.Xml;
-using System.Windows.Markup;
 
 namespace YeetOverFlow.Data.Wpf.Controls
 {
@@ -21,6 +18,7 @@ namespace YeetOverFlow.Data.Wpf.Controls
     /// </summary>
     public partial class YeetTableControl : YeetControlBase
     {
+        #region Public Properties
         #region Table
         private static readonly DependencyProperty TableProperty =
         DependencyProperty.Register("Table", typeof(YeetTableViewModel), typeof(YeetTableControl));
@@ -47,13 +45,6 @@ namespace YeetOverFlow.Data.Wpf.Controls
             {
                 dataGrid.Dispatcher.Invoke(new Action(() =>
                 {
-                    #region columnCollectionChanged
-                    //Action<object, NotifyCollectionChangedEventArgs> columnCollectionChanged = (s, ne) =>
-                    //{
-
-                    //};
-                    #endregion columnCollectionChanged
-
                     if (e.NewValue != null)
                     {
                         var ccvm = (YeetColumnCollectionViewModel)e.NewValue;
@@ -72,12 +63,6 @@ namespace YeetOverFlow.Data.Wpf.Controls
 
                         ccvm.CollectionChanged += fdgDataGrid.Columns_CollectionChanged;
                     }
-
-                    //if (e.OldValue is IEnumerable oldCol)
-                    //{
-                    //    ICollectionView columns = UIHelper.GetCollectionView(oldCol);
-                    //    columns.CollectionChanged -= fdgDataGrid.Columns_CollectionChanged;
-                    //}
                 }));
             }
         }
@@ -98,7 +83,7 @@ namespace YeetOverFlow.Data.Wpf.Controls
         {
             //var columns = (YeetColumnCollectionViewModel)s;
             DataGrid dataGrid = DataGrid;
-            
+
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
@@ -118,40 +103,6 @@ namespace YeetOverFlow.Data.Wpf.Controls
                     }
                     break;
             }
-            //ICollectionView cols = (ICollectionView)s;
-            //DataGrid dataGrid = DataGrid;   //This is kind of dirty but gotta get it working yo
-            //switch (e.Action)
-            //{
-            //    case NotifyCollectionChangedAction.Reset:
-            //    case NotifyCollectionChangedAction.Replace:
-            //        dataGrid.Columns.Clear();
-            //        foreach (KeyValuePair<String, SwagDataColumn> kvp in cols)
-            //        {
-            //            dataGrid.Columns.Add(kvp.Value.DataGridColumn());
-            //        }
-            //        break;
-            //    case NotifyCollectionChangedAction.Add:
-            //        foreach (KeyValuePair<String, SwagDataColumn> kvp in e.NewItems)
-            //        {
-            //            kvp.Value.Init();
-            //            dataGrid.Columns.Add(kvp.Value.DataGridColumn());
-            //        }
-            //        break;
-            //    case NotifyCollectionChangedAction.Move:
-            //        foreach (KeyValuePair<String, SwagDataColumn> kvp in e.NewItems)
-            //        {
-            //            dataGrid.Columns.RemoveAt(e.OldStartingIndex);
-            //            dataGrid.Columns.Add(kvp.Value.DataGridColumn());
-            //        }
-            //        //dataGrid.Columns.Move(ne.OldStartingIndex, ne.NewStartingIndex);
-            //        break;
-            //    case NotifyCollectionChangedAction.Remove:
-            //        foreach (KeyValuePair<String, SwagDataColumn> kvp in e.OldItems)
-            //        {
-            //            dataGrid.Columns.RemoveAt(e.OldStartingIndex);
-            //        }
-            //        break;
-            //}
         }
 
         public YeetColumnCollectionViewModel Columns
@@ -198,13 +149,18 @@ namespace YeetOverFlow.Data.Wpf.Controls
             }
         }
         #endregion SelectedCount
+        #endregion Public Properties
+
+        #region Initialization
         public YeetTableControl()
         {
             InitializeComponent();
 
             BindingOperations.SetBinding(this, YeetTableControl.ColumnsProperty, new Binding("Table.Columns") { RelativeSource = RelativeSource.Self });
         }
+        #endregion Initialization
 
+        #region Events
         private void DataGrid_ColumnReordered(object sender, DataGridColumnEventArgs e)
         {
             var movedCol = Table.Columns[e.Column.Header.ToString()];
@@ -221,7 +177,7 @@ namespace YeetOverFlow.Data.Wpf.Controls
                     DataGridColumn dgCol = cellInfo.Column;
                     YeetRowViewModel row = (YeetRowViewModel)cellInfo.Item;
                     YeetCellViewModel cell = (YeetCellViewModel)row[dgCol.Header.ToString()];
-                    if (Decimal.TryParse(cell.GetValue().ToString(), out Decimal val))
+                    if (cell != null && Decimal.TryParse(cell.GetValue().ToString(), out Decimal val))
                     {
                         selectedTotal += val;
                     }
@@ -272,5 +228,6 @@ namespace YeetOverFlow.Data.Wpf.Controls
             DataGrid.SelectedCellsChanged += DataGrid_SelectedCellsChanged;
             DataGrid_SelectedCellsChanged(null, null);
         }
+        #endregion Events
     }
 }
