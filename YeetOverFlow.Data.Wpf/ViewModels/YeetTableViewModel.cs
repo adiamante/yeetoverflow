@@ -691,7 +691,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             return CollectionViewSource.GetDefaultView(_columnValues[colName]);
         }
 
-        private bool Evaluate(string filter, FilterMode filterMode, string targetValue)
+        public static bool Evaluate(string filter, FilterMode filterMode, string targetValue)
         {
             switch (filterMode)
             {

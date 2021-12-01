@@ -136,6 +136,53 @@ namespace YeetOverFlow.Data.Wpf.Controls
             var args = (object[])btnRename.Tag;
             Data.RenameByGuid((Guid)args[0], (string)args[1]);
         }
+
+        private void SearchTextBox_Search(object sender, RoutedEventArgs e)
+        {
+            var stb = (SearchTextBox)sender;
+            var doFilterTabs = bool.Parse(stb.Tag.ToString());
+            
+            if (doFilterTabs)
+            {
+                SetVisibility(Data.Root, stb.Text, stb.FilterMode);
+            }
+            else
+            {
+                throw new NotImplementedException("Searching values");
+            }
+        }
+
+        private static bool SetVisibility(YeetDataViewModel data, string filter, FilterMode filterMode)
+        {
+            if (data is YeetDataSetViewModel dataSet)
+            {
+                var atLeastOneChildVisible = false;
+                foreach (var child in dataSet.Children)
+                {
+                    if (SetVisibility(child, filter, filterMode))
+                    {
+                        dataSet.IsVisible = true;
+                        atLeastOneChildVisible = true;
+                    }
+                }
+
+                if (atLeastOneChildVisible)
+                {
+                    dataSet.IsVisible = true;
+                    return true;
+                }
+            }
+
+
+            if (YeetTableViewModel.Evaluate(filter, filterMode, data.Key))
+            {
+                data.IsVisible = true;
+                return true;
+            }
+
+            data.IsVisible = false;
+            return false;
+        }
     }
 
     internal class YeetDataConverterOptions

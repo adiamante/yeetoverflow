@@ -10,7 +10,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     public abstract class YeetColumnViewModel : YeetDataViewModel
     {
         #region Private Members
-        bool _isSelected, _isColumnFilterOpen, _isVisible = true, _isChecked_visible, _ischecked_filter;
+        bool _isSelected, _isColumnFilterOpen, _isChecked_visible, _ischecked_filter;
         double _total;
         #endregion Private Members
 
@@ -32,14 +32,6 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             set { SetValue(ref _isColumnFilterOpen, value, true, false); }
         }
         #endregion IsColumnFilterOpen
-
-        #region IsVisible
-        public bool IsVisible
-        {
-            get { return _isVisible; }
-            set { SetValue(ref _isVisible, value); }
-        }
-        #endregion IsVisible
 
         #region IsChecked_Visible
         public bool IsChecked_Visible

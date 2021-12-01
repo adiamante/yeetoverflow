@@ -6,6 +6,16 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 {
     public class YeetDataViewModel : YeetKeyedItemViewModel
     {
+        bool _isVisible = true;
+
+        #region IsVisible
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set { SetValue(ref _isVisible, value); }
+        }
+        #endregion IsVisible
+
         public YeetDataViewModel() : base()
         {
             
