@@ -475,6 +475,7 @@ namespace YeetOverFlow.Data.Wpf.Controls
 
             if (hasHeaders)
             {
+                csvReader.Read();
                 csvReader.ReadHeader();
 
                 foreach (var header in csvReader.HeaderRecord)
