@@ -81,7 +81,7 @@ namespace YeetOverFlow.Wpf.Converters
             //drawingImage.Freeze();
             //return drawingImage;
 
-            Decimal baseWidth = 20m, baseHeight = 20m, centerX = 0.0m, centerY = 0.0m, scaleX = 1.0m, scaleY = 1.0m, translateX = 0.0m, translateY = 0.0m;
+            Decimal baseWidth = 20m, baseHeight = 20m, centerX = 0.0m, centerY = 0.0m, scaleX = 1.0m, scaleY = 1.0m, translateX = 0.0m, translateY = 0.0m, rotate = 0.0m;
             switch (iconKind)
             {
                 case PackIconBoxIconsKind boxKind:
@@ -152,6 +152,13 @@ namespace YeetOverFlow.Wpf.Converters
                     scaleX = 1.3m;
                     scaleY = 1.3m;
                     break;
+                case PackIconVaadinIconsKind vaadinKind:
+                    scaleX = .015m;
+                    scaleY = .015m;
+                    translateX = -baseWidth / 2.0m;
+                    translateY = -baseHeight / 2.0m;
+                    rotate = 180.0m;
+                    break;
             }
 
             if (centerX == 0)
@@ -178,6 +185,7 @@ namespace YeetOverFlow.Wpf.Converters
                                     <TransformGroup>
                                         <ScaleTransform CenterX=""{centerX}"" CenterY=""{centerY}"" ScaleX=""{scaleX}"" ScaleY=""{scaleY}"" />
                                         <TranslateTransform X=""{translateX}"" Y=""{translateY}"" />
+                                        <RotateTransform CenterX=""{centerX}"" CenterY=""{centerY}"" Angle=""{rotate}"" />
                                     </TransformGroup>
                                 </Path.RenderTransform>
                                 <Path.Data>
@@ -271,6 +279,9 @@ namespace YeetOverFlow.Wpf.Converters
                     return data;
                 case PackIconUniconsKind uniconsKind:
                     PackIconUniconsDataFactory.DataIndex.Value?.TryGetValue(uniconsKind, out data);
+                    return data;
+                case PackIconVaadinIconsKind vaadinKind:
+                    PackIconVaadinIconsDataFactory.DataIndex.Value?.TryGetValue(vaadinKind, out data);
                     return data;
                 case PackIconWeatherIconsKind weatherIconsKind:
                     PackIconWeatherIconsDataFactory.DataIndex.Value?.TryGetValue(weatherIconsKind, out data);

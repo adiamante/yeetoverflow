@@ -149,6 +149,9 @@ namespace YeetOverFlow.Data.Wpf.Controls
             }
         }
         #endregion SelectedCount
+        #region InnerDataGrid
+        public DataGrid InnerDataGrid { get { return DataGrid; } }
+        #endregion InnerDataGrid
         #endregion Public Properties
 
         #region Initialization

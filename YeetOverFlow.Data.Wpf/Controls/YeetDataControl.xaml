@@ -7,74 +7,103 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:dvm="clr-namespace:YeetOverFlow.Data.Wpf.ViewModels"
         xmlns:local="clr-namespace:YeetOverFlow.Data.Wpf.Controls"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:ywconv="clr-namespace:YeetOverFlow.Wpf.Converters;assembly=YeetOverFlow.Wpf"
-    mc:Ignorable="d" 
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
+        xmlns:ywconv="clr-namespace:YeetOverFlow.Wpf.Converters;assembly=YeetOverFlow.Wpf"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d" 
         x:Name="ThisControl"
         d:DesignHeight="450" d:DesignWidth="800">
     <ycntl:YeetControlBase.Resources>
-        <DataTemplate x:Key="DataHeaderTemplate">
-            <TextBlock Text="{Binding Key}" Visibility="{Binding IsVisible, Converter={ywconv:BoolToVisibilityConverter}}" Tag="{Binding Data, RelativeSource={RelativeSource AncestorType=local:YeetDataControl}}">
-                <TextBlock.ContextMenu>
-                    <ContextMenu Tag="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                        <MenuItem Header="Rename" StaysOpenOnClick="True">
-                            <MenuItem.Icon>
-                                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.RenameBox}" />
-                            </MenuItem.Icon>
-                            <MenuItem StaysOpenOnClick="True">
+        <ResourceDictionary>
+            <!--<ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>-->
+            <DataTemplate x:Key="DataHeaderTemplate">
+                <TextBlock Text="{Binding Key}" Visibility="{Binding IsVisible, Converter={ywconv:BoolToVisibilityConverter}}" Tag="{Binding Data, RelativeSource={RelativeSource AncestorType=local:YeetDataControl}}">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu Tag="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                            <MenuItem Header="Rename" StaysOpenOnClick="True">
                                 <MenuItem.Icon>
-                                    <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.KeyboardOutline}" />
+                                    <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.RenameBox}" />
                                 </MenuItem.Icon>
-                                <MenuItem.Header>
-                                    <Grid Tag="{Binding Name, Mode=OneWay}">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="txtColName" Grid.Row="0" Grid.Column="0" Text="{Binding Tag, RelativeSource={RelativeSource AncestorType=Grid}, UpdateSourceTrigger=PropertyChanged}" 
+                                <MenuItem StaysOpenOnClick="True">
+                                    <MenuItem.Icon>
+                                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.KeyboardOutline}" />
+                                    </MenuItem.Icon>
+                                    <MenuItem.Header>
+                                        <Grid Tag="{Binding Name, Mode=OneWay}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox x:Name="txtColName" Grid.Row="0" Grid.Column="0" Text="{Binding Tag, RelativeSource={RelativeSource AncestorType=Grid}, UpdateSourceTrigger=PropertyChanged}" 
                                             MinWidth="100" Loaded="TabHeader_TextBoxLoaded" KeyDown="TabHeader_TextBoxKeyDown" />
-                                        <Button Grid.Row="1" Grid.Column="0" Content="Rename" Click="TabHeader_RenameClick">
-                                            <Button.Tag>
-                                                <MultiBinding Converter="{ywconv:RelayMultiConverter}">
-                                                    <Binding Path="Guid" />
-                                                    <Binding Path="Tag" RelativeSource="{RelativeSource AncestorType=Grid}" />
-                                                </MultiBinding>
-                                            </Button.Tag>
-                                        </Button>
-                                    </Grid>
-                                </MenuItem.Header>
+                                            <Button Grid.Row="1" Grid.Column="0" Content="Rename" Click="TabHeader_RenameClick">
+                                                <Button.Tag>
+                                                    <MultiBinding Converter="{ywconv:RelayMultiConverter}">
+                                                        <Binding Path="Guid" />
+                                                        <Binding Path="Tag" RelativeSource="{RelativeSource AncestorType=Grid}" />
+                                                    </MultiBinding>
+                                                </Button.Tag>
+                                            </Button>
+                                        </Grid>
+                                    </MenuItem.Header>
+                                </MenuItem>
                             </MenuItem>
-                        </MenuItem>
-                        <MenuItem Header="Close" Command="{Binding Parent.Tag.RemoveCommand, RelativeSource={RelativeSource Self}}" CommandParameter="{Binding Guid}">
-                            <MenuItem.Icon>
-                                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Close}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </TextBlock.ContextMenu>
-            </TextBlock>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type dvm:YeetTableViewModel}">
-            <local:YeetTableControl Table="{Binding .}" />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type dvm:YeetDataSetViewModel}">
-            <TabControl ItemsSource="{Binding Children}"
-                        ItemTemplate="{StaticResource DataHeaderTemplate}">
-            </TabControl>
-        </DataTemplate>
-        <ContextMenu x:Key="DataContextMenu">
-            <MenuItem Header="Save" Command="{Binding SaveCommand}">
-                <MenuItem.Icon>
-                    <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.ContentSave}" />
-                </MenuItem.Icon>
-            </MenuItem>
-        </ContextMenu>
+                            <MenuItem Header="Close" Command="{Binding Parent.Tag.RemoveCommand, RelativeSource={RelativeSource Self}}" CommandParameter="{Binding Guid}">
+                                <MenuItem.Icon>
+                                    <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Close}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
+                </TextBlock>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type dvm:YeetTableViewModel}">
+                <local:YeetTableControl Table="{Binding .}" />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type dvm:YeetDataSetViewModel}">
+                <TabControl ItemsSource="{Binding Children}"
+                        ItemTemplate="{StaticResource DataHeaderTemplate}"
+                        SelectedItem="{Binding SelectedData}">
+                </TabControl>
+            </DataTemplate>
+            <ContextMenu x:Key="DataContextMenu">
+                <MenuItem Header="Save" Command="{Binding SaveCommand}">
+                    <MenuItem.Icon>
+                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.ContentSave}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+            <ContextMenu x:Key="SearchResultContextMenu" Opened="SearchResultContextMenu_Opened">
+                <MenuItem Header="View" Click="SearchResult_View">
+                    <MenuItem.Icon>
+                        <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Eye}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+            <HierarchicalDataTemplate DataType="{x:Type local:YeetDataSetSearchResult}" ItemsSource="{Binding Children}">
+                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.TableMultiple}" Text="{Binding Name}" />
+            </HierarchicalDataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type local:YeetTableSearchResult}" ItemsSource="{Binding Children}">
+                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.Table}" Text="{Binding Name}" />
+            </HierarchicalDataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type local:YeetColumnSearchResult}" ItemsSource="{Binding Children}">
+                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.TableColumn}" Text="{Binding Name}" />
+            </HierarchicalDataTemplate>
+            <DataTemplate DataType="{x:Type local:YeetRowSearchResult}">
+                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.SquareOutline}" Text="{Binding Value}" />
+            </DataTemplate>
+        </ResourceDictionary>
     </ycntl:YeetControlBase.Resources>
     <Grid>
         <DockPanel DataContext="{Binding Data, ElementName=ThisControl}" AllowDrop="True" Drop="MainPanel_Drop" ContextMenu="{StaticResource DataContextMenu}">
-            <ycntl:SidePanelControl DockPanel.Dock="Left">
+            <ycntl:SidePanelControl DockPanel.Dock="Left" x:Name="sidePanel">
                 <TabItem Header="Parse" Tag="{x:Static iconPacks:PackIconZondiconsKind.DocumentAdd}">
                     <ycntl:SidePanelControl DockPanel.Dock="Left">
                         <TabItem Header="Paste" Tag="{x:Static iconPacks:PackIconZondiconsKind.Paste}">
@@ -95,16 +124,34 @@
                         </TabItem>
                     </ycntl:SidePanelControl>
                 </TabItem>
+                <TabItem Header="Search" Tag="{x:Static iconPacks:PackIconMaterialDesignKind.Search}">
+                    <TreeView x:Name="tvSearch" MinWidth="200">
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                                <Setter Property="HorizontalAlignment" Value="Left" />
+                                <Setter Property="ContextMenu" Value="{StaticResource SearchResultContextMenu}" />
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                    </TreeView>
+                </TabItem>
             </ycntl:SidePanelControl>
             <TabControl ItemsSource="{Binding Root.Children}"
-                        ItemTemplate="{StaticResource DataHeaderTemplate}">
+                        ItemTemplate="{StaticResource DataHeaderTemplate}"
+                        SelectedItem="{Binding Root.SelectedData}">
             </TabControl>
         </DockPanel>
-        <DockPanel Margin="5" VerticalAlignment="Top" HorizontalAlignment="Right" Tag="True">
-            <ToggleButton IsChecked="{Binding Tag, RelativeSource={RelativeSource AncestorType=DockPanel}}" DockPanel.Dock="Right">
-                <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.TableMultiple}" />
-            </ToggleButton>
-            <ycntl:SearchTextBox MinWidth="120" Search="SearchTextBox_Search" Tag="{Binding Tag, RelativeSource={RelativeSource AncestorType=DockPanel}}" />
+        <DockPanel Margin="5" VerticalAlignment="Top" HorizontalAlignment="Right" Tag="0">
+            <ComboBox SelectedIndex="{Binding Tag, RelativeSource={RelativeSource AncestorType=DockPanel}}" DockPanel.Dock="Right">
+                <ComboBoxItem Tag="Tabs">
+                    <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconVaadinIconsKind.Tabs}" Text="Tabs" />
+                </ComboBoxItem>
+                <ComboBoxItem Tag="Values">
+                    <ycntl:YeetLabel Kind="{x:Static iconPacks:PackIconMaterialKind.TextSearch}" Text="Values" />
+                </ComboBoxItem>
+            </ComboBox>
+            <ycntl:SearchTextBox MinWidth="120" Search="SearchTextBox_Search" IsNonNumericOnly="True"  Tag="{Binding Tag, RelativeSource={RelativeSource AncestorType=DockPanel}}" />
         </DockPanel>
     </Grid>
 </ycntl:YeetControlBase>

@@ -1,20 +1,27 @@
 ﻿using System;
-using YeetOverFlow.Core;
 using YeetOverFlow.Wpf.ViewModels;
 
 namespace YeetOverFlow.Data.Wpf.ViewModels
 {
     public class YeetDataViewModel : YeetKeyedItemViewModel
     {
-        bool _isVisible = true;
+        bool _isVisible = true, _isSelected;
 
         #region IsVisible
         public bool IsVisible
         {
             get { return _isVisible; }
-            set { SetValue(ref _isVisible, value); }
+            set { SetValue(ref _isVisible, value, true, false); }
         }
         #endregion IsVisible
+
+        #region IsSelected
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { SetValue(ref _isSelected, value, true, false); }
+        }
+        #endregion IsSelected
 
         public YeetDataViewModel() : base()
         {

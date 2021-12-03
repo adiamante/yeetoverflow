@@ -18,6 +18,14 @@ namespace YeetOverFlow.Wpf.Controls
         //https://stackoverflow.com/questions/52352519/populating-a-collection-in-xaml
         public IList Items { get; } = new List<TabItem>();
 
+        #region SelectedIndex
+        public int SelectedIndex
+        {
+            get { return tabControl.SelectedIndex; }
+            set { tabControl.SelectedIndex = value; }
+        }
+        #endregion SelectedIndex
+
         #region BottomContentTemplate
         public static readonly DependencyProperty BottomContentTemplateProperty =
             DependencyProperty.Register("BottomContentTemplate", typeof(DataTemplate), typeof(SidePanelControl));
@@ -37,7 +45,7 @@ namespace YeetOverFlow.Wpf.Controls
         private void ToggleButton_CheckedChanged(object sender, RoutedEventArgs e)
         {
             var toggleButton = (ToggleButton)sender;
-            var tabControl = DependencyObjectHelper.TryFindParent<TabControl>(toggleButton);
+            //var tabControl = DependencyObjectHelper.TryFindParent<TabControl>(toggleButton);
 
             if (toggleButton.IsChecked.Value && tabControl.SelectedIndex != -1)
             {

@@ -133,7 +133,8 @@
             </ControlTemplate>
         </ResourceDictionary>
     </ywcntl:YeetControlBase.Resources>
-    <TabControl ItemsSource="{Binding Items, ElementName=ThisControl}"
+    <TabControl x:Name="tabControl"
+                ItemsSource="{Binding Items, ElementName=ThisControl}"
                 TabStripPlacement="Left"
                 metro:HeaderedControlHelper.HeaderFontSize="14"
                 metro:HeaderedControlHelper.HeaderFontWeight="Bold"

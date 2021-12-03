@@ -583,7 +583,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                     var filter = col.ColumnFilter.Filter;
                     var filterMode = col.ColumnFilter.FilterMode;
 
-                    if (!String.IsNullOrEmpty(filter) && !Evaluate(filter, filterMode, cellVal))
+                    if (!String.IsNullOrEmpty(filter) && !FilterHelper.Evaluate(filter, filterMode, cellVal))
                     {
                         return false;
                     }
@@ -621,7 +621,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 var colValueVM = (YeetColumnValueViewModel)cv;
                 var strVal = colValueVM.Value.ToString();
 
-                if (!String.IsNullOrEmpty(colFilter.Filter) && !Evaluate(colFilter.Filter, colFilter.FilterMode, strVal))
+                if (!String.IsNullOrEmpty(colFilter.Filter) && !FilterHelper.Evaluate(colFilter.Filter, colFilter.FilterMode, strVal))
                 {
                     return false;
                 }
@@ -631,7 +631,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                     return false;
                 }
 
-                if (!String.IsNullOrEmpty(filter) && !Evaluate(filter, filterMode, strVal))
+                if (!String.IsNullOrEmpty(filter) && !FilterHelper.Evaluate(filter, filterMode, strVal))
                 {
                     return false;
                 }
@@ -649,7 +649,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             view.Filter = (c) =>
             {
                 var col = (YeetColumnViewModel)c;
-                if (!String.IsNullOrEmpty(filter) && !Evaluate(filter, filterMode, col.Name))
+                if (!String.IsNullOrEmpty(filter) && !FilterHelper.Evaluate(filter, filterMode, col.Name))
                 {
                     return false;
                 }
@@ -665,7 +665,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             view.Filter = (c) =>
             {
                 var col = (YeetColumnViewModel)c;
-                if (!String.IsNullOrEmpty(filter) && !Evaluate(filter, filterMode, col.Name))
+                if (!String.IsNullOrEmpty(filter) && !FilterHelper.Evaluate(filter, filterMode, col.Name))
                 {
                     return false;
                 }
@@ -691,38 +691,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             return CollectionViewSource.GetDefaultView(_columnValues[colName]);
         }
 
-        public static bool Evaluate(string filter, FilterMode filterMode, string targetValue)
-        {
-            switch (filterMode)
-            {
-                case FilterMode.CONTAINS:
-                    if (!targetValue.Contains(filter))
-                    {
-                        return false;
-                    }
-                    break;
-                case FilterMode.EQUALS:
-                    if (!targetValue.Equals(filter))
-                    {
-                        return false;
-                    }
-                    break;
-                case FilterMode.STARTS_WITH:
-                    if (!targetValue.StartsWith(filter))
-                    {
-                        return false;
-                    }
-                    break;
-                case FilterMode.ENDS_WITH:
-                    if (!targetValue.EndsWith(filter))
-                    {
-                        return false;
-                    }
-                    break;
-            }
-
-            return true;
-        }
+        
 
         private void RenameColumn(string colName, string newName)
         {

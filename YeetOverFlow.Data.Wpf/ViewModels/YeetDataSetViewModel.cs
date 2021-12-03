@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using YeetOverFlow.Core;
 using YeetOverFlow.Wpf.ViewModels;
 
@@ -9,6 +10,27 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     public class YeetDataSetViewModel : YeetDataViewModel, IYeetKeyedList<YeetDataViewModel>
     {
         protected YeetObservableKeyedList<YeetDataViewModel> _yeetKeyedList;
+        bool _selecting = false;
+        private YeetDataViewModel _selectedData;
+
+        public YeetDataViewModel SelectedData
+        {
+            get { return _selectedData; }
+            set 
+            {
+                _selecting = true;
+                if (_selectedData != null)
+                {
+                    _selectedData.IsSelected = false;
+                }
+                SetValue(ref _selectedData, value);
+                if (_selectedData != null)
+                {
+                    _selectedData.IsSelected = true;
+                }
+                _selecting = false;
+            }
+        }
 
         public YeetDataSetViewModel() : this(Guid.NewGuid(), null)
         {
@@ -33,6 +55,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             {
                 foreach (YeetDataViewModel data in e.NewItems)
                 {
+                    data.PropertyChanged += Data_PropertyChanged;
                     data.PropertyChangedExtended += Data_PropertyChangedExtended;
                     data.CollectionPropertyChanged += Data_CollectionPropertyChanged;
                 }
@@ -42,12 +65,25 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
             {
                 foreach (YeetDataViewModel data in e.OldItems)
                 {
+                    data.PropertyChanged -= Data_PropertyChanged;
                     data.PropertyChangedExtended -= Data_PropertyChangedExtended;
                     data.CollectionPropertyChanged -= Data_CollectionPropertyChanged;
                 }
             }
 
             OnCollectionPropertyChanged(e, nameof(Children));
+        }
+
+        private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (!_selecting && e.PropertyName == nameof(YeetDataViewModel.IsSelected))
+            {
+                var selectedData = (YeetDataViewModel)sender;
+                if (selectedData.IsSelected)
+                {
+                    SelectedData = selectedData;
+                }
+            }
         }
 
         private void Data_PropertyChangedExtended(object sender, PropertyChangedExtendedEventArgs e)

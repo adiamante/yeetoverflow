@@ -14,6 +14,9 @@
         <TabControl DataContext="{Binding DemoViewModel, ElementName=ThisWindow}">
             <TabItem Header="SidePanel">
                 <ywcntl:SidePanelControl>
+                    <TabItem Header="Number 2" Tag="{x:Static iconPacks:PackIconVaadinIconsKind.Tabs}">
+                        Test 2
+                    </TabItem>
                     <TabItem Header="Number 1">
                         <TabItem.Tag>
                             <MultiBinding Converter="{ywconv:RelayMultiConverter}">
@@ -23,9 +26,10 @@
                         </TabItem.Tag>
                         Test 1
                     </TabItem>
-                    <TabItem Header="Number 2" Tag="{x:Static iconPacks:PackIconMaterialKind.Numeric2}">
+                    <!--<TabItem Header="Number 2" Tag="{x:Static iconPacks:PackIconVaadinIconsKind.Tabs}">
                         Test 2
-                    </TabItem>
+                    </TabItem>-->
+
                 </ywcntl:SidePanelControl>
             </TabItem>
             <TabItem Header="SearchTextBox" DataContext="{Binding SearchTextBox}">

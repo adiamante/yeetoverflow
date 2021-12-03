@@ -3,18 +3,22 @@ using CsvHelper.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 using System.Xml;
 using YeetOverFlow.Data.Wpf.ViewModels;
 using YeetOverFlow.Wpf.Controls;
 using YeetOverFlow.Wpf.Ui;
+using YeetOverFlow.Wpf.ViewModels;
 
 namespace YeetOverFlow.Data.Wpf.Controls
 {
@@ -23,6 +27,8 @@ namespace YeetOverFlow.Data.Wpf.Controls
     /// </summary>
     public partial class YeetDataControl : YeetControlBase
     {
+        YeetColumnViewModel _lastSelectedColumn;
+
         #region Data
         private static readonly DependencyProperty DataProperty =
         DependencyProperty.Register("Data", typeof(YeetDataLibraryViewModel), typeof(YeetDataControl));
@@ -140,26 +146,33 @@ namespace YeetOverFlow.Data.Wpf.Controls
         private void SearchTextBox_Search(object sender, RoutedEventArgs e)
         {
             var stb = (SearchTextBox)sender;
-            var doFilterTabs = bool.Parse(stb.Tag.ToString());
-            
-            if (doFilterTabs)
+            var searchType = stb.Tag.ToString();
+
+            switch (searchType)
             {
-                SetVisibility(Data.Root, stb.Text, stb.FilterMode);
-            }
-            else
-            {
-                throw new NotImplementedException("Searching values");
+                case "0":       //Tabs
+                    SetTabVisibility(Data.Root, stb.Text, stb.FilterMode);
+                    break;
+                case "1":  //Values
+                    var searchResult = SearchDataValues(Data.Root, stb.Text, stb.FilterMode);
+                    sidePanel.SelectedIndex = 1;
+
+                    if (searchResult != null)
+                    {
+                        tvSearch.ItemsSource = ((YeetDataSetSearchResult)searchResult).Children;
+                    }
+                    break;
             }
         }
 
-        private static bool SetVisibility(YeetDataViewModel data, string filter, FilterMode filterMode)
+        private bool SetTabVisibility(YeetDataViewModel data, string filter, FilterMode filterMode)
         {
             if (data is YeetDataSetViewModel dataSet)
             {
                 var atLeastOneChildVisible = false;
                 foreach (var child in dataSet.Children)
                 {
-                    if (SetVisibility(child, filter, filterMode))
+                    if (SetTabVisibility(child, filter, filterMode))
                     {
                         dataSet.IsVisible = true;
                         atLeastOneChildVisible = true;
@@ -174,7 +187,7 @@ namespace YeetOverFlow.Data.Wpf.Controls
             }
 
 
-            if (YeetTableViewModel.Evaluate(filter, filterMode, data.Key))
+            if (FilterHelper.Evaluate(filter, filterMode, data.Key))
             {
                 data.IsVisible = true;
                 return true;
@@ -183,6 +196,201 @@ namespace YeetOverFlow.Data.Wpf.Controls
             data.IsVisible = false;
             return false;
         }
+
+        private YeetDataSearchResult SearchDataValues(YeetDataViewModel data, string filter, FilterMode filterMode)
+        {
+            switch (data)
+            {
+                case YeetDataSetViewModel dataSet:
+                    var dataSetResult = new YeetDataSetSearchResult() { Name = dataSet.Name, DataSet = dataSet };
+                    foreach (var child in dataSet.Children)
+                    {
+                        var childResult = SearchDataValues(child, filter, filterMode);
+                        
+                        if (childResult != null)
+                        {
+                            dataSetResult.Children.Add(childResult);
+
+                            if (childResult is YeetDataSetSearchResult childDataSetResult)
+                            {
+                                childDataSetResult.ParentSearchResult = dataSetResult;
+                                childDataSetResult.Parent = dataSet;
+                            }
+                            else if (childResult is YeetTableSearchResult childTableSearchResult)
+                            {
+                                childTableSearchResult.ParentSearchResult = dataSetResult;
+                                childTableSearchResult.Parent = dataSet;
+                            }
+                        }
+                    }
+                    
+                    if (dataSetResult.Children.Count > 0 || FilterHelper.Evaluate(filter, filterMode, dataSet.Key ?? ""))
+                        return dataSetResult;
+                    break;
+                case YeetTableViewModel table:
+                    var tableResult = new YeetTableSearchResult() { Name = table.Name, Table = table };
+                    foreach (YeetColumnViewModel column in table.Columns.Children)
+                    {
+                        var columnResult = new YeetColumnSearchResult() { Name = column.Name, Table = table, Column = column, TableSearchResult = tableResult };
+                        
+                        foreach (YeetRowViewModel row in table.Rows.Children)
+                        {
+                            var cell = (YeetCellViewModel)row[column.Name];
+                            var value = cell.GetValue().ToString();
+                            if (FilterHelper.Evaluate(filter, filterMode, value))
+                            {
+                                var cellResult = new YeetRowSearchResult() { Name = cell.Name, Value = value, Table = table, TableSearchResult = tableResult, Column = column, Row = row };
+                                columnResult.Children.Add(cellResult);
+                            }
+                        }
+
+                        if (columnResult.Children.Count > 0 || FilterHelper.Evaluate(filter, filterMode, column.Name))
+                        {
+                            tableResult.Children.Add(columnResult);
+                        }
+                    }
+
+                    if (tableResult.Children.Count > 0 || FilterHelper.Evaluate(filter, filterMode, table.Name))
+                        return tableResult;
+                    break;
+                default:
+                    throw new InvalidOperationException($"Data type not handled {data.GetType().Name}");
+            }
+
+            return null;
+        }
+
+        private void SearchResult_View(object sender, RoutedEventArgs e)
+        {
+            var fe = (FrameworkElement)sender;
+
+            if (_lastSelectedColumn != null)
+            {
+                _lastSelectedColumn.IsSelected = false;
+            }
+
+            switch (fe.DataContext)
+            {
+                case YeetDataSetSearchResult dataSetSearchResult:
+                    View(dataSetSearchResult);
+                    break;
+                case YeetTableSearchResult tableSearchResult:
+                    View(tableSearchResult);
+                    break;
+                case YeetColumnSearchResult columnSearchResult:
+                    View(columnSearchResult);
+                    break;
+                case YeetRowSearchResult rowSearchResult:
+                    View(rowSearchResult);
+                    break;
+            }
+
+        }
+
+        private void View(YeetDataSetSearchResult dataSetSearchResult)
+        {
+            dataSetSearchResult.DataSet.IsSelected = true;
+            var parent = dataSetSearchResult.ParentSearchResult;
+            while (parent != null)
+            {
+                parent.DataSet.IsSelected = true;
+                parent = parent.ParentSearchResult;
+            }
+        }
+
+        private void View(YeetTableSearchResult tableSearchResult)
+        {
+            tableSearchResult.Table.IsSelected = true;
+            View(tableSearchResult.ParentSearchResult);
+        }
+
+        private void View(YeetColumnSearchResult columnSearchResult)
+        {
+            columnSearchResult.Column.IsSelected = true;
+            _lastSelectedColumn = columnSearchResult.Column;
+            View(columnSearchResult.TableSearchResult);
+        }
+
+        private void View(YeetRowSearchResult rowSearchResult)
+        {
+            rowSearchResult.Column.IsSelected = true;
+            _lastSelectedColumn = rowSearchResult.Column;
+            View(rowSearchResult.TableSearchResult);
+
+            Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+            {
+                var tableControl = this.FindVisualChild<YeetTableControl>();
+                var dataGridColumn = tableControl.InnerDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == rowSearchResult.Column.Key);
+                DataGridCellInfo cellInfo = new DataGridCellInfo(rowSearchResult.Row, dataGridColumn);
+                tableControl.InnerDataGrid.ScrollIntoView(cellInfo.Item, cellInfo.Column);
+                tableControl.InnerDataGrid.SelectedCells.Clear();
+                tableControl.InnerDataGrid.SelectedCells.Add(cellInfo);
+                tableControl.InnerDataGrid.CurrentCell = cellInfo;
+                tableControl.InnerDataGrid.Focus();
+            }));
+        }
+
+        private void SearchResultContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            FrameworkElement fe = (FrameworkElement)sender;
+            YeetDataSearchResult searchResult = (YeetDataSearchResult)fe.DataContext;
+            searchResult.IsSelected = true;
+        }
+    }
+
+    public class YeetDataSetSearchResult : YeetDataSearchResult
+    {
+        public YeetDataSetViewModel Parent { get; set; }
+        public YeetDataSetSearchResult ParentSearchResult { get; set; }
+        public YeetDataSetViewModel DataSet { get; set; }
+        public List<YeetDataSearchResult> Children { get; set; } = new List<YeetDataSearchResult>();
+    }
+
+    public class YeetTableSearchResult : YeetDataSearchResult
+    {
+        public YeetDataSetViewModel Parent { get; set; }
+        public YeetDataSetSearchResult ParentSearchResult { get; set; }
+        public YeetTableViewModel Table { get; set; }
+        public List<YeetColumnSearchResult> Children { get; set; } = new List<YeetColumnSearchResult>();
+    }
+
+    public class YeetColumnSearchResult : YeetDataSearchResult
+    {
+        public YeetTableViewModel Table { get; set; }
+        public YeetTableSearchResult TableSearchResult { get; set; }
+        public YeetColumnViewModel Column { get; set; }
+        public List<YeetRowSearchResult> Children { get; set; } = new List<YeetRowSearchResult>();
+    }
+
+
+    public class YeetRowSearchResult : YeetDataSearchResult
+    {
+        public YeetTableViewModel Table { get; set; }
+        public YeetTableSearchResult TableSearchResult { get; set; }
+        public YeetColumnViewModel Column { get; set; }
+        public YeetRowViewModel Row { get; set; }
+        public string Value { get; set; }
+    }
+
+    public class YeetDataSearchResult : YeetItemViewModelBase
+    {
+        private bool _isSelected, _isExpanded = true;
+
+        #region IsSelected
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { SetValue(ref _isSelected, value); }
+        }
+        #endregion IsSelected
+
+        #region IsExpanded
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set { SetValue(ref _isExpanded, value); }
+        }
+        #endregion IsExpanded
     }
 
     internal class YeetDataConverterOptions
