@@ -433,7 +433,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                         {
                             case TableExportType.Tsql:
                                 string tableName = Key.Replace(".", "_");
-                                sbExport.Append($"CREATE TABLE #{tableName} (");
+                                sbExport.Append($"CREATE TABLE {tableName} (");
                                 foreach (YeetColumnViewModel col in Columns.Children)
                                 {
                                     if (col.IsVisible)
@@ -460,21 +460,35 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                 sbExport.Length--;  //remove last comma
                                 sbExport.AppendLine(")");
 
-                                sbExport.Append($"INSERT INTO #{tableName} (");
+                                var sbColumnInsert = new StringBuilder();
+
+                                sbColumnInsert.Append($"INSERT INTO {tableName} (");
                                 foreach (YeetColumnViewModel col in Columns.Children)
                                 {
                                     if (col.IsVisible)
                                     {
-                                        sbExport.Append($"[{col.Key}], ");
+                                        sbColumnInsert.Append($"[{col.Key}], ");
                                     }
                                 }
-                                sbExport.Length--;  //remove last space
-                                sbExport.Length--;  //remove last comma
-                                sbExport.AppendLine(") VALUES");
+                                sbColumnInsert.Length--;  //remove last space
+                                sbColumnInsert.Length--;  //remove last comma
+                                sbColumnInsert.AppendLine(") VALUES");
+                                sbExport.Append(sbColumnInsert.ToString());
 
                                 var view = CollectionViewSource.GetDefaultView(Rows.Children);
+                                var count = 0;
                                 foreach (YeetRowViewModel row in view)
                                 {
+                                    count++;
+                                    if (count % 1000 == 0)
+                                    {
+                                        sbExport.Length--;  //remove carriage return
+                                        sbExport.Length--;  //remove last space
+                                        sbExport.Length--;  //remove last comma
+                                        sbExport.AppendLine();
+                                        sbExport.Append(sbColumnInsert.ToString());
+                                    }
+
                                     sbExport.Append("\t(");
                                     foreach (YeetColumnViewModel col in Columns.Children)
                                     {
@@ -501,7 +515,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                 sbExport.Length--;  //remove last comma
                                 sbExport.AppendLine();
 
-                                sbExport.AppendLine($"SELECT * FROM #{tableName}");
+                                sbExport.AppendLine($"SELECT * FROM {tableName}");
                                 break;
                             case TableExportType.Csv:
                                 throw new NotImplementedException();

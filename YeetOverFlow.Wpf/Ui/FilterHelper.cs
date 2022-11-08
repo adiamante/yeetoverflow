@@ -1,4 +1,6 @@
-﻿namespace YeetOverFlow.Wpf.Ui
+﻿using System.Text.RegularExpressions;
+
+namespace YeetOverFlow.Wpf.Ui
 {
     public static class FilterHelper 
     {
@@ -30,6 +32,8 @@
                         return false;
                     }
                     break;
+                case FilterMode.REGULAR_EXPRESSSION:
+                    return Regex.IsMatch(targetValue, filter);
             }
 
             return true;

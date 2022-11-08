@@ -87,7 +87,7 @@ namespace YeetOverFlow.Data.Wpf.Controls
             {
                 var tabItem = (TabItem)((FrameworkElement)sender).Parent;
                 String text = Clipboard.GetText();
-                String name = $"Tbl {Data.Root.Count + 1}";
+                String name = $"Tbl{Data.Root.Count + 1}";
                 var opts = new YeetDataConverterOptions();
 
                 if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
@@ -543,6 +543,10 @@ namespace YeetOverFlow.Data.Wpf.Controls
 
         public static YeetDataViewModel JsonStringToData(string json, YeetDataConverterOptions opts = null)
         {
+            if (json.StartsWith('['))
+            {
+                json = $"{{ \"root\": {json} }}";
+            }
             DataSet ds = new DataSet();
             //Conversion to JObject is to prevent automatic DateTime columns because they break when the value is an empty string
             JObject jInput = JsonConvert.DeserializeObject<JObject>(json, new JsonSerializerSettings { DateParseHandling = DateParseHandling.None });
@@ -601,6 +605,11 @@ namespace YeetOverFlow.Data.Wpf.Controls
                     yeetTable.Rows.AddChild(yeetRow);
                     foreach (DataColumn dtc in dtbl.Columns)
                     {
+                        if (dtr[dtc.ColumnName] == DBNull.Value)
+                        {
+                            continue;
+                        }
+
                         var typeCode = Type.GetTypeCode(dtc.DataType);
                         switch (typeCode)
                         {
