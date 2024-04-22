@@ -707,7 +707,10 @@ namespace YeetOverFlow.Data.Wpf.Controls
                                 yeetRow[dtc.ColumnName] = new YeetBooleanCellViewModel() { Value = (bool)dtr[dtc.ColumnName] };
                                 break;
                             case TypeCode.String:
-                                yeetRow[dtc.ColumnName] = new YeetStringCellViewModel() { Value = (string)dtr[dtc.ColumnName] };
+                                var val = dtr[dtc.ColumnName] == System.DBNull.Value
+                                    ? ""
+                                    : (string) dtr[dtc.ColumnName];
+                                yeetRow[dtc.ColumnName] = new YeetStringCellViewModel() { Value = val };
                                 break;
                             case TypeCode.Int32:
                                 yeetRow[dtc.ColumnName] = new YeetIntCellViewModel() { Value = (int)dtr[dtc.ColumnName] };
