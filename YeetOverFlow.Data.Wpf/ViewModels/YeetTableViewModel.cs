@@ -21,7 +21,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
     public class YeetTableViewModel : YeetDataViewModel
     {
         #region Data Structures
-        public enum TableExportType { Tsql, Csv  }
+        public enum TableExportType { Tsql, Csv, Psql  }
         public enum TableExportDestination { Clipboard, File }
         #endregion Data Structures
 
@@ -522,7 +522,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
                                 sbExport.AppendLine($"SELECT * FROM {tableName}");
                             }
-                                break;
+                            break;
                             case TableExportType.Csv:
                             {
                                 foreach (YeetColumnViewModel col in Columns.Children)
@@ -569,7 +569,101 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
 
                                 sbExport.Length--; //remove last comma
                                 sbExport.AppendLine();
-                            } break;
+                            } 
+                            break;
+                            case TableExportType.Psql:
+                                {
+                                    string tableName = Key.Replace(".", "_");
+                                    sbExport.Append($"CREATE TEMPORARY TABLE {tableName} (");
+                                    foreach (YeetColumnViewModel col in Columns.Children)
+                                    {
+                                        if (col.IsVisible)
+                                        {
+                                            var tSqlType = "";
+
+                                            switch (col.DataType.Name.ToLower())
+                                            {
+                                                case "double":
+                                                    tSqlType = "DOUBLE";
+                                                    break;
+                                                case "int":
+                                                    tSqlType = "INTEGER";
+                                                    break;
+                                                case "string":
+                                                default:
+                                                    tSqlType = "TEXT";
+                                                    break;
+                                            }
+
+                                            sbExport.Append($"\"{col.Key}\" {tSqlType}, ");
+                                        }
+                                    }
+
+                                    sbExport.Length--; //remove last space
+                                    sbExport.Length--; //remove last comma
+                                    sbExport.AppendLine(");");
+
+                                    var sbColumnInsert = new StringBuilder();
+
+                                    sbColumnInsert.Append($"INSERT INTO {tableName} (");
+                                    foreach (YeetColumnViewModel col in Columns.Children)
+                                    {
+                                        if (col.IsVisible)
+                                        {
+                                            sbColumnInsert.Append($"\"{col.Key}\", ");
+                                        }
+                                    }
+
+                                    sbColumnInsert.Length--; //remove last space
+                                    sbColumnInsert.Length--; //remove last comma
+                                    sbColumnInsert.AppendLine(") VALUES");
+                                    sbExport.Append(sbColumnInsert.ToString());
+
+                                    var view = CollectionViewSource.GetDefaultView(Rows.Children);
+                                    var count = 0;
+                                    foreach (YeetRowViewModel row in view)
+                                    {
+                                        count++;
+                                        if (count % 1000 == 0)
+                                        {
+                                            sbExport.Length--; //remove carriage return
+                                            sbExport.Length--; //remove last space
+                                            sbExport.Length--; //remove last comma
+                                            sbExport.AppendLine();
+                                            sbExport.Append(sbColumnInsert.ToString());
+                                        }
+
+                                        sbExport.Append("\t(");
+                                        foreach (YeetColumnViewModel col in Columns.Children)
+                                        {
+                                            if (col.IsVisible)
+                                            {
+                                                var cell = (YeetCellViewModel)row[col.Key];
+                                                if (col.DataType.IsNumericType())
+                                                {
+                                                    sbExport.Append($"{cell.GetValue().ToString().Replace("'", "''")}, ");
+                                                }
+                                                else
+                                                {
+                                                    sbExport.Append($"'{cell.GetValue().ToString().Replace("'", "''")}', ");
+                                                }
+                                            }
+                                        }
+
+                                        sbExport.Length--; //remove last space
+                                        sbExport.Length--; //remove last comma
+                                        sbExport.AppendLine("),");
+                                    }
+
+                                    sbExport.Length--; //remove carriage return
+                                    sbExport.Length--; //remove last new line
+                                    sbExport.Length--; //remove last comma
+                                    sbExport.AppendLine(";");
+                                    sbExport.AppendLine();
+
+                                    sbExport.AppendLine($"SELECT {String.Join(", ", Columns.Children.Select(c => $"\"{c.Key}\""))} FROM {tableName}");
+                                }
+                            break;
                         }
 
                         switch (ExportDestination)
