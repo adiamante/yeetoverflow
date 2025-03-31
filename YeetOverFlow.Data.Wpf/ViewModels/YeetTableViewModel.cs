@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -552,14 +554,14 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                         if (col.IsVisible)
                                         {
                                             var cell = (YeetCellViewModel) row[col.Key];
-                                            var cellValue = cell.GetValue().ToString();
+                                            var cellValue = cell?.GetValue().ToString() ?? String.Empty;
                                             if (cellValue.Contains(",") || cellValue.Contains("\""))
                                             {
                                                 sbExport.Append($"\"{cell.GetValue().ToString().Replace("\"", "\"\"")}\",");
                                             }
                                             else
                                             {
-                                                sbExport.Append($"{cell.GetValue()},");
+                                                sbExport.Append($"{cellValue},");
                                             }
                                         }
                                     }
@@ -639,7 +641,12 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                                             if (col.IsVisible)
                                             {
                                                 var cell = (YeetCellViewModel)row[col.Key];
-                                                if (col.DataType.IsNumericType())
+                                                var cellValue = cell.GetValue();
+                                                if (cellValue.ToString() == "")
+                                                {
+                                                    sbExport.Append($"NULL, ");
+                                                }
+                                                else if (col.DataType.IsNumericType())
                                                 {
                                                     sbExport.Append($"{cell.GetValue().ToString().Replace("'", "''")}, ");
                                                 }
@@ -669,10 +676,19 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                         switch (ExportDestination)
                         {
                             case TableExportDestination.Clipboard:
-                                Clipboard.SetText(sbExport.ToString());
+                                Clipboard.SetDataObject(sbExport.ToString());
                                 break;
                             case TableExportDestination.File:
-                                throw new NotImplementedException();
+                                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                                saveFileDialog.FileName = $"{this.Name}.csv";
+                                var saveFileResult = saveFileDialog.ShowDialog() ?? false;
+                                if (saveFileResult)
+                                {
+                                    string filePath = saveFileDialog.FileName;
+                                    File.WriteAllText(filePath, sbExport.ToString());
+                                    MessageBox.Show($"Export written to {filePath}.");
+                                }
+                                break;
                         }
                     }));
             }
@@ -737,7 +753,7 @@ namespace YeetOverFlow.Data.Wpf.ViewModels
                 foreach (YeetColumnViewModel col in Columns.Children)
                 {
                     var cell = (YeetCellViewModel)row[col.Key];
-                    var cellVal = cell.GetValue().ToString();
+                    var cellVal = cell?.GetValue().ToString() ?? String.Empty;
                     var colFilter = col.ColumnFilter;
                     var filter = col.ColumnFilter.Filter;
                     var filterMode = col.ColumnFilter.FilterMode;
